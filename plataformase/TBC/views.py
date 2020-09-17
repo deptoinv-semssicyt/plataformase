@@ -206,7 +206,7 @@ def consultaAlumnos(request):
 				except:
 					idArchivo = 1
 				
-				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/registro/alumnos/'+acta.name #'/media/TBC/Datos/Alumnos/'+acta.name
+				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+acta.name #'/media/TBC/Datos/Alumnos/'+acta.name
 				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = acta.name, tipo_archivo = 'Acta nacimiento', url = url, id_alumno = idAlumno)
 				nuevoArchivo.archivo = acta
 				nuevoArchivo.save()
@@ -227,7 +227,7 @@ def consultaAlumnos(request):
 				except:
 					idArchivo = 1
 				
-				url =  'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/registro/alumnos'+curp.name #'/media/TBC/Datos/Alumnos/'+curp.name
+				url =  'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+curp.name #'/media/TBC/Datos/Alumnos/'+curp.name
 				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = curp.name, tipo_archivo = 'Curp', url = url, id_alumno = idAlumno)
 				nuevoArchivo.archivo = curp
 				nuevoArchivo.save()
@@ -248,7 +248,7 @@ def consultaAlumnos(request):
 				except:
 					idArchivo = 1
 				
-				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/registro/alumnos'+certificado.name #'/media/TBC/Datos/Alumnos/'+certificado.name
+				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+certificado.name #'/media/TBC/Datos/Alumnos/'+certificado.name
 				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = certificado.name, tipo_archivo = 'Certificado secundaria', url = url, id_alumno = idAlumno)
 				nuevoArchivo.archivo = certificado
 				nuevoArchivo.save()
@@ -527,7 +527,7 @@ def consultaDocentes(request):
 					except:
 						idArchivo = 1
 					
-					url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/registro/docentes/'+curriculum.name #'/media/TBC/Datos/Docentes/'+curriculum.name
+					url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+curriculum.name #'/media/TBC/Datos/Docentes/'+curriculum.name
 					nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = curriculum.name, tipo_archivo = 'Curriculum', url = url, id_docente = idDocente)
 					nuevoArchivo.archivo = curriculum
 					nuevoArchivo.save()
@@ -676,7 +676,7 @@ def nuevaActividad(request):
 			except:
 				idArchivo = 1
 			descripcion = request.POST.getlist('descRecurso')
-			url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/actividades/recursos/'+afile.name #'/media/TBC/Docente/Recursos/'+afile.name
+			url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+afile.name #'/media/TBC/Docente/Recursos/'+afile.name
 			ArchivoNuevo = Archivo(id_archivo = idArchivo, nombre_archivo = afile.name, descripcion = descripcion[c], tipo_archivo = 'Recurso', id_actividad = idActividad, url= url)
 			ArchivoNuevo.archivo = afile
 			ArchivoNuevo.save()
@@ -698,7 +698,7 @@ def nuevaActividad(request):
 			except:
 				idArchivo = 1
 			descripcionRubrica = request.POST.getlist('descRubrica')
-			url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/actividades/rubricas/'+afile.name #'/media/TBC/Docente/Rubricas/'+afile.name
+			url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+afile.name #'/media/TBC/Docente/Rubricas/'+afile.name
 			ArchivoNuevo = Archivo(id_archivo = idArchivo, nombre_archivo = afile.name, descripcion = descripcionRubrica[cRub], tipo_archivo = 'Rubrica', id_actividad = idActividad, url= url)
 			ArchivoNuevo.archivo = afile
 			ArchivoNuevo.save()
@@ -806,7 +806,7 @@ def actividadD(request, id):
 				field_value = getattr(obj, field_name)
 				idArchivo = field_value + 1
 				descripcion = request.POST.getlist('descRecurso')
-				url = '/TBC/archivos/'+afile.name #'/media/TBC/Docente/Recursos/'+afile.name
+				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+afile.name #'/media/TBC/Docente/Recursos/'+afile.name
 				ArchivoNuevo = Archivo(id_archivo = idArchivo, nombre_archivo = afile.name, descripcion = descripcion[c], tipo_archivo = 'Recurso', id_actividad = idActividad, url= url)
 				ArchivoNuevo.archivo = afile
 				ArchivoNuevo.save()
@@ -825,7 +825,7 @@ def actividadD(request, id):
 				field_value = getattr(obj, field_name)
 				idArchivo = field_value + 1
 				descripcionRubrica = request.POST.getlist('descRubrica')
-				url = '/TBC/archivos/'+afile.name #'/media/TBC/Docente/Rubricas/'+afile.name
+				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+afile.name #'/media/TBC/Docente/Rubricas/'+afile.name
 				ArchivoNuevo = Archivo(id_archivo = idArchivo, nombre_archivo = afile.name, descripcion = descripcionRubrica[cRub], tipo_archivo = 'Rubrica', id_actividad = idActividad, url= url)
 				ArchivoNuevo.archivo = afile
 				ArchivoNuevo.save()
@@ -1219,7 +1219,7 @@ def entregaAlumno(request, id, idAlumno):
 				idArchivo = field_value + 1
 
 				descripcion = request.POST.getlist('descRecurso')
-				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/entregas/'+afile.name
+				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+afile.name
 				ArchivoNuevo = Archivo(id_archivo = idArchivo, nombre_archivo = afile.name, descripcion = descripcion[c], tipo_archivo = 'Entrega', id_actividad = idActividad, url= url, id_alumno = idAlumno)
 				ArchivoNuevo.archivo = afile
 				ArchivoNuevo.save()
