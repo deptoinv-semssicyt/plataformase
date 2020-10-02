@@ -43,12 +43,17 @@ INSTALLED_APPS = [
     'SigApp',
     'sweetify',
     'xlwt',
+
+    'corsheaders',
+    'rest_framework', 
+    'apiblockchain',
 ]
 # STATICFILES_DIRS = (
 #   os.path.join(BASE_DIR,"static"),
 # )
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -104,8 +109,8 @@ else:
             #'PASSWORD' : 'diana',
             'PASSWORD' : 'admin',
             'HOST'     : 'localhost',
-            #'PORT'    : '5432',
-            'PORT'     : '3306',
+            #'PORT'    : '5432', #Para desarrollo
+            'PORT'     : '3306', #Para ver BD Google
         }
     }
 
@@ -185,3 +190,7 @@ EMAIL_HOST_PASSWORD = 'sigapp2020'
 EMAIL_PORT = 587
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
+# we whitelist localhost:3000 because that's where frontend will be served
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)

@@ -16,11 +16,14 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib import admin
-from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from apiblockchain import views
+
+router = routers.DefaultRouter()
+router.register(r'cert', views.CertView, 'cert')
 
 urlpatterns = [
     path('', include('visitante.urls')),
@@ -37,7 +40,8 @@ urlpatterns = [
     path('SETyRS/', include('SETyRS.urls')),
     #urls de app de SIG
     path('SigApp/', include('SigApp.urls')),
-
+    #urls de API de Blockchain
+    path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:
