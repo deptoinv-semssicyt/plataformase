@@ -15,3 +15,7 @@ __pycache__
 /plataformase/SETyRS/migrations/
 .DS_Store
 /plataformase/visitante/__pycache__
+/plataformase/apiblockchain/migrations/
+/plataformase/apiblockchain/__pycache__/
+/venv/
+.vscode
