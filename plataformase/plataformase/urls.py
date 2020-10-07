@@ -20,18 +20,14 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
-from apiblockchain import views
-
-router = routers.DefaultRouter()
-router.register(r'cert', views.CertView, 'cert')
 
 urlpatterns = [
-    path('', include('visitante.urls')),
-  
     #panel de django
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     #urls de app de login
     path('', include('login.urls')),
+    #urls de app visitante
+    path('', include('visitante.urls')),
     #urls de app de TBC
     path('TBC/', include('TBC.urls')),
     #urls de app de RVOES
@@ -41,7 +37,7 @@ urlpatterns = [
     #urls de app de SIG
     path('SigApp/', include('SigApp.urls')),
     #urls de API de Blockchain
-    path('api/', include(router.urls)),
+    path('api', include('blockchain.urls')),
 ]
 
 if settings.DEBUG:

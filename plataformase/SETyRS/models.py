@@ -4,6 +4,12 @@ from login.models import CustomUser, UsuarioInstitucion
 from .validators import validate_file_extension
 
 # Create your models here.
+#PRUEBAS Blockchain
+class Lead(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.CharField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 #--------------------------------------- Modelos de Institución ------------------------------------------------------------
 # Tabla de las solicitudes de examenes a titulo

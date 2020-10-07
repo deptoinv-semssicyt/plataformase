@@ -21,8 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'qzsi@0hipda@da1y-#&^#p61t-jc5n(un8pe+7s3!-&4^*d&_v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = False
+DEBUG = True
+#DEBUG = False
 ALLOWED_HOSTS = ['*','ssemssicyt.nayarit.gob.mx','www.ssemssicyt.nayarit.gob.mx','http://ssemssicyt.nayarit.gob.mx']
 
 
@@ -44,9 +44,10 @@ INSTALLED_APPS = [
     'sweetify',
     'xlwt',
 
-    'corsheaders',
+    #'corsheaders',
     'rest_framework', 
-    'apiblockchain',
+    'blockchain',
+    #'django_react_views',
 ]
 # STATICFILES_DIRS = (
 #   os.path.join(BASE_DIR,"static"),
@@ -109,8 +110,8 @@ else:
             #'PASSWORD' : 'diana',
             'PASSWORD' : 'admin',
             'HOST'     : 'localhost',
-            #'PORT'    : '5432', #Para desarrollo
-            'PORT'     : '3306', #Para ver BD Google
+            'PORT'    : '5432', #Para desarrollo
+            #'PORT'     : '3306', #Para ver BD Google
         }
     }
 
@@ -191,6 +192,12 @@ EMAIL_PORT = 587
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # we whitelist localhost:3000 because that's where frontend will be served
-CORS_ORIGIN_WHITELIST = (
+'''CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
-)
+)'''
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}

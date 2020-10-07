@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = [
+    #PRUEBAS BLOCKCHAIN
+    path('api/lead/', views.LeadListCreate.as_view() ),
+
     #urls del administrador SINODALES
     path('admin/',login_required(views.index_admin), name='SETyRS_admin_index'), #INDEX del administrador
     path('admin/solicitud/sinodal/<int:id>/', login_required(views.revisar_solicitud_sinodal), name='SETyRS_revisar_solicitud_sinodal'), #Vista para revisar una solicitud de sinodales

@@ -13,6 +13,15 @@ from login.models import UsuarioInstitucion
 from .render import Render
 from django.core.files.storage import FileSystemStorage
 from django.core import serializers
+
+#PRUEBAS BLOCKCHAIN
+from .serializers import LeadSerializer
+from rest_framework import generics
+
+class LeadListCreate(generics.ListCreateAPIView):
+    queryset = Lead.objects.all()
+    serializer_class = LeadSerializer
+
 # VISTAS DEL ADMINISTRADOR SINODALES-----------------------------------------------------------------------------
 
 # el departamento de dirección es el unico que puede ver e interactuar con las solicitudes de ambos niveles educativos (superior y media superior)

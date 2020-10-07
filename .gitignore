@@ -10,12 +10,13 @@ __pycache__
 /plataformase/RVOES/__pycache__
 /plataformase/TBC/migrations
 /plataformase/TBC/__pycache__
-/plataformase/SigApp/__pycache__
+/plataformase/SigApp/__pycache__/
 /plataformase/SETyRS/__pycache__
 /plataformase/SETyRS/migrations/
 .DS_Store
 /plataformase/visitante/__pycache__
-/plataformase/apiblockchain/migrations/
-/plataformase/apiblockchain/__pycache__/
+/plataformase/blockchain/migrations/
+/plataformase/blockchain/__pycache__/
+/plataformase/blockchain/node_modules/
 /venv/
-.vscode
+/.vscode/
