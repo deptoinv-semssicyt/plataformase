@@ -29,10 +29,11 @@ class App extends Component {
     const networkId = await web3.eth.net.getId()
     const networkData = Cert.networks[networkId]
     if(networkData) {
-      const contract = web3.eth.Contract(Cert.abi, networkData.address)
+      const contract = new web3.eth.Contract(Cert.abi, networkData.address)
       this.setState({ contract })
       const Hash = await contract.methods.get().call()
       this.setState({ Hash })
+      console.log(Hash,networkId)
     } else {
       window.alert('Smart contract not deployed to detected network.')
     }
@@ -54,7 +55,7 @@ class App extends Component {
 
   componentDidMount() {
      this.loadWeb3();
-   // this.loadBlockchainData();
+    this.loadBlockchainData();
     fetch("SETyRS/api/lead")
       .then(response => {
         if (response.status > 400) {
