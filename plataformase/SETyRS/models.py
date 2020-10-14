@@ -10,7 +10,16 @@ class Lead(models.Model):
     email = models.EmailField()
     message = models.CharField(max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
-
+'''
+class estampados(models.Model):
+    nombre = models.CharField(max_length=50)#Nombre probablemente dado por nosotros
+    descripción = models.TextField()#Descripción de lo que contiene el documento a estampar
+    userReg = models.ForeignKey(CustomUser, on_delete=models.CASCADE)#Usuario que realizó el estampado
+    fecha = models.DateField()#Fecha en que se realizó el estampado
+    #archivo = models.FileField(upload_to='Blockchain/Pendientes', validators=[validate_file_extension], blank=True, null=True)#Copia del archivo estampado
+    hash = models.TextField()#Hash generado para acceder al estampado
+    hashInfura = models.TextField()
+'''
 #--------------------------------------- Modelos de Institución ------------------------------------------------------------
 # Tabla de las solicitudes de examenes a titulo
 class SolicitudExamen(models.Model):
@@ -29,6 +38,7 @@ class SolicitudExamen(models.Model):
     fecha_exa = models.DateField(default='2020-06-06')
     lugar_exa = models.CharField(max_length=50,default='Algun lugar')
     hora_exa = models.CharField(max_length=10,default='12:00')
+    estampado = models.BooleanField(default=False)#Indica si esta solicitud ya ha sido estampada, True: ya estampado - False: no ha sido estampado
 
     class Meta:
         db_table = 'SETyRS_solicitud_examen'

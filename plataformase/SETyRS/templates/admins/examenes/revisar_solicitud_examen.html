@@ -140,6 +140,9 @@
 <div class="container text-center">
     <a href="{% url 'SETyRS_lista_solicitudes_examenes' %}" class="btn btn-primary">Regresar</a>
         {% if solicitud.estatus == 'Aceptada' or solicitud.estatus == 'Rechazada' %}
+            {% if solicitud.estatus == 'Aceptada' and solicitud.estampado == False %}
+                <input type="button" class="btn btn-success" value="Estampar solicitud" data-toggle="modal" data-target="#blockchain">
+            {% endif %}
             <input type="button" class="btn btn-primary" value="Aceptar Solicitud" disabled>
             <input type="button" class="btn btn-danger" value="Rechazar Solicitud" disabled>
         {% else %}
@@ -216,4 +219,25 @@
         pdf.setAttribute("src", "{{MEDIA_URL}}" + url);
 	}
 </script>
+
+<!-- Modal de Blockchain -->
+<div id="blockchain" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Estampar solicitud {{ solicitud.id }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <embed type="text/html" src="{% url 'blockchain' %}">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Estampar</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

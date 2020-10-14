@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     #PRUEBAS BLOCKCHAIN
-    path('api/lead/', views.LeadListCreate.as_view() ),
+    path('api/lead/', views.LeadListCreate.as_view()),#API Obtiene datos de tabla Lead
 
     #urls del administrador SINODALES
     path('admin/',login_required(views.index_admin), name='SETyRS_admin_index'), #INDEX del administrador
