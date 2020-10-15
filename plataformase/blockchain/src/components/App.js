@@ -8,19 +8,31 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' 
 
 class App extends Component {
   
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      loaded: false,
+      placeholder: "Loading",
+      Hash: '',
+      contract: null,
+      web3: null,
+      buffer: null,
+      account: null,
+    };
+  }
 
   async loadWeb3() {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
-    }
-    else if (window.web3) {
+    } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider)
-    }
-    else {
+    } else {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   }
+  
   async loadBlockchainData() {
     const web3 = window.web3
     // Load account
@@ -39,22 +51,8 @@ class App extends Component {
     }
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      loaded: false,
-      placeholder: "Loading",
-      Hash: '',
-      contract: null,
-      web3: null,
-      buffer: null,
-      account: null,
-    };
-  }
-
   componentDidMount() {
-     this.loadWeb3();
+    this.loadWeb3();
     this.loadBlockchainData();
     fetch("SETyRS/api/lead")
       .then(response => {
@@ -75,17 +73,73 @@ class App extends Component {
       });
   }
 
+  async onSubmit(event) {
+    event.preventDefault()
+    console.log("Submitting file to ipfs...")
+    console.log('buffer', this.state.buffer)
+    console.log(ipfs)
+    //ipfs method
+    const result = await ipfs.add(this.state.buffer)
+    console.info("result ->", result)
+    console.log("AAA ->", this.state.account)
+    const blockchainIPFS = await this.state.contract.methods
+      .set(result.path)
+      .send({ from: this.state.account })
+      .then((r) => {
+        console.log("r -> ", r)
+        //return this.setState({ Hash: result[0].hash })
+      })
+    /*ipfs.add(this.state.buffer, (error, result) => {
+      console.log("error -> ", error)
+      console.log("result -> ", result)
+      console.log("buffer -> ", this.state.buffer)
+      console.log('Ipfs result', result)
+      if(error) {
+        console.error(error)
+        return
+      }//blockchain method to add y and ge4t the ipfs hash
+      
+        console.log("hash",this.state.Hash)
+        this.setState({
+          user: {
+            id:this.state.id,
+            title:this.state.title,
+            hash:this.state.Hash
+          }
+        });
+      console.log("usedatacer",this.state.user) 
+    })*/
+  }
+
+  captureFile(event) {
+    const file = event.target.files[0]
+    const reader = new window.FileReader()
+    reader.readAsArrayBuffer(file)
+    reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result) })
+      console.log('buffer', this.state.buffer)
+    }
+  }
+
+  onChange(e){
+    this.setState({...this.state,[e.target.name] : e.target.value});
+  }
+
   render() {
     return (
-      <ul>
-        {this.state.data.map(contact => {
-          return (
-            <li key={contact.id}>
-              {contact.name} - {contact.email}
-            </li>
-          );
-        })}
-      </ul>
+      <>
+        <input type="file" accept=".jpg,.png" onChange={(e) => this.captureFile(e)}/>
+        <button onClick={(event) => this.onSubmit(event)}>Aceptar</button>
+        <ul>
+          {this.state.data.map(contact => {
+            return (
+              <li key={contact.id}>
+                {contact.name} - {contact.email}
+              </li>
+            );
+          })}
+        </ul>
+      </>
     );
   }
 }
