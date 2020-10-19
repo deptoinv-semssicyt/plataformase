@@ -4,6 +4,7 @@ import Web3 from 'web3';
 import Cert from '../abis/Cert.json';
 const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' }) // leaving out the arguments will default to these values
+import $ from 'jquery';
 
 
 class App extends Component {
@@ -19,6 +20,14 @@ class App extends Component {
       web3: null,
       buffer: null,
       account: null,
+      estampados: {
+        nombre: "Admisión de trámite",
+        descripción: "Prueba",
+        hashInfura: null,
+        hash: null,
+        blockHash: null,
+        blockNumber: null,
+      }
     };
   }
 
@@ -73,6 +82,21 @@ class App extends Component {
       });
   }
 
+  getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = $.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+
   async onSubmit(event) {
     event.preventDefault()
     console.log("Submitting file to ipfs...")
@@ -82,33 +106,37 @@ class App extends Component {
     const result = await ipfs.add(this.state.buffer)
     console.info("result ->", result)
     console.log("AAA ->", this.state.account)
+    console.log("Estampados 1 -> ", this.state.estampados)
     const blockchainIPFS = await this.state.contract.methods
       .set(result.path)
       .send({ from: this.state.account })
       .then((r) => {
         console.log("r -> ", r)
+        this.setState(prevState => {
+          let estampados = Object.assign({}, prevState.estampados);
+          estampados.hashInfura = result.path, 
+          estampados.hash = r.transactionHash,
+          estampados.blockHash = r.blockHash,
+          estampados.blockNumber = r.blockNumber
+          return { estampados };
+        })
         //return this.setState({ Hash: result[0].hash })
       })
-    /*ipfs.add(this.state.buffer, (error, result) => {
-      console.log("error -> ", error)
-      console.log("result -> ", result)
-      console.log("buffer -> ", this.state.buffer)
-      console.log('Ipfs result', result)
-      if(error) {
-        console.error(error)
-        return
-      }//blockchain method to add y and ge4t the ipfs hash
-      
-        console.log("hash",this.state.Hash)
-        this.setState({
-          user: {
-            id:this.state.id,
-            title:this.state.title,
-            hash:this.state.Hash
-          }
-        });
-      console.log("usedatacer",this.state.user) 
-    })*/
+    console.log("Estampados 2 -> ", this.state.estampados)
+    var body = this.state.estampados
+    console.log(body)
+    var csrftoken = this.getCookie('csrftoken');
+    fetch('SETyRS/api/estampados', {
+      method : "POST",
+      body : body,
+      headers : {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      }
+    }).then(res => res.json())
+      .then(data => data)
+      .catch((err) => { console.log(err) });
   }
 
   captureFile(event) {
@@ -130,15 +158,6 @@ class App extends Component {
       <>
         <input type="file" accept=".jpg,.png" onChange={(e) => this.captureFile(e)}/>
         <button onClick={(event) => this.onSubmit(event)}>Aceptar</button>
-        <ul>
-          {this.state.data.map(contact => {
-            return (
-              <li key={contact.id}>
-                {contact.name} - {contact.email}
-              </li>
-            );
-          })}
-        </ul>
       </>
     );
   }

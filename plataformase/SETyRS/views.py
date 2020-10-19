@@ -16,11 +16,38 @@ from django.core import serializers
 
 #PRUEBAS BLOCKCHAIN
 from .serializers import LeadSerializer
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.decorators import api_view
+from django.http.response import JsonResponse
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 
 class LeadListCreate(generics.ListCreateAPIView):
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
+
+@api_view(['GET', 'POST'])
+@csrf_exempt
+@requires_csrf_token
+def estampadosList(request):
+    if request.method == 'GET':
+        estampados = estampados.objects.all()
+        
+        title = request.query_params.get('title', None)
+        if title is not None:
+            estampados = estampados.filter(title__icontains=title)
+        
+        estampados_serializer = estampadosSerializer(estampados, many=True)
+        return JsonResponse(estampados_serializer.data, safe=False)
+        # 'safe=False' for objects serialization
+ 
+    elif request.method == 'POST':
+        estampados_data = JSONParser().parse(request)
+        estampados_serializer = estampadosSerializer(data=estampados_data)
+        if estampados_serializer.is_valid():
+            estampados_serializer.save()
+            return JsonResponse(estampados_serializer.data, status=status.HTTP_201_CREATED) 
+        return JsonResponse(estampados_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # VISTAS DEL ADMINISTRADOR SINODALES-----------------------------------------------------------------------------
 
