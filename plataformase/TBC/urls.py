@@ -3,7 +3,8 @@ from .views import *
 
 app_name = 'TBC'
 urlpatterns = [
-   path('Resultados', resultadosTBC, name='ResultadosExamen'),
+   #Comienzan urls de la primera versión
+
    path('', homePage, name='homepageTBC'),
    path('consulta-alumnos',consultaAlumnos, name="consultaAlumnos"),
    path('historial-academico',historialAcademico,name='historialAcademico'),
@@ -35,5 +36,16 @@ urlpatterns = [
    path('Modulos/update/getpropositoUnidad',getPropUnidad,name='getPropUnidad'),
    path('relacionar-modulo', relacionarModulo, name="relacionarModulo"),
    path('material-aprendizaje/<slug:id>', catalogo_material_didactico, name="catalogo_material_didactico"),
+   #Comienzan urls de prueba TODO: Eliminar al final
+   path('generar-certificado', generarCertificado, name="generarCertificado"),
+   path('material-didactico', materialDidactico, name="materialDidactico"),
+   path('subir-estadistica', subirEstadistica, name="subirEstadistica"),
+   path('estadistica', estadistica, name="estadistica"),
+   #Fin de urls de prueba
+   #Fin de las urls de la primera versión
 
+   #Comienzan urls de la segunda versión
+   
+   #Fin de las urls de la segunda versión
+   
 ]

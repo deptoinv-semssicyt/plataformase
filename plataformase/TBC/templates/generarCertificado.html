@@ -1,0 +1,254 @@
+{% extends 'baseTBC.html'%}
+{% load static %}
+{% block content %}
+<title>Generar certificado</title>
+        <div class="form-row">
+            <div class="col-md-6">
+                <!--Tarjeta de filtro e info-->
+                <div class="container-flex mb-3" id="wwg-accordian">
+                    <div class="card">
+                        <div class="card-header" id="filtroInfo-heading" style="background-color: white;">      
+                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#filtroInfo" style="cursor:pointer;"><i class="far fa-file-alt"></i>&nbsp;Formulario para generar certificado</h5>
+                        </div>
+                        <div class="collapse show" id="filtroInfo">
+                            <div class="card-text p-3">
+                                <div class="form-row mb-2">
+                                    <div class="col-md-12">
+                                        <select class="selectpicker" data-live-search="true" data-width="100%" data-size="4" title="Buscar alumno..."  id="selectAlumno" required>
+                                            {% for al in alumno%}
+                                                <option value="{{ al.id_alumno }}">{{ al.nombre_alumno }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div> 
+                                </div>
+                                <hr>
+                                <div class="form-row mb-3">
+                                    <div class="col-md-6">
+                                        <form method="post">
+                                            <label for="name">Matrícula del alumno</label>
+                                            <input type="text" class="form-control border border-ligth" id="matricula" name="matriculaAlumno" placeholder="Matrícula" required>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="name">Semestre</label>
+                                        <input type="text" class="form-control border border-ligth" id="semestre" name="semestre" placeholder="Semestre" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="name">Institución</label>
+                                        <input type="text" class="form-control border border-ligth" id="institución" name="institución" placeholder="Institución" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="name">CCT</label>
+                                        <input type="text" class="form-control border border-ligth" id="cct" name="cct" placeholder="CCT" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <!-- <input type="text" id="inputMateria" name="materia" hidden required>
+                                            <input type="text" id="inputGrupo" name="grupo" hidden required> -->
+                                            <input type="text" name="bandera" value="False" hidden required>
+                                            <input type="text" id="inputDocente" name="docente" hidden required>
+                                            <input type="text" id="inputModulo" name="modulo" hidden required>
+                                            <button class="btn btn-outline-success btn-block" type="submit">Generar</button>
+                                        </form>
+                                    </div>
+                                    <!-- <div class="col-md-6 mb-3">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <input type="text" id="inputAlumno" name="nombreAlumno" hidden>
+                                            <input type="text" id="inputGrupo" name="grupo" hidden> 
+                                            <button class="btn btn-outline-success btn-block" type="submit">Guardar</button>
+                                        </form>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!--Tarjeta oculta TODO:Eliminar-->
+                <div hidden class="container-flex mb-3" id="wwg-accordian">
+                    <div class="card">
+                        <div class="card-header" id="lista-heading" style="background-color: white;">      
+                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#lista" style="cursor:pointer;"><i class="fas fa-chalkboard-teacher"></i></i>&nbsp;Relacionar módulo a docente</h5>
+                        </div>
+                        <div class="collapse show" id="lista">
+                            <div class="card-text p-2">
+                                <form method="post" action="">
+                                    {% csrf_token %}
+                                    <table class="table table-borderless table-hover" style="height: 500px; display: -moz-groupbox;">
+                                        <thead class="">
+                                            <tr style="display: inline-table; height:60px; table-layout: fixed;">
+                                                <th scope="col" style="width: 64.38%;">Nombre</th>
+                                                <th scope="col" style="width: 19.9%;">Matrícula</th>
+                                                <th scope="col" style="width: 6.0%;">A</th>
+                                                <th scope="col" style="width: 5.13%;">R</th>
+                                                <th scope="col" style="width: 8.3%;">J</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="overflow-y: scroll; height: 450px; width: 96.5%; position: absolute">
+                                            {% for alS in alumnoSel %}
+                                                {% for alSM in alumnoSelM %}
+                                                    {% if alS.id_alumno == alSM.id_alumno %}
+                                                    <tr>
+                                                        <td style="width: 64.5%;">{{ alS.nombre_alumno }} <input type="text" value="{{ alS.nombre_alumno }}" hidden name="nombreAlumnoTabla"></td> <!--Nombre-->
+                                                        <td style="width: 20%;">{{ alS.num_matricula }} <input type="text" value="{{ alS.num_matricula }}" hidden name="matriculaAlumnoTabla"></td> <!--Matrícula-->
+                                                        <td style="padding-top: 0;" > &nbsp;&nbsp;&nbsp;<input type="checkbox" name="Asistencia{{forloop.counter0}}" id="asistencia"></td>
+                                                        <td  style="padding-top: 0;"  class="text-center"> &nbsp;&nbsp;&nbsp;<input type="checkbox" name="Retardo{{forloop.counter0}}" id="retardo"></td>
+                                                        <td style="padding-top: 0;"  class="text-center"> &nbsp;&nbsp;<input type="checkbox" name="Justificacion{{forloop.counter0}}" id="justificacion"></td>
+                                                        <td hidden><input type="text" name="cctL" value="{{ alS.cct }}"></td>
+                                                        <td hidden> <input type="text" name="fechaL" value=" {% now "SHORT_DATE_FORMAT" %} "> </td>
+                                                        <td hidden><input type="text" name="semestreL" value="{{ alS.semestre }}"></td>
+                                                        <td hidden><input type="text" name="id_dcL" value="{{ alSM.id_dc }}"></td>
+                                                        <td hidden><input type="text" name="id_alumnoL" value="{{ alSM.id_alumno }}"></td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <input type="text" name="bandera" value="True" hidden>
+                                    <div class="form-row">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-outline-primary btn-block" type="submit">Exportar</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-outline-success btn-block" type="submit" >Guardar</button>
+                                        </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!--Columna derecha-->
+            <div class="col-md-6 mb-3">
+                <!--Tarjeta de filtro e info-->
+                <div class="container-flex mb-3" id="wwg-accordian">
+                    <div class="card">
+                        <div class="card-header" id="filtroHistorial-heading" style="background-color: white;">      
+                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#filtroHistorial" style="cursor:pointer;"><i class="fas fa-filter"></i>&nbsp;Búsqueda certificados generados</h5>
+                        </div>
+                        <div class="collapse show" id="filtroHistorial">
+                            <div class="card-text p-3">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="text" hidden id="inputDocenteModulo" name="docenteModulo">
+                                    <label for="buscar">Búsqueda por nombre de alumno</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control border border-ligth rounded-left" placeholder="Search" name="buscarAlumno" id="inputAlumno" onkeyup="filtraAlumno();">
+                                        <div class="input-group-btn border border-ligth rounded-right">
+                                            <button class="btn btn-default" style="cursor: context-menu;">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <table class="table table-borderless table-hover" id="listaAlumnos" style="height: 250px; display: -moz-groupbox;">
+                                        <thead>
+                                          <tr style="width: 100%; display: inline-table; height:60px; table-layout: fixed;">
+                                            <th style="width: 10%;">#</th>
+                                            <th style="width: 25%;">Nombre</th>
+                                            <th style="width: 19%;">Matrícula</th>
+                                            <th style="width: 25%;">Semestre</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody style="overflow-y: scroll; height: 200px; width: 95%; position: absolute;">
+                                                {% for al in alumnoS %}
+                                                {% csrf_token %}
+                                                <tr>
+                                                    <th scope="row" style="width: 5%;">{{ forloop.counter }}</th>
+                                                    <td hidden>{{ al.id_alumno }} <input name="id_alumnoL" type="text" value="{{ al.id_alumno }}"> </td>
+                                                    <td style="width: 30%;">{{ al.nombre_alumno }} <input hidden name="nombreAlumnoTabla" type="text" value="{{ al.nombre_alumno }}"> </td>
+                                                    <td style="width: 15%;">{{ al.num_matricula }}</td>
+                                                    <td style="width: 15%;">{{ al.semestre }}</td>
+                                                    <td style="width: 5%;"><a id="btnActa" type="button" class="btn btn-warning btn-block" style="color: white;" target="_blank"><i class="fas fa-eye"></i></a></td>
+                                                </tr>
+                                                {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Tarjeta del historial TODO:Eliminar-->
+                <div hidden class="container-flex mb-3" id="wwg-accordian">
+                    <div class="card">
+                        <div class="card-header" id="historial-heading" style="background-color: white; height: 63px;">      
+                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#historial" style="cursor:pointer; display: inline"><i class="fas fa-book"></i>&nbsp;Historial</h5>
+                        </div>
+                        <div class="collapse show" id="historial">
+                            <div class="card-text p-2">
+                                <table class="table table-borderless table-hover" style="height: 500px; display: -moz-groupbox;">
+                                    <thead >
+                                        <tr style="display: inline-table; height:60px; table-layout: fixed;">
+                                            <th scope="col" style="width: 65%;">Nombre</th>
+                                            <th scope="col" style="width: 11.12%;">Matrícula</th>
+                                            <th scope="col" style="width: 0%;">A</th>
+                                            <th scope="col" style="width: 0%;">R</th>
+                                            <th scope="col" style="width: 0%;">J</th>
+                                            <th scope="col">
+                                                <button type="button" class="btn btn-light btn-sm" data-toggle="popover" title="Nomenclatura" data-html="true" data-content="A - Asistencia <br>R - Retardo<br>J - Justificación<br>F - Falta">?</button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="overflow-y: scroll; height: 450px; width: 98.5%; position: absolute;">
+                                        {% for as in asistencia %}
+                                            {% for al in alumno %}
+                                                {% if as.id_alumno == al.id_alumno %}
+                                                    <tr>
+                                                        <td style="width: 80%;">{{ al.nombre_alumno }}</td> <!--Nombre-->
+                                                        <td style="width: 11%;">{{ al.num_matricula }} </td> <!--Matrícula-->
+                                                        {% if as.asistencia is True %}
+                                                            <td style="width: 0%; padding-top: 0; float: top;"> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="asistencia" checked disabled></td>
+                                                        {% else %}
+                                                            <td style="width: 0%; padding-top: 0;"> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="asistencia" disabled></td>
+                                                        {% endif %}
+                                                        
+                                                        {% if as.retardo is True %}
+                                                            <td style="width: 0%; padding-top: 0;" class="text-center"> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="retardo" checked disabled></td>
+                                                        {% else %}
+                                                            <td style="width: 0%; padding-top: 0;" class="text-center"> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="retardo" disabled></td>
+                                                        {% endif %}
+                                                        
+                                                        {% if as.justificacion is True %}
+                                                            <td style="width: 0%; padding-top: 0;" class="text-center"> &nbsp;&nbsp;<input type="checkbox" id="justificacion" checked disabled></td>
+                                                        {% else %}
+                                                            <td style="width: 0%; padding-top: 0;" class="text-center"> &nbsp;&nbsp;<input type="checkbox" id="justificacion" disabled></td>
+                                                        {% endif %}
+
+                                                        {% if as.falta is True %}
+                                                            <td class="text-center" style="display: inline;"> <span id="spanE" class="badge badge-pill badge-danger" style="margin-top: 54.5%; margin-left: 2%; font-size: 85%; padding-top: 13%;">F</span></td>
+                                                        {% else %}
+                                                            <td class="text-center" style="display: inline;"> <span  class="badge badge-pill" style="margin-top: 54.5%; margin-left: 2%; font-size: 85%; padding-top: 13%; color: white;">&nbsp;&nbsp;&nbsp;</span></td>
+                                                        {% endif %}
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% empty %}
+                                                    <tr>
+                                                        <td style="width: 10%;">
+                                                            <div class="alert alert-danger" role="alert">
+                                                                <div class="form-row">
+                                                                    <strong class="col-md-12 text-center">Ningún alumno correspondiente al grupo</strong>
+                                                                </div>
+                                                                <div class="form-row">
+                                                                    <p class="col-md-12 text-center">Seleccione un grupo o consúltelo con la institución.</p>
+                                                                </div>
+                                                            </div>  
+                                                        </td>
+                                                    </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

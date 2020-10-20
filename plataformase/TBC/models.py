@@ -8,9 +8,212 @@ class Alumno(models.Model):
     nombre_alumno = models.CharField(max_length=150) 
     num_matricula = models.CharField(max_length=150)
     curp_alumno = models.CharField(max_length=20) 
+    email = models.EmailField(max_length=254, null=True) #models.CharField(max_length=150)
+    tel_fijo = models.CharField(max_length=150, null=True)
+    tel_celular = models.CharField(max_length=150, null=True)
+    calle = models.CharField(max_length=150, null=True) #TODO: Eliminar
+    colonia = models.CharField(max_length=150, null=True) #TODO: Eliminar
+    num_int = models.CharField(max_length=150, null=True) #TODO: Eliminar
+    num_ext = models.CharField(max_length=150, null=True) #TODO: Eliminar
+    semestre = models.CharField(max_length=150)
+    tipo_secundaria = models.CharField(max_length=150, null=True)
+    acta_nacimiento = models.FileField(upload_to='Archivos/TBC', null=True)
+    curp_archivo = models.FileField(upload_to='Archivos/TBC', null=True)
+    certificado_secundaria = models.FileField(upload_to='Archivos/TBC', null=True)
+
+class Curso(models.Model):
+    id_curso = models.IntegerField(primary_key= True)
+    clave_curso = models.CharField(max_length=150)
+    nombre_curso = models.CharField(max_length=150)
+    semestre = models.IntegerField()
+    descripcion = models.CharField(max_length=150)
+    creditos = models.IntegerField()
+
+class Docente_curso(models.Model):
+    id_dc = models.AutoField(primary_key= True)
+    #id_curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    #id_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    id_curso = models.IntegerField()
+    id_docente = models.IntegerField()
+
+class Alumno_curso(models.Model):
+    id_ac = models.AutoField(primary_key= True)
+    id_dc = models.IntegerField()
+    id_alumno = models.IntegerField()
+    #TODO: Ver porqué no me elimina este registro al querer eliminar un alumno 
+    #Debido a esto comenté las foreignKey para que funcionara
+    #id_dc = models.ForeignKey(Docente_curso, on_delete=models.CASCADE)
+    #id_alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE)
+
+
+class Actividad_docente(models.Model):
+    id_actividad =  models.IntegerField(primary_key= True)#models.CharField(primary_key=True, max_length=300)
+    nombre_actividad = models.CharField(max_length=400)
+    unidad = models.IntegerField()
+    tipo_actividad = models.CharField(max_length=200)
+    tema = models.CharField(max_length=200)
+    subtema = models.CharField(max_length=200)
+    objetivo = models.CharField(max_length=500)
+    recurso = models.FileField(upload_to='Archivos/TBC')
+    rubrica = models.FileField(upload_to='Archivos/TBC')
+    valor_parcial = models.IntegerField()
+    fecha_hora_limite = models.CharField(max_length=50) 
+    fechaAct = models.CharField(max_length=200)
+    id_docente = models.IntegerField()
+    id_curso = models.IntegerField()
+
+class Entrega_actividad(models.Model):
+    id_entrega = models.AutoField(primary_key= True)
+    nombre_actividad = models.CharField(max_length=400)
+    calificacion = models.DecimalField(max_digits= 8,decimal_places=2, null=True)
+    retroalimentacion = models.CharField(max_length=500, null=True)
+    archivo =  models.CharField(max_length=500) #models.FileField(upload_to='Archivos/TBC')
+    fecha_hora_subida = models.CharField(max_length=50)
+    id_alumno = models.IntegerField()
+    id_actividad = models.IntegerField()
+    url = models.CharField(max_length=300)
+    comentario = models.CharField(max_length=500)
+    calificada = models.BooleanField()
+    entregada = models.BooleanField()
+    totalO = models.IntegerField()
+    totalO = models.CharField(max_length=500)
+    
+#Modelo de semestre
+class Semestre(models.Model):
+    id_semestre = models.AutoField(primary_key=True)
+    nombre_semestre = models.CharField(max_length=10)
+'''
+class Modulo(models.Model):
+    id_modulo = models.CharField(primary_key=True, max_length=30)
+    id_semestre = models.ForeignKey(Semestre,on_delete=models.CASCADE)
+    nombre_modulo = models.CharField(max_length=100)
+    objetivo_modulo = models.CharField(max_length=400)
+    competencias_modulo = models.CharField(max_length=500)
+    programa_modulo = models.FileField(upload_to='programas/TBC')
+'''
+#Modelo de Area Disciplinar
+class Area_disciplinar(models.Model):
+    id_areadisciplinar = models.IntegerField(primary_key=True)
+    nombre_areadisciplinar = models.CharField(max_length=200)
+
+#Modelo de modulo
+class Modulo(models.Model):
+    id_modulo = models.AutoField(primary_key=True)
+    nombre_modulo = models.CharField(max_length=150)
+    pdf_modulo = models.FileField(upload_to='Archivos/modulos')
+    semestre_modulo = models.ForeignKey(Semestre, on_delete=models.CASCADE)
+    areadisciplinar_modulo = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE)
+    fecha_alta_modulo = models.DateField(auto_now=True)
+    creditos_modulo = models.IntegerField()  
+
+#Modelo de unidades de modulo
+class Unidad_modulo(models.Model):
+    id_unidad = models.AutoField(primary_key=True)
+    id_modulo_unidad = models.ForeignKey(Modulo, on_delete=models.CASCADE)
+    nombre_unidad = models.CharField(max_length=500)
+    proposito_unidad = models.CharField(max_length=800)
+
+#Modelo de aprendizaje esperado
+class Aprendizaje_esperado_modulo(models.Model):
+    id = models.AutoField(primary_key=True)
+    unidad_aprendizaje_esperado = models.ForeignKey(Unidad_modulo, on_delete=models.CASCADE)
+    modulo_aprendizaje_esperado = models.ForeignKey(Modulo, on_delete=models.CASCADE)
+    aprendizaje_esperado = models.CharField(max_length=700)
+
+class Archivo(models.Model):
+    id_archivo = models.IntegerField(primary_key= True)
+    nombre_archivo = models.CharField(max_length=500)
+    archivo = models.FileField(upload_to='TBC/archivos', blank=True, null=True) #models.CharField(max_length=500, null=True)
+    descripcion = models.CharField(max_length=500, null=True)
+    tipo_archivo = models.CharField(max_length=100)
+    id_actividad = models.IntegerField(null=True)
+    url = models.CharField(max_length=500)
+    id_alumno = models.IntegerField(null=True)
+    id_docente = models.IntegerField(null=True)
+
+class Notificacion_act(models.Model):
+    id_notificacion = models.AutoField(primary_key= True)
+    id_dc = models.IntegerField()
+    id_actividad = models.IntegerField()
+    mensaje = models.CharField(max_length=500)
+    tipo = models.IntegerField()
+
+class Notificacion_act_alumno(models.Model):
+    id_notificacion_alumno = models.AutoField(primary_key= True)
+    id_alumno = models.IntegerField()
+    status = models.IntegerField()
+    id_notificacion = models.CharField(max_length=500)
+    id_dc = models.IntegerField()
+
+class Notificacion_act_docente(models.Model):
+    id_notificacion_docente = models.AutoField(primary_key= True)
+    id_docente = models.IntegerField()
+    status = models.IntegerField()
+    id_notificacion = models.CharField(max_length=500)
+    id_alumno = models.IntegerField()
+    id_dc = models.IntegerField()
+    tipo = models.IntegerField()
+
+class Notificacion_mod(models.Model):
+    id_notificacion = models.AutoField(primary_key= True)
+    id_curso = models.IntegerField()
+    mensaje = models.CharField(max_length=500)
+    tipo = models.IntegerField()
+
+class Notificacion_mod_docente(models.Model):
+    id_notificacion_mod_doc = models.AutoField(primary_key= True)
+    id_docente = models.IntegerField()
+    status = models.IntegerField()
+    id_notificacion = models.IntegerField()
+    fecha_hora = models.CharField(max_length=500)
+
+class Asistencia(models.Model):
+    id_asistencia = models.AutoField(primary_key = True)
+    cct  = models.CharField(max_length = 200)
+    fecha = models.CharField(max_length = 100)
+    semestre = models.IntegerField()
+    id_alumno = models.IntegerField()
+    id_dc = models.IntegerField()
+    asistencia = models.BooleanField()
+    retardo = models.BooleanField()
+    justificacion = models.BooleanField()
+    falta = models.BooleanField()
+
+#Modelo de docente
+class Docente(models.Model):
+    id_docente = models.IntegerField(primary_key= True)
+    nombres_docente = models.CharField(max_length=150)
+    apellidos_docente = models.CharField(max_length=150, null=True)
+    edad_docente = models.IntegerField()
+    email = models.CharField(max_length=150)
+    clave_docente = models.CharField(max_length=150)
+    cct = models.CharField(max_length=50) 
+    curp_docente =  models.CharField(max_length=20)
+    rfc_docente =  models.CharField(max_length=30)
+    tel_fijo = models.CharField(max_length=150, null=True)
+    tel_cel = models.CharField(max_length=150)
+    nombre_escuela = models.CharField(max_length=150)
+    areadisciplinar_docente = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE, null=True)
+    domicilio = models.CharField(max_length=500, null=True)
+    num_empleado = models.CharField(max_length=150, null=True)
+    curriculum = models.FileField(upload_to='TBC/Archivos', blank=True, null=True)
+    perfil_profesional = models.CharField(max_length=200, null=True)
+    maximo_grado = models.CharField(max_length=200, null=True)
+    localidad = models.CharField(max_length=200, null=True)
+
+#Comienzan modelos de la segunda versión
+
+class Estadistica_modulo(models.Model):
+    id_estadistica_modulo = models.AutoField(primary_key = True)
+    nombre_escuela = models.CharField(max_length=150)
+    cct = models.CharField(max_length=50) 
+    id_alumno = models.IntegerField(null=True)
+    nombre_alumno = models.CharField(max_length=150) 
+    num_matricula = models.CharField(max_length=150)
+    curp_alumno = models.CharField(max_length=20, null=True) 
     mat1p1 = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     mat1p2 = models.DecimalField(max_digits= 8,decimal_places=2, null=True) 
-    mat1pr = models.DecimalField(max_digits= 8,decimal_places=2, null=True) 
+    mat1p3 = models.DecimalField(max_digits= 8,decimal_places=2, null=True) 
     prom_mat1 = models.CharField(max_length=20, null=True) 
     q1p1 = models.DecimalField(max_digits= 8,decimal_places=2, null=True) 
     q1p2 = models.DecimalField(max_digits= 8,decimal_places=2, null=True)
@@ -214,195 +417,3 @@ class Alumno(models.Model):
     prom_ap6 = models.CharField(max_length=20, null=True) 
     promedio_general_6 = models.CharField(max_length=20, null=True)
     promedio_final = models.DecimalField(max_digits= 8,decimal_places=2, null=True)
-    email = models.EmailField(max_length=254, null=True) #models.CharField(max_length=150)
-    tel_fijo = models.CharField(max_length=150, null=True)
-    tel_celular = models.CharField(max_length=150, null=True)
-    calle = models.CharField(max_length=150, null=True) #TODO: Eliminar
-    colonia = models.CharField(max_length=150, null=True) #TODO: Eliminar
-    num_int = models.CharField(max_length=150, null=True) #TODO: Eliminar
-    num_ext = models.CharField(max_length=150, null=True) #TODO: Eliminar
-    semestre = models.CharField(max_length=150)
-    tipo_secundaria = models.CharField(max_length=150, null=True)
-    acta_nacimiento = models.FileField(upload_to='Archivos/TBC', null=True)
-    curp_archivo = models.FileField(upload_to='Archivos/TBC', null=True)
-    certificado_secundaria = models.FileField(upload_to='Archivos/TBC', null=True)
-
-class Curso(models.Model):
-    id_curso = models.IntegerField(primary_key= True)
-    clave_curso = models.CharField(max_length=150)
-    nombre_curso = models.CharField(max_length=150)
-    semestre = models.IntegerField()
-    descripcion = models.CharField(max_length=150)
-    creditos = models.IntegerField()
-
-class Docente_curso(models.Model):
-    id_dc = models.AutoField(primary_key= True)
-    #id_curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    #id_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
-    id_curso = models.IntegerField()
-    id_docente = models.IntegerField()
-
-class Alumno_curso(models.Model):
-    id_ac = models.AutoField(primary_key= True)
-    id_dc = models.IntegerField()
-    id_alumno = models.IntegerField()
-    #TODO: Ver porqué no me elimina este registro al querer eliminar un alumno 
-    #Debido a esto comenté las foreignKey para que funcionara
-    #id_dc = models.ForeignKey(Docente_curso, on_delete=models.CASCADE)
-    #id_alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE)
-
-
-class Actividad_docente(models.Model):
-    id_actividad =  models.IntegerField(primary_key= True)#models.CharField(primary_key=True, max_length=300)
-    nombre_actividad = models.CharField(max_length=400)
-    unidad = models.IntegerField()
-    tipo_actividad = models.CharField(max_length=200)
-    tema = models.CharField(max_length=200)
-    subtema = models.CharField(max_length=200)
-    objetivo = models.CharField(max_length=500)
-    recurso = models.FileField(upload_to='Archivos/TBC')
-    rubrica = models.FileField(upload_to='Archivos/TBC')
-    valor_parcial = models.IntegerField()
-    fecha_hora_limite = models.CharField(max_length=50) 
-    fechaAct = models.CharField(max_length=200)
-    id_docente = models.IntegerField()
-    id_curso = models.IntegerField()
-
-class Entrega_actividad(models.Model):
-    id_entrega = models.AutoField(primary_key= True)
-    nombre_actividad = models.CharField(max_length=400)
-    calificacion = models.DecimalField(max_digits= 8,decimal_places=2, null=True)
-    retroalimentacion = models.CharField(max_length=500, null=True)
-    archivo =  models.CharField(max_length=500) #models.FileField(upload_to='Archivos/TBC')
-    fecha_hora_subida = models.CharField(max_length=50)
-    id_alumno = models.IntegerField()
-    id_actividad = models.IntegerField()
-    url = models.CharField(max_length=300)
-    comentario = models.CharField(max_length=500)
-    calificada = models.BooleanField()
-    entregada = models.BooleanField()
-    totalO = models.IntegerField()
-    totalO = models.CharField(max_length=500)
-    
-#Modelo de semestre
-class Semestre(models.Model):
-    id_semestre = models.AutoField(primary_key=True)
-    nombre_semestre = models.CharField(max_length=10)
-'''
-class Modulo(models.Model):
-    id_modulo = models.CharField(primary_key=True, max_length=30)
-    id_semestre = models.ForeignKey(Semestre,on_delete=models.CASCADE)
-    nombre_modulo = models.CharField(max_length=100)
-    objetivo_modulo = models.CharField(max_length=400)
-    competencias_modulo = models.CharField(max_length=500)
-    programa_modulo = models.FileField(upload_to='programas/TBC')
-'''
-#Modelo de Area Disciplinar
-class Area_disciplinar(models.Model):
-    id_areadisciplinar = models.IntegerField(primary_key=True)
-    nombre_areadisciplinar = models.CharField(max_length=200)
-
-#Modelo de modulo
-class Modulo(models.Model):
-    id_modulo = models.AutoField(primary_key=True)
-    nombre_modulo = models.CharField(max_length=150)
-    pdf_modulo = models.FileField(upload_to='Archivos/modulos')
-    semestre_modulo = models.ForeignKey(Semestre, on_delete=models.CASCADE)
-    areadisciplinar_modulo = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE)
-    fecha_alta_modulo = models.DateField(auto_now=True)
-    creditos_modulo = models.IntegerField()  
-
-#Modelo de unidades de modulo
-class Unidad_modulo(models.Model):
-    id_unidad = models.AutoField(primary_key=True)
-    id_modulo_unidad = models.ForeignKey(Modulo, on_delete=models.CASCADE)
-    nombre_unidad = models.CharField(max_length=500)
-    proposito_unidad = models.CharField(max_length=800)
-
-#Modelo de aprendizaje esperado
-class Aprendizaje_esperado_modulo(models.Model):
-    id = models.AutoField(primary_key=True)
-    unidad_aprendizaje_esperado = models.ForeignKey(Unidad_modulo, on_delete=models.CASCADE)
-    modulo_aprendizaje_esperado = models.ForeignKey(Modulo, on_delete=models.CASCADE)
-    aprendizaje_esperado = models.CharField(max_length=700)
-
-class Archivo(models.Model):
-    id_archivo = models.IntegerField(primary_key= True)
-    nombre_archivo = models.CharField(max_length=500)
-    archivo = models.FileField(upload_to='TBC/archivos', blank=True, null=True) #models.CharField(max_length=500, null=True)
-    descripcion = models.CharField(max_length=500, null=True)
-    tipo_archivo = models.CharField(max_length=100)
-    id_actividad = models.IntegerField(null=True)
-    url = models.CharField(max_length=500)
-    id_alumno = models.IntegerField(null=True)
-    id_docente = models.IntegerField(null=True)
-
-class Notificacion_act(models.Model):
-    id_notificacion = models.AutoField(primary_key= True)
-    id_dc = models.IntegerField()
-    id_actividad = models.IntegerField()
-    mensaje = models.CharField(max_length=500)
-    tipo = models.IntegerField()
-
-class Notificacion_act_alumno(models.Model):
-    id_notificacion_alumno = models.AutoField(primary_key= True)
-    id_alumno = models.IntegerField()
-    status = models.IntegerField()
-    id_notificacion = models.CharField(max_length=500)
-    id_dc = models.IntegerField()
-
-class Notificacion_act_docente(models.Model):
-    id_notificacion_docente = models.AutoField(primary_key= True)
-    id_docente = models.IntegerField()
-    status = models.IntegerField()
-    id_notificacion = models.CharField(max_length=500)
-    id_alumno = models.IntegerField()
-    id_dc = models.IntegerField()
-    tipo = models.IntegerField()
-
-class Notificacion_mod(models.Model):
-    id_notificacion = models.AutoField(primary_key= True)
-    id_curso = models.IntegerField()
-    mensaje = models.CharField(max_length=500)
-    tipo = models.IntegerField()
-
-class Notificacion_mod_docente(models.Model):
-    id_notificacion_mod_doc = models.AutoField(primary_key= True)
-    id_docente = models.IntegerField()
-    status = models.IntegerField()
-    id_notificacion = models.IntegerField()
-    fecha_hora = models.CharField(max_length=500)
-
-class Asistencia(models.Model):
-    id_asistencia = models.AutoField(primary_key = True)
-    cct  = models.CharField(max_length = 200)
-    fecha = models.CharField(max_length = 100)
-    semestre = models.IntegerField()
-    id_alumno = models.IntegerField()
-    id_dc = models.IntegerField()
-    asistencia = models.BooleanField()
-    retardo = models.BooleanField()
-    justificacion = models.BooleanField()
-    falta = models.BooleanField()
-
-#Modelo de docente
-class Docente(models.Model):
-    id_docente = models.IntegerField(primary_key= True)
-    nombres_docente = models.CharField(max_length=150)
-    apellidos_docente = models.CharField(max_length=150, null=True)
-    edad_docente = models.IntegerField()
-    email = models.CharField(max_length=150)
-    clave_docente = models.CharField(max_length=150)
-    cct = models.CharField(max_length=50) 
-    curp_docente =  models.CharField(max_length=20)
-    rfc_docente =  models.CharField(max_length=30)
-    tel_fijo = models.CharField(max_length=150, null=True)
-    tel_cel = models.CharField(max_length=150)
-    nombre_escuela = models.CharField(max_length=150)
-    areadisciplinar_docente = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE, null=True)
-    domicilio = models.CharField(max_length=500, null=True)
-    num_empleado = models.CharField(max_length=150, null=True)
-    curriculum = models.FileField(upload_to='TBC/Archivos', blank=True, null=True)
-    perfil_profesional = models.CharField(max_length=200, null=True)
-    maximo_grado = models.CharField(max_length=200, null=True)
-    localidad = models.CharField(max_length=200, null=True)

@@ -1,9 +1,7 @@
 {% extends 'baseTBC.html'%}
 {% load static %}
 {% block content%}
-    <!-- En caso de que sea una institución (1) como usuario, solo se muestra el historial de asistencia -->
-    {% if usuario.tipo_usuario == "1" %}
-    <title>Historial de asistencia</title>
+    <title>Subir estadística</title>
         <div class="form-row">
             <div class="col-md-12">
                 <!--Tarjeta de filtro e info-->
@@ -18,6 +16,7 @@
                                     {% csrf_token %}
                                     <div class="form-row">
                                         <div class="col-md-2">
+                                            <label for="">Semestre</label>
                                             <select class="selectpicker" data-live-search="true" data-width="100%" data-size="4" title="Semestre"  id="selectSemestreH" onchange="seleccionSemestreH();" required>
                                                 <option value="1">1er semestre</option>
                                                 <option value="2">2do semestre</option>
@@ -28,8 +27,9 @@
                                             </select>
                                         </div>
                                         <div class="col-md-3">
-                                            <select class="selectpicker" data-live-search="true" data-width="100%" data-size="4" title="Materia"  id="selectMateriaH" onchange="seleccionMateriaH();" required>
-                                               
+                                            <label for="">Módulo</label>
+                                            <select class="selectpicker" data-live-search="true" data-width="100%" data-size="4" title="Módulo"  id="selectMateriaH" onchange="seleccionMateriaH();" required>
+                                                <option value="6">Matemáticas, fuerzas y movimiento</option>
                                                 {% for doc in docente %}
                                                     {% for mod in modulo %}
                                                         {% for docmod in docenteCurso %}
@@ -42,14 +42,18 @@
                                                     
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
-                                            <select class="selectpicker" data-live-search="true" data-width="100%" data-size="4" title="Grupo"  id="selectGrupoH" onchange="seleccionGrupoH();" required>
-                                                {% for al in alumno %}
-                                                    <option value="{{ al.cct }}">{{ al.cct }}</option>
-                                                {% endfor %}
+                                        <div class="col-md-2">
+                                            <label for="">Tipo</label>
+                                            <select class="selectpicker" data-live-search="true" data-width="100%" data-size="4" title="Tipo"  id="selectGrupoH" onchange="seleccionGrupoH();" required>
+                                                <option value="4">Calificaciones</option>
+                                                <option value="5">Asistencia</option>
+                                                <option value="6">Exámenes</option>
+                                                <option value="4">índice reprobación</option>
+                                                <option value="5">Becarios</option>
                                             </select>
                                         </div>
                                         <div class="col-md-2">
+                                            <label for="">Fecha</label>
                                             <input id="datetimepicker" type="text" class="form-control border border-ligth text-center" name="fechaH" autocomplete="off" required>
                                             <script>
                                                 jQuery('#datetimepicker').datetimepicker();
@@ -61,7 +65,13 @@
                                                     });
                                             </script>
                                         </div>
+                                        <div class="col-md-1">
+                                            <label for="">Subir archivo</label>
+                                            <input type="file" name="acta" id="inputActaF" style="display: none;" />
+                                            <button id="btnActaArchivo" type="button" class="btn btn-outline-primary btn-block" onclick="document.getElementById('inputActaF').click();"><i class="fas fa-upload"></i></button>
+                                        </div>
                                         <div class="col-md-2">
+                                            <label for="">&nbsp;</label>
                                             <form method="post">
                                                 {% csrf_token %}
                                                 <div class="col-md-12 mb-3">
@@ -69,7 +79,7 @@
                                                     <input type="text" id="inputMateriaH" name="materiaH" hidden>
                                                     <input type="text" id="inputGrupoH" name="grupoH" hidden>
                                                     <input type="text" name="bandera" value="False" hidden>
-                                                    <button class="btn btn-outline-info btn-block" type="submit" >Buscar</button>
+                                                    <button class="btn btn-outline-info btn-block" type="submit" >Subir</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -83,21 +93,19 @@
                 <div class="container-flex mb-3" id="wwg-accordian">
                     <div class="card">
                         <div class="card-header" id="historial-heading" style="background-color: white; height: 63px;">      
-                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#historial" style="cursor:pointer; display: inline"><i class="fas fa-book"></i>&nbsp;Historial</h5>
+                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#historial" style="cursor:pointer; display: inline"><i class="fas fa-book"></i>&nbsp;Archivos subidos</h5>
                         </div>
                         <div class="collapse show" id="historial">
                             <div class="card-text p-2">
-                                <table class="table table-borderless table-hover" style="height: 500px; display: -moz-groupbox;">
+                                <table class="table table-borderless " style="height: 500px; display: -moz-groupbox;">
                                     <thead >
                                         <tr style="display: inline-table; height:60px; table-layout: fixed;">
-                                            <th scope="col" style="width: 78.7%;">Nombre</th>
-                                            <th scope="col" style="width: 11.12%;">Matrícula</th>
-                                            <th scope="col" style="width: 0%;">A</th>
-                                            <th scope="col" style="width: 0%;">R</th>
-                                            <th scope="col" style="width: 0%;">J</th>
-                                            <th scope="col">
-                                                <button type="button" class="btn btn-light btn-sm" data-toggle="popover" title="Nomenclatura" data-html="true" data-content="A - Asistencia <br>R - Retardo<br>J - Justificación<br>F - Falta">?</button>
-                                            </th>
+                                            <th scope="col" style="width: 5%;">#</th>
+                                            <th scope="col" style="width: 30%;">Nombre</th>
+                                            <th scope="col" style="width: 20%;">Archivo</th>
+                                            <th scope="col" style="width: 20%;">Peso</th>
+                                            <th scope="col" style="width: 20%;">Tipo</th>
+                                            <th scope="col" style="width: 20%;">Fecha</th>
                                         </tr>
                                     </thead>
                                     <tbody style="overflow-y: scroll; height: 450px; width: 98.5%; position: absolute;">
@@ -138,10 +146,10 @@
                                                         <td style="width: 10%;">
                                                             <div class="alert alert-danger" role="alert">
                                                                 <div class="form-row">
-                                                                    <strong class="col-md-12 text-center">Ningún alumno correspondiente al grupo</strong>
+                                                                    <strong class="col-md-12 text-center">Ningún archivo ha sido subido aun</strong>
                                                                 </div>
                                                                 <div class="form-row">
-                                                                    <p class="col-md-12 text-center">Seleccione un grupo o consúltelo con la institución.</p>
+                                                                    <p class="col-md-12 text-center">Llene el formulario y seleccione un archivo para subirlo.</p>
                                                                 </div>
                                                             </div>  
                                                         </td>
@@ -149,12 +157,11 @@
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                                <button class="btn btn-outline-success btn-block" type="submit" >Guardar</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    {% endif %} 
+   
 {% endblock %}

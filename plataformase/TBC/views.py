@@ -14,24 +14,17 @@ from django.utils import formats
 from django.core import serializers
 from django.http import JsonResponse
 from django.db.models import Q
-#from django.utils import six 
 from django.contrib.auth.hashers import make_password
-
-# from django.apps import apps
-# CustomUser  = apps.get_model('login', CustomUser)
 from login.models import CustomUser, UsuarioInstitucion
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 global idDocente
 global idAlumnoI
-#idAlumnoI = 3409
 
+#Comienza sección de vistas de la primer versión
 
-'''
-	Inicio de views de material didactico
-'''
+#Función para el control de material didáctico
 
 def catalogo_material_didactico(request,id):
 	if not request.user.is_authenticated:
@@ -58,19 +51,8 @@ def catalogo_material_didactico(request,id):
 					else:
 						return render(request, 'material_didactico.html')
 
-'''
-	Fin de views de material didactico
-'''
+#Función para devolver la homePage
 
-'''
-Función de prueba TODO: Borrarla
-'''
-def resultadosTBC(request):
-	return render(request,'resultadosTBC.html')
-
-'''
-Función para devolver la homePage
-'''
 def homePage(request):
 	if not request.user.is_authenticated:
             #return render(request,'../../login/templates/registration/login.html')
@@ -127,9 +109,8 @@ def homePage(request):
 
 	return render(request, 'homePage.html', {'usuario':usuarioLogueado, 'notificaciones': NotificacionesDocente, 'notificacion':NotificacionesDocenteModulo, 'docente':Docentes, 'curso':Cursos, 'alumno':Alumnos, 'alumnoI':AlumnosI, 'alumnoD':AlumnosD })
 
-'''
-Función para consultar los alumnos y hacer actualización de estos
-'''
+#Función para consultar los alumnos y hacer actualización de estos
+
 def consultaAlumnos(request):
 	Alumnos = Alumno.objects.filter(cct = request.user.last_name) #Alumno.objects.all()
 	Usuarios = CustomUser.objects.all()
@@ -266,9 +247,8 @@ def consultaAlumnos(request):
 			sweetify.success(request, 'Se actualizó', text='El alumno fue actualizado exitosamente', persistent='Ok', icon="success")
 	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos})
 
-'''
-Función para eliminar un alumnos, dado un id (id como parámetro)
-'''
+#Función para eliminar un alumnos, dado un id (id como parámetro)
+
 def delete_alumno(request, id):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -282,9 +262,8 @@ def delete_alumno(request, id):
 		sweetify.error(request, 'No se eliminó', text='Ocurrió un error', persistent='Ok', icon="error")
 	return redirect('TBC:consultaAlumnos')
 
-'''
-Función para consultar el historial académico de un alumno o de un grupo
-'''
+#Función para consultar el historial académico de un alumno o de un grupo
+
 def historialAcademico(request):
 	Alumnos = Alumno.objects.all()
 	AlumnoSel = Alumno.objects.all()
@@ -324,9 +303,8 @@ def historialAcademico(request):
 			AlumnosGrupo = Alumno.objects.filter(semestre = grupoSel)
 	return render(request, 'historialAcademico.html', {'usuario':usuarioLogueado, "alumno":Alumnos, "alumnoSel":AlumnoSel, 'alumnoGrupo':AlumnosGrupo }) #, "prueba":list_of_hashes})
 
-'''
-Función para realizar el pase de lista
-'''
+#Función para realizar el pase de lista
+
 def paseLista(request):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -366,8 +344,8 @@ def paseLista(request):
 		Docentes = Docente.objects.filter(id_docente = idDocente)
 		DocenteCursos = Docente_curso.objects.filter(id_docente = idDocente)
 	except:
-		Docentes = None
-		DocenteCursos = None
+		Docentes = Docente.objects.all()
+		DocenteCursos = Docente_curso.objects.all()
 
 	if request.method == 'POST':
 		bandera = request.POST['bandera']
@@ -439,9 +417,8 @@ def paseLista(request):
 	return render(request, 'paseLista.html', {'usuario':usuarioLogueado, "alumno":Alumnos, "alumnoSel":AlumnoSel, 'docente':Docentes, 'docenteCurso':DocenteCursos, 'modulo':Modulos, 'asistencia':AsistenciasG, 'alumnoSelM':AlumnoSelM, 'alumnoCurso':alumnoCurso}) #, "prueba":list_of_hashes})
 
 
-'''
-Función para consultar y actualizar docentes
-'''
+#Función para consultar y actualizar docentes
+
 def consultaDocentes(request):
 	Docentes = Docente.objects.filter(cct = request.user.last_name) #Docente.objects.all()
 	Archivos = Archivo.objects.all()
@@ -547,9 +524,8 @@ def consultaDocentes(request):
 			sweetify.success(request, 'Se actualizó', text='El docente fue actualizado exitosamente', persistent='Ok', icon="success")
 	return render(request, 'consultaDocentes.html', {'usuario':usuarioLogueado, "docente":Docentes, 'archivo':Archivos, })
 
-'''
-Función para eliminar un docente dado su id (id como parámetro)
-'''
+#Función para eliminar un docente dado su id (id como parámetro)
+
 def delete_docente(request, id):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -563,9 +539,8 @@ def delete_docente(request, id):
 		sweetify.error(request, 'No se eliminó', text='El docente aun tiene cursos relacionados', persistent='Ok', icon="error")
 	return redirect('TBC:consultaDocentes')
 
-'''
-Función para mostrar las actividades relacionadas al docente logeado
-'''
+#Función para mostrar las actividades relacionadas al docente logeado
+
 def actividadesAprendizaje(request):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -606,9 +581,8 @@ def actividadesAprendizaje(request):
 	return render(request, 'actividadesAprendizaje.html', {'usuario':usuarioLogueado, 'docente':Docentes, 'docenteCurso':DocenteCursos, 'curso':Cursos, 'modulo':Modulos,'actividad_docente': ActividadDocente, 
 		'notificaciones':NotificacionAct, 'notificacion': NotificacionActDocente, 'entregas':Entregas }) 
 
-'''
-Función para insertar una actividad, datos y archivos
-'''
+#Función para insertar una actividad, datos y archivos
+
 def nuevaActividad(request):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -843,9 +817,8 @@ def actividadD(request, id):
 
 	return render(request, 'actividadDocente.html', {'usuario':usuarioLogueado, 'actividad':ActividadDocente, 'docente':Docentes, 'alumno':Alumnos, 'entrega':Entregas , 'archivo':Archivos,}) 
 
-'''
-Función para eliminar un archivo dado su id (id como parámetro)
-'''
+#Función para eliminar un archivo dado su id (id como parámetro)
+
 def delete_archivo(request, idAct, tipo, name):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -863,9 +836,8 @@ def delete_archivo(request, idAct, tipo, name):
 
 	return redirect('/TBC/actividad-docente/'+idAct)
 
-'''
-Función para eliminar una actividad dada su id (id como parámetro)
-'''
+#Función para eliminar una actividad dada su id (id como parámetro)
+
 def delete_actividad(request, id):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -890,10 +862,8 @@ def delete_actividad(request, id):
 
 	return redirect('TBC:actividadesAprendizaje')
 
+#Función para retroalimentar la actividad entregada por el alumno
 
-'''
-Función para retroalimentar la actividad entregada por el alumno
-'''
 def revisarActividad(request, id, idAlumno):
 	ActividadDocente = Actividad_docente.objects.get(id_actividad = id)
 	Archivos = Archivo.objects.filter(id_actividad = id)
@@ -948,9 +918,8 @@ def revisarActividad(request, id, idAlumno):
 		return redirect('/TBC/actividad-docente/'+id)
 	return render(request, 'revisarActividad.html', {'usuario':usuarioLogueado, 'actividad':ActividadDocente, 'archivo':Archivos, 'alumno':AlumnoS, 'entrega':Entrega, }) 
 
-'''
-Función para consultar los cursos y actividades del alumno logeado
-'''
+#Función para consultar los cursos y actividades del alumno logeado
+
 def actividadAlumno (request, id):
 	AlumnoI = Alumno.objects.get(id_alumno = id)
 	AlumnoCursos = Alumno_curso.objects.filter(id_alumno = id)
@@ -993,9 +962,8 @@ def actividadAlumno (request, id):
 		print('kaka')
 	return render(request, 'actividadAlumno.html', {'docenteCurso':DocenteCurso,'usuario':usuarioLogueado, 'alumno':AlumnoI, 'alumnoCurso':AlumnoCursos, 'curso':Cursos,'modulo':Modulos ,'actividad_docente': ActividadAlumno, 'notificaciones':NotificacionAct, 'notificacion':NotificacionActAalumno,})
 
-'''
-Función para la funcionalidad de toma de lista
-'''
+#Función para la funcionalidad de toma de lista
+
 def ListasAsistencias(request):
 	#La action del form en paseLista.html ejecuta un POST a la URL ligada a esta view
 	if request.method == 'POST':
@@ -1065,7 +1033,9 @@ def ListasAsistencias(request):
 		return response
 
 
-''' ================= SECCION DE LAS VIEWS PARA EL MANEJO DE MODULOS EN TBC =========================''' 
+'''
+	Inicio de la sección de vistas para el control de módulos
+'''
 def nuevoModulo(request):
 	semestres = Semestre.objects.all()
 	areas_disc = Area_disciplinar.objects.all()
@@ -1146,9 +1116,12 @@ def getPropUnidad(request):
 		propUnidad = serializers.serialize("json",Unidad_modulo.objects.filter(Q(id_unidad = request.GET.get('unidad')) & Q(id_modulo_unidad=request.GET.get('modulo'))))
 		return JsonResponse(propUnidad,safe=False)
 		
-''' ================= FINAL DE LA SECCION DE LAS VIEWS PARA EL MANEJO DE MODULOS EN TBC =========================''' 
+'''
+	Fin de la sección de vistas para el control de módulos
+''' 
 
 #Función para realizar la entrega por parte del alumno
+
 def entregaAlumno(request, id, idAlumno):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -1285,10 +1258,8 @@ def entregaAlumno(request, id, idAlumno):
 
 	return render(request, 'entregaAlumno.html', {'usuario':usuarioLogueado, 'actividad':ActividadDocente, 'docente':Docentes, 'alumno':Alumnos, 'entrega':Entregas , 'archivo':Archivos, 'curso':Cursos, 'modulo':Modulos })#'entregaA':Entrega}) 
 
+#Función para relacionar un módulo con un docente y ese módulo-docente con un grupo de alumnos (por semestres)
 
-'''
-Función para relacionar un módulo con un docente y ese módulo-docente con un grupo de alumnos (por semestres)
-'''
 def relacionarModulo(request):
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
@@ -1378,4 +1349,27 @@ def relacionarModulo(request):
 
 	return render(request, 'relacionarModulo.html', {'usuario':usuarioLogueado, 'docente':Docentes, 'modulo':Modulos, 'alumno':Alumnos, 'docenteModulo':DocenteModulo }) 
 
-#Fin
+'''
+	Incicia sección de vistas de prueba TODO: Eliminarlas al final
+'''
+def generarCertificado(request):
+	alumno = Alumno.objects.all()
+	alumnoS = Alumno.objects.filter(id_alumno=1)
+	return render(request, 'generarCertificado.html', {'alumno':alumno, 'alumnoS':alumnoS})
+
+def materialDidactico(request):
+	return render(request, 'materialDidactico.html', {})
+
+def subirEstadistica(request):
+	return render(request, 'subirEstadistica.html', {})
+
+def estadistica(request):
+	return render(request, 'estadistica.html', {})
+
+'''
+	Fin de la ección de vistas de prueba TODO: Eliminarlas al final
+'''
+
+#Fin de Vistas de sección de vistas de la primer versión
+
+#Comienza sección de vistas de la segunda versión
