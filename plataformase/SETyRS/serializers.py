@@ -8,5 +8,5 @@ class LeadSerializer(serializers.ModelSerializer):
 
 class estampadosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lead
-        fields = ('id', 'name', 'email', 'message')
+        model = estampados
+        fields = ('id', 'nombre', 'descripcion', 'hashInfura', 'hash', 'blockHash', 'blockNumber')

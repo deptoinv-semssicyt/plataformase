@@ -22,7 +22,7 @@ class App extends Component {
       account: null,
       estampados: {
         nombre: "Admisión de trámite",
-        descripción: "Prueba",
+        descripcion: "Prueba",
         hashInfura: null,
         hash: null,
         blockHash: null,
@@ -54,7 +54,7 @@ class App extends Component {
       this.setState({ contract })
       const Hash = await contract.methods.get().call()
       this.setState({ Hash })
-      console.log(Hash,networkId)
+      // console.log(Hash,networkId)
     } else {
       window.alert('Smart contract not deployed to detected network.')
     }
@@ -99,19 +99,19 @@ class App extends Component {
 
   async onSubmit(event) {
     event.preventDefault()
-    console.log("Submitting file to ipfs...")
-    console.log('buffer', this.state.buffer)
-    console.log(ipfs)
+    //console.log("Submitting file to ipfs...")
+    // console.log('buffer', this.state.buffer)
+    // console.log(ipfs)
     //ipfs method
     const result = await ipfs.add(this.state.buffer)
-    console.info("result ->", result)
-    console.log("AAA ->", this.state.account)
-    console.log("Estampados 1 -> ", this.state.estampados)
+    // console.info("result ->", result)
+    // console.log("AAA ->", this.state.account)
+    // console.log("Estampados 1 -> ", this.state.estampados)
     const blockchainIPFS = await this.state.contract.methods
       .set(result.path)
       .send({ from: this.state.account })
       .then((r) => {
-        console.log("r -> ", r)
+        // console.log("r -> ", r)
         this.setState(prevState => {
           let estampados = Object.assign({}, prevState.estampados);
           estampados.hashInfura = result.path, 
@@ -122,12 +122,12 @@ class App extends Component {
         })
         //return this.setState({ Hash: result[0].hash })
       })
-    console.log("Estampados 2 -> ", this.state.estampados)
-    var body = this.state.estampados
-    console.log(body)
+    // console.log("Estampados 2 -> ", this.state.estampados)
+    var body = JSON.stringify(this.state.estampados)
+    // console.log("body -> ", body)
     var csrftoken = this.getCookie('csrftoken');
     fetch('SETyRS/api/estampados', {
-      method : "POST",
+      method : 'POST',
       body : body,
       headers : {
         'Accept': 'application/json',
@@ -135,7 +135,7 @@ class App extends Component {
         'X-CSRFToken': csrftoken
       }
     }).then(res => res.json())
-      .then(data => data)
+      // .then(data => data)
       .catch((err) => { console.log(err) });
   }
 

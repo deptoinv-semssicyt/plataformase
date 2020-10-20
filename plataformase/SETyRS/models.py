@@ -13,7 +13,7 @@ class Lead(models.Model):
 
 class estampados(models.Model):
     nombre = models.CharField(max_length=50)#Nombre probablemente dado por nosotros
-    descripción = models.TextField()#Descripción de lo que contiene el documento a estampar
+    descripcion = models.TextField()#Descripción de lo que contiene el documento a estampar
     #userReg = models.ForeignKey(CustomUser, on_delete=models.CASCADE)#Usuario que realizó el estampado
     #fecha = models.DateField()#Fecha en que se realizó el estampado
     hashInfura = models.TextField()#Hash generado por infura
