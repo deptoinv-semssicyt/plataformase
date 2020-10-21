@@ -15,16 +15,19 @@ from django.core.files.storage import FileSystemStorage
 from django.core import serializers
 
 #PRUEBAS BLOCKCHAIN
-from .serializers import LeadSerializer, estampadosSerializer
+from .serializers import LeadSerializer, estampadosSerializer, ArchivosSinodalesSerializer
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 
 class LeadListCreate(generics.ListCreateAPIView):
-    print("AAAAAA")
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
+
+class ArchivosSinodalesListCreate(generics.ListCreateAPIView):
+    queryset = ArchivosSinodales.objects.all()
+    serializer_class = ArchivosSinodalesSerializer
 
 @api_view(['GET', 'POST'])
 def estampadosList(request):

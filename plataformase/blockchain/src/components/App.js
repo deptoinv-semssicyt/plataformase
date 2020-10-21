@@ -27,6 +27,7 @@ class App extends Component {
         hash: null,
         blockHash: null,
         blockNumber: null,
+        solicitud: 0
       }
     };
   }
@@ -63,7 +64,7 @@ class App extends Component {
   componentDidMount() {
     this.loadWeb3();
     this.loadBlockchainData();
-    fetch("SETyRS/api/lead")
+    fetch("SETyRS/api/ArchivosSinodales")
       .then(response => {
         if (response.status > 400) {
           return this.setState(() => {
@@ -139,10 +140,12 @@ class App extends Component {
       .catch((err) => { console.log(err) });
   }
 
-  captureFile(event) {
-    const file = event.target.files[0]
+  async captureFile(event) {
+    // const file = event.target.files[0]
+    let blob = await fetch(this.state.data[0].curriculum).then(r => r.blob());
+    // const file = this.state.data[0].curriculum
     const reader = new window.FileReader()
-    reader.readAsArrayBuffer(file)
+    reader.readAsArrayBuffer(blob)
     reader.onloadend = () => {
       this.setState({ buffer: Buffer(reader.result) })
       console.log('buffer', this.state.buffer)

@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     #PRUEBAS BLOCKCHAIN
     path('api/lead/', views.LeadListCreate.as_view()),#API Obtiene datos de tabla Lead
+    path('api/ArchivosSinodales/', views.ArchivosSinodalesListCreate.as_view()),#API Obtiene datos de tabla Archivos Sinodales
     path('api/estampados', views.estampadosList ),
 
     #urls del administrador SINODALES
