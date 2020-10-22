@@ -27,7 +27,7 @@ class App extends Component {
         hash: null,
         blockHash: null,
         blockNumber: null,
-        solicitud: 0
+        solicitud: null
       }
     };
   }
@@ -64,7 +64,8 @@ class App extends Component {
   componentDidMount() {
     this.loadWeb3();
     this.loadBlockchainData();
-    fetch("SETyRS/api/ArchivosSinodales")
+    this.captureFile()
+    /*fetch("SETyRS/api/ArchivosSinodales")
       .then(response => {
         if (response.status > 400) {
           return this.setState(() => {
@@ -80,7 +81,7 @@ class App extends Component {
             loaded: true
           };
         });
-      });
+      });*/
   }
 
   getCookie(name) {
@@ -118,7 +119,8 @@ class App extends Component {
           estampados.hashInfura = result.path, 
           estampados.hash = r.transactionHash,
           estampados.blockHash = r.blockHash,
-          estampados.blockNumber = r.blockNumber
+          estampados.blockNumber = r.blockNumber,
+          estampados.solicitud = document.getElementById('IDSolicitud').value
           return { estampados };
         })
         //return this.setState({ Hash: result[0].hash })
@@ -140,10 +142,11 @@ class App extends Component {
       .catch((err) => { console.log(err) });
   }
 
-  async captureFile(event) {
-    // const file = event.target.files[0]
-    let blob = await fetch(this.state.data[0].curriculum).then(r => r.blob());
-    // const file = this.state.data[0].curriculum
+  async captureFile() {
+    let blob = await fetch('SETyRS/institucion/solicitud/'
+      + document.getElementById('IDSolicitud').value
+      + '/informe_aprobacion_solicitud'
+    ).then(r => r.blob());
     const reader = new window.FileReader()
     reader.readAsArrayBuffer(blob)
     reader.onloadend = () => {
@@ -159,7 +162,6 @@ class App extends Component {
   render() {
     return (
       <>
-        <input type="file" accept=".jpg,.png" onChange={(e) => this.captureFile(e)}/>
         <button onClick={(event) => this.onSubmit(event)}>Aceptar</button>
       </>
     );

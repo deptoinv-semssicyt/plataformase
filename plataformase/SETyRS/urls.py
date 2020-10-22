@@ -58,7 +58,7 @@ urlpatterns = [
     path('institucion/examenes/get/RIT', login_required(views.get_reglamento_titulacion), name='SETyRS_get_RIT'),
     path('institucion/guardar_Reglamento/',login_required(views.guardar_Reglamento), name='SETyRS_guardar_Reglamento'), #Vista para actualizar el documento requerido para hacer solicitudes
      #urls de generacion del pdf
-    path('institucion/solicitud/<int:id>/informe_aprobacion_solicitud',login_required(views.generar_pdf) ,name='SETyRS_generar_pdf'), # Metodo para generar el archivo pdf de la autorizacion de examenes a titulo
+    path('institucion/solicitud/<int:id>/informe_aprobacion_solicitud',views.generar_pdf ,name='SETyRS_generar_pdf'), # Metodo para generar el archivo pdf de la autorizacion de examenes a titulo
     
     #urls de notificaciones de institucion
     path('institucion/notificacion/<int:id>', login_required(views.leer_notificacion), name='SETyRS_leer_notificacion_institucion'), #Metodo para marcar como leida la notificacion

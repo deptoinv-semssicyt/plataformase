@@ -20,7 +20,7 @@ class estampados(models.Model):
     hash = models.TextField()#Hash generado por metamask
     blockHash = models.TextField()
     blockNumber = models.IntegerField()
-
+    solicitud = models.IntegerField(default=1)
 
 #--------------------------------------- Modelos de Institución ------------------------------------------------------------
 # Tabla de las solicitudes de examenes a titulo
