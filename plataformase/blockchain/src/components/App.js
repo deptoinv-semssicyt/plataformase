@@ -6,9 +6,8 @@ const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' }) // leaving out the arguments will default to these values
 import $ from 'jquery';
 
-
 class App extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +26,8 @@ class App extends Component {
         hash: null,
         blockHash: null,
         blockNumber: null,
-        solicitud: null
+        solicitud: null,
+        userReg: null
       }
     };
   }
@@ -42,7 +42,7 @@ class App extends Component {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   }
-  
+
   async loadBlockchainData() {
     const web3 = window.web3
     // Load account
@@ -64,24 +64,13 @@ class App extends Component {
   componentDidMount() {
     this.loadWeb3();
     this.loadBlockchainData();
-    this.captureFile()
-    /*fetch("SETyRS/api/ArchivosSinodales")
-      .then(response => {
-        if (response.status > 400) {
-          return this.setState(() => {
-            return { placeholder: "Something went wrong!" };
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState(() => {
-          return {
-            data,
-            loaded: true
-          };
-        });
-      });*/
+    this.captureFile();
+    const user = document.getElementById('user').value;
+    this.setState(prevState => {
+      let estampados = Object.assign({}, prevState.estampados);
+      estampados.userReg = user;
+      return { estampados };
+    })
   }
 
   getCookie(name) {
@@ -101,33 +90,22 @@ class App extends Component {
 
   async onSubmit(event) {
     event.preventDefault()
-    //console.log("Submitting file to ipfs...")
-    // console.log('buffer', this.state.buffer)
-    // console.log(ipfs)
     //ipfs method
     const result = await ipfs.add(this.state.buffer)
-    // console.info("result ->", result)
-    // console.log("AAA ->", this.state.account)
-    // console.log("Estampados 1 -> ", this.state.estampados)
     const blockchainIPFS = await this.state.contract.methods
       .set(result.path)
       .send({ from: this.state.account })
       .then((r) => {
-        // console.log("r -> ", r)
         this.setState(prevState => {
           let estampados = Object.assign({}, prevState.estampados);
-          estampados.hashInfura = result.path, 
+          estampados.hashInfura = result.path,
           estampados.hash = r.transactionHash,
           estampados.blockHash = r.blockHash,
-          estampados.blockNumber = r.blockNumber,
-          estampados.solicitud = document.getElementById('IDSolicitud').value
+          estampados.blockNumber = r.blockNumber
           return { estampados };
         })
-        //return this.setState({ Hash: result[0].hash })
       })
-    // console.log("Estampados 2 -> ", this.state.estampados)
     var body = JSON.stringify(this.state.estampados)
-    // console.log("body -> ", body)
     var csrftoken = this.getCookie('csrftoken');
     fetch('SETyRS/api/estampados', {
       method : 'POST',
@@ -138,20 +116,24 @@ class App extends Component {
         'X-CSRFToken': csrftoken
       }
     }).then(res => res.json())
-      // .then(data => data)
       .catch((err) => { console.log(err) });
   }
 
   async captureFile() {
+    const id_solicitud = document.getElementById('IDSolicitud').value;
+    this.setState(prevState => {
+      let estampados = Object.assign({}, prevState.estampados);
+      estampados.solicitud = id_solicitud;
+      return { estampados };
+    })
     let blob = await fetch('SETyRS/institucion/solicitud/'
-      + document.getElementById('IDSolicitud').value
+      + id_solicitud
       + '/informe_aprobacion_solicitud'
     ).then(r => r.blob());
     const reader = new window.FileReader()
     reader.readAsArrayBuffer(blob)
     reader.onloadend = () => {
       this.setState({ buffer: Buffer(reader.result) })
-      console.log('buffer', this.state.buffer)
     }
   }
 
@@ -159,10 +141,48 @@ class App extends Component {
     this.setState({...this.state,[e.target.name] : e.target.value});
   }
 
+  handleChangeDes(event) {
+    const value = event.target.value;
+    this.setState(prevState => {
+      let estampados = Object.assign({}, prevState.estampados);
+      estampados.descripcion = value;
+      return { estampados };
+    })
+  }
+
+  handleChangeNom(event) {
+    const value = event.target.value;
+    this.setState(prevState => {
+      let estampados = Object.assign({}, prevState.estampados);
+      estampados.nombre = value;
+      return { estampados };
+    })
+  }
+
   render() {
     return (
       <>
-        <button onClick={(event) => this.onSubmit(event)}>Aceptar</button>
+        <form>
+          <div class="form-inline">
+            <label for="idNombre">Nombre:</label>
+            <input onChange={ event => this.handleChangeNom(event)}
+              className="form-control col-6 ml-2"
+              id="idNombre"/>
+          </div>
+          <div class="form-group">
+            <label for="idDescripcion">Descripción del documento a estampar:</label>
+            <textarea onChange={ event => this.handleChangeDes(event)}
+              className="md-textarea form-control"
+              rows="2"
+              id="idDescripcion"/>
+          </div>
+          <div className="d-flex justify-content-end">
+            <button onClick={(event) => this.onSubmit(event)}
+              className="btn btn-success ">
+                Estampar
+            </button>
+          </div>
+        </form>
       </>
     );
   }

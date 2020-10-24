@@ -34,11 +34,11 @@ class ArchivosSinodalesListCreate(generics.ListCreateAPIView):
 def estampadosList(request):
     if request.method == 'GET':
         estampados = estampados.objects.all()
-        
+
         title = request.query_params.get('title', None)
         if title is not None:
             estampados = estampados.filter(title__icontains=title)
-        
+
         estampados_serializer = estampadosSerializer(estampados, many=True)
         return JsonResponse(estampados_serializer.data, safe=False)
         # 'safe=False' for objects serialization
@@ -47,7 +47,9 @@ def estampadosList(request):
         estampados_serializer = estampadosSerializer(data=request.data)
         if estampados_serializer.is_valid():
             estampados_serializer.save()
-            return JsonResponse(estampados_serializer.data, status=status.HTTP_201_CREATED) 
+            object = SolicitudExamen.objects.filter(id=request.data['solicitud'])
+            object.update(estampado=True)
+            return JsonResponse(estampados_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(estampados_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # VISTAS DEL ADMINISTRADOR SINODALES-----------------------------------------------------------------------------
@@ -74,7 +76,7 @@ def index_admin(request):
 
         elif request.user.departamento_id == 1: #si el usuario pertenece al departamento CONTROL ESCOLAR
             notificacion = NotificacionAdmin.objects.filter(tipo_solicitud=1).order_by('-fecha') #Recupera las notificaciones del administrador
-        
+
         context = {'departamento':dep,'notificacion':notificacion,'notificaciones':num_notifi}
         return render(request,'admins/index_admin.html', context)
     else:
@@ -281,11 +283,11 @@ def lista_solicitudes_examenes_admin(request):
         if request.user.departamento_id==2:
             solicitudes = SolicitudExamen.objects.select_related('user').filter(fase=3).order_by('-id')
             notificacion = NotificacionAdmin.objects.filter().order_by('-fecha')
-            
+
         elif request.user.departamento_id==3:
             solicitudes = SolicitudExamen.objects.filter(fase=3,nivel_educativo=2).order_by('-id')
             notificacion = NotificacionAdmin.objects.filter(nivel_educativo=2).order_by('-fecha')
-            
+
         elif request.user.departamento_id==4:
             solicitudes = SolicitudExamen.objects.filter(fase=3,nivel_educativo=1).order_by('-id')
             notificacion = NotificacionAdmin.objects.filter(nivel_educativo=1).order_by('-fecha')
@@ -293,7 +295,7 @@ def lista_solicitudes_examenes_admin(request):
         elif request.user.departamento_id==1:
             solicitudes = SolicitudExamen.objects.filter(fase=3,estatus=3).order_by('-id')
             notificacion = None
-        
+
         context = {'departamento':dep, 'solicitudes': solicitudes, 'notificacion':notificacion,'notificaciones':num_notifi}
         for s in solicitudes:
             if s.estatus == 2:
@@ -334,7 +336,7 @@ def revisar_solicitud_examen(request, id):
                 notificacion = NotificacionAdmin.objects.filter(nivel_educativo=2).order_by('-fecha')
                 context.update({'notificacion':notificacion})
                 return render(request, 'admins/examenes/revisar_solicitud_examen.html', context)
-            
+
             elif request.user.departamento_id == 4 and solicitud.nivel_educativo == 1:
                 notificacion = NotificacionAdmin.objects.filter(nivel_educativo=1).order_by('-fecha')
                 context.update({'notificacion':notificacion})
@@ -344,7 +346,7 @@ def revisar_solicitud_examen(request, id):
                 context.update({'notificacion':notificacion})
                 return render(request, 'admins/examenes/revisar_solicitud_examen.html', context)
         else:
-            raise Http404("El usuario no tiene permiso de ver esta página")        
+            raise Http404("El usuario no tiene permiso de ver esta página")
     else:
         raise Http404("El usuario no tiene permiso de ver esta página")
 
@@ -390,7 +392,7 @@ def aceptar_solicitud(request, id):
             h_solicitud = Historial_admins_examen(user_id = request.user.id, solicitud_id = id,fecha=timezone.now(), estatus=True, nivel_educativo=solicitud.nivel_educativo)
             h_solicitud.save()
             jefe = CustomUser.objects.get(id=h_solicitud.user_id)
-            
+
             #Aqui poner el codigo para enviar el correo de aceptación a control escolar,dirección y al departamento correspondiente
 
             #Si dirección aceptó la solicitud entonces:
@@ -453,7 +455,7 @@ def index_institucion(request):
         num_notifi = contarNotificaciones(request.user.id)
         context = {'notificacion':notificacion,'notificaciones':num_notifi}
         return render(request, 'institucion/index_institucion.html', context)
-    else: 
+    else:
         raise Http404("El usuario no tiene permiso de ver esta página")
 
 # funcion que retorna la plantilla de nueva solicitud de sinodal
@@ -523,9 +525,9 @@ def lista_solicitudes_sinodales(request):
                 s.estatus = 'Pendiente'
             elif e==3:
                 s.estatus = 'Revisada'
-                
+
         return render(request, 'institucion/sinodales/lista_solicitudes_sinodales.html', context)
-    
+
     else:
         raise Http404('El usuario no tiene permiso de ver esta pagina')
 
@@ -545,7 +547,7 @@ def crear_solicitud_sinodal(request):
             user_id = request.user.id
             centroTrabajo = request.POST["cct"]
             datos_escuela = UsuarioInstitucion.objects.get(cct=centroTrabajo)
-            nivel = datos_escuela.nivel_educativo 
+            nivel = datos_escuela.nivel_educativo
             if nivel == 3:
                 solicitud = SolicitudSinodal(user_id=user_id, fecha=timezone.now(), institucion=request.user.first_name,nivel_educativo=nivel,CCT=centroTrabajo)
                 solicitud.save()
@@ -561,7 +563,7 @@ def crear_solicitud_sinodal(request):
     else:
         raise Http404('El usuario no tiene permiso de ver esta pagina')
 
-# Metodo que agrega en la BD sinodales para la solicitud. Recibe el id de la solicitud 
+# Metodo que agrega en la BD sinodales para la solicitud. Recibe el id de la solicitud
 def agregar_sinodal(request, id):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
         if request.method == 'POST':
@@ -574,7 +576,7 @@ def agregar_sinodal(request, id):
             solicitud = SolicitudSinodal.objects.get(id=id)
             nivel_sinodales = solicitud.nivel_educativo
             if comprobar_duplicidad and sino_count>=1:
-            
+
                 error = 'Este sinodal ya existe en su registro'
                 messages.error(request, error)
                 return redirect('SETyRS_detalle_solicitud_sinodal',id)
@@ -798,7 +800,7 @@ def lista_solicitudes_examenes(request):
             elif e==3:
                 s.estatus = 'Aprobada'
             elif e==4:
-                s.estatus = 'Rechazada'     
+                s.estatus = 'Rechazada'
         return render(request, 'institucion/sinodales/examenes/lista_solicitudes_examenes.html', context)
     else:
         raise Http404('El usuario no tiene permiso de ver esta página')
@@ -820,7 +822,7 @@ def crear_solicitud_examen(request):
             fecha_e = request.POST["fecha_exa"]
             lugar_e = request.POST["Lugar_exa"]
             hora_e = request.POST["hora_exa"]
-            solicitud = SolicitudExamen(categoria=categoria, id_presidente=presidente, id_secretario=secretario, id_vocal=vocal, 
+            solicitud = SolicitudExamen(categoria=categoria, id_presidente=presidente, id_secretario=secretario, id_vocal=vocal,
                                         institucion=escuela.id, user_id=request.user.id, fecha=date.today(), nivel_educativo=nivel_educativo,fecha_exa=fecha_e,lugar_exa=lugar_e,hora_exa=hora_e,CCT=cct)
             solicitud.save()
             msg = 'Nueva solicitud de exámenes a titulo. Folio: ' + str(solicitud.id) + '. Estatus: Incompleta'
@@ -959,7 +961,7 @@ def generar_pdf(request, id):
             jefe = CustomUser.objects.get(id=h.user_id)
             params = {
                 'solicitud': solicitud,
-                'alumnos':Alumnos.objects.filter(id_solicitud_id=id), 
+                'alumnos':Alumnos.objects.filter(id_solicitud_id=id),
                 'request': request,
                 'escuela': UsuarioInstitucion.objects.get(cct=solicitud.CCT),
                 'presidente': Sinodales.objects.get(id=solicitud.id_presidente),

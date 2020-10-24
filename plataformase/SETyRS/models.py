@@ -5,6 +5,8 @@ from .validators import validate_file_extension
 
 # Create your models here.
 #PRUEBAS Blockchain
+import datetime
+
 class Lead(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -12,10 +14,10 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class estampados(models.Model):
-    nombre = models.CharField(max_length=50)#Nombre probablemente dado por nosotros
-    descripcion = models.TextField()#Descripción de lo que contiene el documento a estampar
-    #userReg = models.ForeignKey(CustomUser, on_delete=models.CASCADE)#Usuario que realizó el estampado
-    #fecha = models.DateField()#Fecha en que se realizó el estampado
+    nombre = models.CharField(max_length=50, default="")#Nombre probablemente dado por nosotros
+    descripcion = models.TextField(default="")#Descripción de lo que contiene el documento a estampar
+    userReg = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)#Usuario que realizó el estampado
+    fecha = models.DateField(default=datetime.date.today)#Fecha en que se realizó el estampado
     hashInfura = models.TextField()#Hash generado por infura
     hash = models.TextField()#Hash generado por metamask
     blockHash = models.TextField()
@@ -88,7 +90,7 @@ class Sinodales(models.Model):
 
     def __str__(self):
         return self.nombre_sinodal
-    
+
     class Meta:
         db_table = 'SETyRS_sinodales'
 
@@ -102,7 +104,7 @@ class ArchivosSinodales(models.Model):
     class Meta:
         db_table = 'SETyRS_documentos_sinodales'
 
-# Tabla de notificaciones de las instituciones       
+# Tabla de notificaciones de las instituciones
 class Notificaciones(models.Model):
     descripcion = models.CharField(max_length=150)
     visto = models.BooleanField(default=False)
@@ -169,6 +171,6 @@ class NotificacionAdmin(models.Model):
 class reglamento_interior_titulacion(models.Model):
     CCT = models.CharField(max_length=30)
     RIT = models.FileField(upload_to='SETyRS/archivos/reglamentos',validators=[validate_file_extension], blank=True, null=True)
-    
+
     class Meta:
         db_table = 'SETyRS_reglamento_interior_titulacion'
