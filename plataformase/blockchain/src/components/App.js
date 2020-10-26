@@ -115,7 +115,12 @@ class App extends Component {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrftoken
       }
-    }).then(res => res.json())
+    }).then(res => {
+        res.json()
+        var form = document.getElementById("form");
+        form.remove();
+        document.getElementById("finish").removeAttribute("hidden");
+      })
       .catch((err) => { console.log(err) });
   }
 
@@ -162,7 +167,7 @@ class App extends Component {
   render() {
     return (
       <>
-        <form>
+        <form id="form">
           <div class="form-inline">
             <label for="idNombre">Nombre:</label>
             <input onChange={ event => this.handleChangeNom(event)}
@@ -183,6 +188,9 @@ class App extends Component {
             </button>
           </div>
         </form>
+        <div id="finish" hidden>
+          <p>La transacción se ha realizado correctamente, ya puede cerrar esta ventana.</p>
+        </div>
       </>
     );
   }
