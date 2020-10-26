@@ -44,21 +44,21 @@
                     </div>
                     <div class="collapse show" id="docentes">
                         <div class="card-text p-3">
-                            <table class="table table-borderless " id="listaAlumnos" style="height: 250px; display: -moz-groupbox;">
+                            <table class="table table-borderless " id="listaAlumnos" style="height: 200px; display: -moz-groupbox;">
                                 <thead>
                                     <tr style="width: 100%; display: inline-table; height:60px; table-layout: fixed;">
-                                    <th>#</th>
-                                    <th style="width: 65%;">Nombre</th>
-                                    <th>Clave</th>
+                                    <th style="width: 10;">#</th>
+                                    <th style="width: 55%;">Nombre</th>
+                                    <th style="width: 25%;">Num empleado</th>
                                     </tr>
                                 </thead>
-                                <tbody style="overflow-y: scroll; height: 200px; width: 95%; position: absolute;">
+                                <tbody style="overflow-y: scroll; height: 150px; width: 95%; position: absolute;">
                                         {% for doc in docente %}
                                         {% csrf_token %}
                                             <tr>
-                                                <th scope="row" style="width: 10.9%;">{{ forloop.counter }}</th>
-                                                <td style="width: 75.8%;">{{ doc.nombres_docente }}</td>
-                                                <td>{{ doc.clave_docente }}</td>
+                                                <th scope="row" style="width: 15%;">{{ forloop.counter }}</th>
+                                                <td style="width: 75.25%;">{{ doc.nombres_docente }}</td>
+                                                <td style="width: 30%;">{{ doc.num_empleado }}</td>
                                             </tr>
                                         {% endfor %}
                                 </tbody>
@@ -71,7 +71,7 @@
             {% endif %}
             <!--Inicio acordeon de Alumnos-->
             <div class="col-md-12 mb-3">
-                <div hidden class="container-flex" id="wwg-accordian">
+                <div  class="container-flex" id="wwg-accordian">
                     <div class="card">
                         <div class="card-header" id="alumnos-heading" style="background-color: white;">      
                             <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#alumnos" style="cursor:pointer;"><i class="fas fa-users"></i>&nbsp;Alumnos</h5>
@@ -94,8 +94,8 @@
                                             {% csrf_token %}
                                                 <tr>
                                                     <th scope="row" style="width: 10.9%;">{{ forloop.counter }}</th>
-                                                    <td style="width: 77%;">{{ al.nombre_alumno }}</td>
-                                                    <td>{{ al.num_matricula }}</td>
+                                                    <td style="width: 75%;">{{ al.nombre_alumno }}</td>
+                                                    <td style="width: 20%;">{{ al.num_matricula }}</td>
                                                 </tr>
                                             {% endfor %}
                                         {% endif %}
@@ -116,20 +116,6 @@
                         </div>
                     </div>
                 </div>
-                {% if usuario.tipo_usuario == "6"  %}
-                <div class="container-flex h-40 mb-3" id="wwg-accordian">
-                    <div class="card">
-                        <div class="card-header" id="actividadesrecientes-heading" style="background-color: white;">
-                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#actividades-recientes" style="cursor:pointer;"><i class="fas fa-tasks"></i>&nbsp;Estadisticas Alumnos</h5>
-                        </div>
-                        <div class="collapse show" id="actividades-recientes">
-                            <div class="card-text p-3">
-                                <div id="GeneroGeneral" style=" height: 300px; width: 100%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
             </div>
         </div>
         <!--Fin de la columna total del lado izquierdo de la pagina-->
@@ -202,7 +188,7 @@
                     <div class="card-header" id="ingresaronhoy-heading" style="background-color: white;">
                         <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#ingresaron-hoy" style="cursor:pointer;"><i class="fas fa-tasks"></i>&nbsp;Uso de la plataforma</h5>
                     </div>
-                    <div class="collapse show" id="ingresaron-hoy">
+                    <div class="collapse " id="ingresaron-hoy">
                         <div class="card-text p-3">
             				<div id="Iniciaron" style=" height: 300px; width: 100%;"></div>
                         </div>

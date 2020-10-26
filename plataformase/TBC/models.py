@@ -20,6 +20,9 @@ class Alumno(models.Model):
     acta_nacimiento = models.FileField(upload_to='Archivos/TBC', null=True)
     curp_archivo = models.FileField(upload_to='Archivos/TBC', null=True)
     certificado_secundaria = models.FileField(upload_to='Archivos/TBC', null=True)
+    beca = models.CharField(max_length=5, null=True)
+    subsistema_nombre = models.CharField(max_length=100, null=True)
+    subsistema = models.FileField(upload_to='Archivos/TBC', null=True)
 
 class Curso(models.Model):
     id_curso = models.IntegerField(primary_key= True)
@@ -105,6 +108,7 @@ class Modulo(models.Model):
     areadisciplinar_modulo = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE)
     fecha_alta_modulo = models.DateField(auto_now=True)
     creditos_modulo = models.IntegerField()  
+    siglas_modulo = models.CharField(max_length=30, null=True)
 
 #Modelo de unidades de modulo
 class Unidad_modulo(models.Model):

@@ -115,6 +115,135 @@ def consultaAlumnos(request):
 	Alumnos = Alumno.objects.filter(cct = request.user.last_name) #Alumno.objects.all()
 	Usuarios = CustomUser.objects.all()
 	Archivos = Archivo.objects.all()
+	#json_serializer = serializers.get_serializer("json")()
+	#Modulos = json_serializer.serialize(Modulo.objects.all(), ensure_ascii=False)
+	Modulos = Modulo.objects.all()
+
+	#Para generar un reporte por módulos de manera general
+	labels = []
+	data = []
+	#Se filtra la tabla de estadística para encontrar los registros correspondientes a la institución (request.user.last_name)
+	Estadistica_modulos = Estadistica_modulo.objects.filter(cct = request.user.last_name).order_by('id_estadistica_modulo')
+	size = len(Estadistica_modulos)
+	#Para generar los promedios por modulos, se declaran variables para la suma y promedio de cada modulo, TODO:Analizar cambiarlos por arreglos y/o del modelo traido de la bd de los modelos (añadir clave de campo)
+	sum_ev = sum_mat1 = sum_ics	= sum_ev2 = sum_mat2 = sum_hmi = sum_dc1 = sum_mat3 = sum_hmii = sum_liti = sum_dc2 = sum_mat4 = sum_esm = sum_lit2 = sum_geog = sum_huc = sum_cc = 0
+	prom_ev = prom_mat1 = prom_ics = prom_ev2 = prom_mat2 = prom_hmi = prom_dc1 = prom_mat3 = prom_hmii = prom_liti = prom_dc2 = prom_mat4 = prom_esm = prom_lit2 = prom_geog = prom_huc = prom_cc = 0
+	for e in Estadistica_modulos:
+		sum_ev += float(e.prom_ev1)
+		sum_mat1 += float(e.prom_mat1)
+		sum_ics += float(e.prom_icsp)
+		sum_ev2 += float(e.prom_ev2)
+		sum_mat2 += float(e.prom_mat2)
+		sum_hmi += float(e.prom_hmi)
+		sum_dc1 +=float(e.prom_dc1)
+		sum_mat3 += float(e.prom_mat3)
+		sum_hmii += float(e.prom_hmii)
+		sum_liti += float(e.prom_liti)
+		sum_dc2 += float(e.prom_dc2)
+		sum_mat4 += float(e.prom_mat4)
+		sum_esm += float(e.prom_esm)
+		sum_lit2 += float(e.prom_lit2)
+		sum_geog += float(e.prom_geog)
+		sum_huc += float(e.prom_huc)
+		sum_cc += float(e.prom_cc)
+	#Asignar de forma ordenada conforme el archivo excel una vez nos entregen todos los módulos
+	prom_ev = sum_ev / size
+	prom_mat1 = sum_mat1 / size
+	prom_ics = sum_ics / size
+	prom_ev2 = sum_ev2 / size
+	prom_mat2 = sum_mat2 / size
+	prom_hmi = sum_hmi / size
+	prom_dc1 = sum_dc1 / size
+	prom_mat3 = sum_mat3 / size
+	prom_hmii = sum_hmii / size
+	prom_liti = sum_liti / size
+	prom_dc2 = sum_dc2 / size
+	prom_mat4 = sum_mat4 / size
+	prom_esm = sum_esm / size
+	prom_lit2 = sum_lit2 / size
+	prom_geog = sum_geog / size
+	prom_huc = sum_huc / size
+	prom_cc = sum_cc / size
+	data = [prom_ev , prom_mat1 , prom_ics , prom_ev2 , prom_mat2 , prom_hmi , prom_dc1 , prom_mat3 , prom_hmii , prom_liti , prom_dc2 , prom_mat4 , prom_esm , prom_lit2 , prom_geog , prom_huc , prom_cc]
+	for mod in Modulos:
+		labels.append(mod.nombre_modulo)
+		#data.append(mod.semestre_modulo_id)
+	
+	#Para generar reporte por módulos, almacenar las calificaciones de cada modulo y sacar datos correspondientes a ponderación de [0-5, 6, 7, 8, 9, 10] (estos serán los labels)
+	labels2 = ['0-5', 6, 7, 8, 9, 10]
+	ev, mat1, ics, ev2, mat2, hmi, dc1, mat3, hmii, liti, dc2, mat4, esm, lit2, geog, huc, cc = [], [], [], [], [] ,[] ,[], [], [], [], [], [], [], [], [], [], []
+	for m in Estadistica_modulos:
+		ev.append(float(m.prom_ev1))
+		mat1.append(float(m.prom_mat1))
+		ics.append(float(m.prom_icsp))
+		ev2.append(float(m.prom_ev2))
+		mat2.append(float(m.prom_mat2))
+		hmi.append(float(m.prom_hmi))
+		dc1.append(float(m.prom_dc1))
+		mat3.append(float(m.prom_mat3))
+		hmii.append(float(m.prom_hmii))
+		liti.append(float(m.prom_liti))
+		dc2.append(float(m.prom_dc2))
+		mat4.append(float(m.prom_mat4))
+		esm.append(float(m.prom_esm))
+		lit2.append(float(m.prom_lit2))
+		geog.append(float(m.prom_geog))
+		huc.append(float(m.prom_huc))
+		cc.append(float(m.prom_cc))
+	#Se procede a buscar en el arreglo y llevar conteo de cuantos pertenecen a la ponderación [0-5, 6, 7, 8, 9, 10]
+	f = s = sv = e = n = t = 0 #[0-5, 6, 7, 8, 9, 10]
+	#Se crea un solo arreglo con todos los modulos y sus promedios (ev[6,7,6,1,2,], mat1[10,9,5,4] => arr[[],[]])
+	totalAlumnos = len(ev)
+	arr = [ev, mat1, ics, ev2, mat2, hmi, dc1, mat3, hmii, liti, dc2, mat4, esm, lit2, geog, huc, cc]
+	data2 = []
+	for row in arr:
+		for elem in row:
+			if elem >= 0 and elem < 6:
+				f += 1
+			if elem >= 6 and elem < 7:
+				s += 1
+			if elem >= 7 and elem < 8:
+				sv += 1
+			if elem >= 8 and elem < 9:
+				e += 1
+			if elem >= 9 and elem < 10:
+				n += 1
+			if elem == 10:
+				t += 1
+		p2 = [f, s, sv, e, n, t]
+		data2.append(p2)
+		f = s = sv = e = n = t = 0
+	#data2 contiene los arreglos con los conteos de cada modulo mat1=[16,11,10,10,5,0]
+	print(totalAlumnos)
+	ir = 0
+	idMod = 1
+	labels3 = []
+	data3 = []
+	for row in arr:
+		for elem in row:
+			if elem < 6:
+				ir += 1
+		data3.append(ir)
+		labels3.append(idMod)
+		idMod += 1
+		ir = 0
+	#labels3 tiene el id del modulo
+	#data3 tiene los indices de reprobacion por modulo (en el orden de los id de los modulos)
+	
+	#Se debe de filtrar los arreglos de data3 y labels3 dejando solo los que tengan indice de reprobacion real -> no sea 0 ni sea igual al total de alumnos (modulo no evaluado)
+	#Para obtener y generar los indices de los modulos con mayor reprobacion
+	#Se hará uso de arr, que contiene todos los promedios de todos los modulos de la institución
+	auxData3 = []
+	auxLabels3 = []
+	for idx, i in enumerate(data3):
+		if i !=0 and i != totalAlumnos:
+			auxData3.append(i)
+			auxLabels3.append(labels[idx])
+			#auxLabels3.append(idx+1)
+	#auxLabels3 contiene los id de los modulos con indice de reprobacion ya filtrado
+	#auxData3 contiene los indices de reprobacion de los modulos correspondientes
+
+
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
 	usuarioLogueado = request.user
@@ -154,7 +283,8 @@ def consultaAlumnos(request):
 		semestre = request.POST['semestre']
 		contrasena = make_password(request.POST['contrasena'])
 		tipo_secundaria = request.POST['tipo_secundaria']
-		
+		beca = request.POST['beca']
+		subsistema = request.POST['subsistema_nombre']
 		#Compara si el id está vacio para insertar nuevo reigstro
 		if idAlumno == '':
 			try:
@@ -166,7 +296,7 @@ def consultaAlumnos(request):
 				idAlumno = 1
 			#try:
 			nuevoAlumno = Alumno(id_alumno = idAlumno, nombre_alumno = nombreAlumno, email = email, tel_fijo = telFijo, tel_celular = telCelular, curp_alumno = curp,
-			num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria)
+			num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria, beca = beca, subsistema_nombre = subsistema)
 			nuevoAlumno.save()
 			nuevoAlumnoUser = CustomUser(password = contrasena, username = email, last_name = nombreAlumno, email = email, curp_rfc = curp,
 			municipio = nombreEscuela, celular = telCelular, tipo_usuario = 7, tipo_persona = 1)
@@ -235,6 +365,21 @@ def consultaAlumnos(request):
 				nuevoArchivo.save()
 			except:
 				print('')
+			try:
+				subsistema_archivo = request.FILES['subsistema']
+				try:
+					field_name = 'id_archivo'
+					obj = Archivo.objects.last()
+					field_value = getattr(obj, field_name)
+					idArchivo = field_value + 1
+				except:
+					idArchivo = 1
+				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+subsistema_archivo.name #'/media/TBC/Datos/Alumnos/'+subsistema_archivo.name
+				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = subsistema_archivo.name, tipo_archivo = 'Subsistema', url = url, id_alumno = idAlumno)
+				nuevoArchivo.archivo = subsistema_archivo
+				nuevoArchivo.save()
+			except:
+				print('')
 			nuevoAlumnoUser.save()
 			sweetify.success(request, 'Se insertó', text='El alumno fue registrado exitosamente', persistent='Ok', icon="success")
 			#except:
@@ -242,10 +387,10 @@ def consultaAlumnos(request):
 		else:
 			#Se pretende actualizar un registro existente
 			Alumno.objects.filter(id_alumno = idAlumno).update(nombre_alumno = nombreAlumno, email = email, tel_fijo = telFijo, tel_celular = telCelular, curp_alumno = curp,
-				num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria)
+				num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria, beca = beca, subsistema_nombre = subsistema)
 			#CustomUser.objects.filter(email = email).update(password = contrasena)
 			sweetify.success(request, 'Se actualizó', text='El alumno fue actualizado exitosamente', persistent='Ok', icon="success")
-	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos})
+	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos, 'modulo':Modulos, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, 'data3':auxData3, 'labels3':auxLabels3 })
 
 #Función para eliminar un alumnos, dado un id (id como parámetro)
 
@@ -1034,7 +1179,7 @@ def ListasAsistencias(request):
 
 
 '''
-	Inicio de la sección de vistas para el control de módulos
+Inicio de la sección de vistas para el control de módulos
 '''
 def nuevoModulo(request):
 	semestres = Semestre.objects.all()
@@ -1117,7 +1262,7 @@ def getPropUnidad(request):
 		return JsonResponse(propUnidad,safe=False)
 		
 '''
-	Fin de la sección de vistas para el control de módulos
+Fin de la sección de vistas para el control de módulos
 ''' 
 
 #Función para realizar la entrega por parte del alumno
@@ -1350,7 +1495,7 @@ def relacionarModulo(request):
 	return render(request, 'relacionarModulo.html', {'usuario':usuarioLogueado, 'docente':Docentes, 'modulo':Modulos, 'alumno':Alumnos, 'docenteModulo':DocenteModulo }) 
 
 '''
-	Incicia sección de vistas de prueba TODO: Eliminarlas al final
+Incicia sección de vistas de prueba TODO: Eliminarlas al final
 '''
 def generarCertificado(request):
 	alumno = Alumno.objects.all()
@@ -1367,7 +1512,7 @@ def estadistica(request):
 	return render(request, 'estadistica.html', {})
 
 '''
-	Fin de la ección de vistas de prueba TODO: Eliminarlas al final
+Fin de la ección de vistas de prueba TODO: Eliminarlas al final
 '''
 
 #Fin de Vistas de sección de vistas de la primer versión
