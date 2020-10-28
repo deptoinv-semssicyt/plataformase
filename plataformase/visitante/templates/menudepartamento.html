@@ -1,10 +1,10 @@
-  
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="es-MX">
 	<head>
 		<meta charset="UTF-8">
-		
+
 	<meta name="viewport" content="width=[Pixeles del mínimo ancho para visualizar bien la web]" />
 		<title>Sistemas &#8211; plataformse</title>
 		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -34,14 +34,14 @@
 		<!-- / #logo-header -->
 		<nav>
 			<ul class="nav">
-				<li><a href="#" style="pointer-events: none;">Bienvenido(a): {% if user.tipo_usuario == '2'%} Jefe de departamento {% endif%} 
+				<li><a href="#" style="pointer-events: none;">Bienvenido(a): {% if user.tipo_usuario == '2'%} Jefe de departamento {% endif%}
 					{% if user.departamento_id == 2 %} Direción {% endif%}
-					{% if user.tipo_usuario == '3'%} Subordinado de departamento {% endif%} 
+					{% if user.tipo_usuario == '3'%} Subordinado de departamento {% endif%}
 					{% if user.departamento_id == 3 %} Superior {% endif%}
 					{% if user.departamento_id == 4 %} Media Superior {% endif%}
-					
+
 					 , {{ user.first_name }} {{ user.last_name }} </a>
-					 
+
 				<li class="nav-item dropdown ml-auto">
 					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> <img src="{% static '/img/us2.png' %}"/></a>
 					<div class="dropdown-menu dropdown-menu-right" style="color: black; background-color: black;">
@@ -65,6 +65,26 @@
 <!------------------------------------------SISTEMAS------------------------------>
 		<section class="pricingCardGrid ">
 			<div class="pricingCardGrid__body row ">
+        <div class="pricingCardGrid__pricingCard">
+					<a class="pricingCard" href="{% url 'verificar' %}" data-plan-type="yearly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_yearly">
+						<div class="pricingCard__heading title--small" style="text-align: justify;">
+							Verificación de documentos estampados
+						</div>
+						<div class="pricingCard__pricing">
+							<div class="col-sm-4 col-xs-4">
+								<img src="{% static '/img/contrato.png'%}" width="200" height="200"/>
+							</div>
+							<span class="pricingCard__period">
+								<p align="justify">Sistema para comprobar la veracidad de los documentos.</p>
+							</span>
+						</div>
+						<div class="pricingCard__button">
+							<span class="button button--primary">
+								Acceder
+							</span>
+						</div>
+					</a>
+				</div>
 					<div class="pricingCardGrid__pricingCard">
 						<a class="pricingCard" href="/SigApp/" data-plan-type="monthly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_monthly">
 							<div class="pricingCard__heading title--small" style="text-align: justify;">
@@ -107,7 +127,7 @@
 				<div class="pricingCardGrid__pricingCard">
 					<!-- <a class="pricingCard" href="{% url 'admin' %}" data-plan-type="yearly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_yearly"> -->
 						<a class="pricingCard" href="#" data-plan-type="yearly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_yearly">
-					
+
 						<div class="pricingCard__heading title--small">
 							Sistema de generación de turnos de RVOE
 						</div>
@@ -154,7 +174,7 @@
 				{% endif %}
 			</div>
 	</section>
-										
+
 <script type='text/javascript' src="{% static '/js/bootstrap2.min.js' %}"></script>
 					</body>
 </html>
