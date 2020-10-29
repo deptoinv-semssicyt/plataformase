@@ -33,13 +33,13 @@ class ArchivosSinodalesListCreate(generics.ListCreateAPIView):
 @api_view(['GET', 'POST'])
 def estampadosList(request):
     if request.method == 'GET':
-        estampados = estampados.objects.all()
+        estampado = estampados.objects.all()
 
-        title = request.query_params.get('title', None)
-        if title is not None:
-            estampados = estampados.filter(title__icontains=title)
+        hashInfura = request.query_params.get('hashInfura', None)
+        if hashInfura is not None:
+            estampado = estampados.objects.filter(hashInfura=hashInfura)
 
-        estampados_serializer = estampadosSerializer(estampados, many=True)
+        estampados_serializer = estampadosSerializer(estampado, many=True)
         return JsonResponse(estampados_serializer.data, safe=False)
         # 'safe=False' for objects serialization
 
