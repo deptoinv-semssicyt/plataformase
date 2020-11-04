@@ -105,148 +105,36 @@ def homePage(request):
 	
 
 	if request.user.tipo_usuario == "7":
-		return redirect('/TBC/actividad-alumno/'+str(idAlumnoI))
+		return redirect('/TBC/alumno/'+str(idAlumnoI))
 
 	return render(request, 'homePage.html', {'usuario':usuarioLogueado, 'notificaciones': NotificacionesDocente, 'notificacion':NotificacionesDocenteModulo, 'docente':Docentes, 'curso':Cursos, 'alumno':Alumnos, 'alumnoI':AlumnosI, 'alumnoD':AlumnosD })
 
 #Función para consultar los alumnos y hacer actualización de estos
 
 def consultaAlumnos(request):
-	Alumnos = Alumno.objects.filter(cct = request.user.last_name) #Alumno.objects.all()
-	Usuarios = CustomUser.objects.all()
-	Archivos = Archivo.objects.all()
-	#json_serializer = serializers.get_serializer("json")()
-	#Modulos = json_serializer.serialize(Modulo.objects.all(), ensure_ascii=False)
-	Modulos = Modulo.objects.all()
-
-	#Para generar un reporte por módulos de manera general
-	labels = []
-	data = []
-	#Se filtra la tabla de estadística para encontrar los registros correspondientes a la institución (request.user.last_name)
-	Estadistica_modulos = Estadistica_modulo.objects.filter(cct = request.user.last_name).order_by('id_estadistica_modulo')
-	size = len(Estadistica_modulos)
-	#Para generar los promedios por modulos, se declaran variables para la suma y promedio de cada modulo, TODO:Analizar cambiarlos por arreglos y/o del modelo traido de la bd de los modelos (añadir clave de campo)
-	sum_ev = sum_mat1 = sum_ics	= sum_ev2 = sum_mat2 = sum_hmi = sum_dc1 = sum_mat3 = sum_hmii = sum_liti = sum_dc2 = sum_mat4 = sum_esm = sum_lit2 = sum_geog = sum_huc = sum_cc = 0
-	prom_ev = prom_mat1 = prom_ics = prom_ev2 = prom_mat2 = prom_hmi = prom_dc1 = prom_mat3 = prom_hmii = prom_liti = prom_dc2 = prom_mat4 = prom_esm = prom_lit2 = prom_geog = prom_huc = prom_cc = 0
-	for e in Estadistica_modulos:
-		sum_ev += float(e.prom_ev1)
-		sum_mat1 += float(e.prom_mat1)
-		sum_ics += float(e.prom_icsp)
-		sum_ev2 += float(e.prom_ev2)
-		sum_mat2 += float(e.prom_mat2)
-		sum_hmi += float(e.prom_hmi)
-		sum_dc1 +=float(e.prom_dc1)
-		sum_mat3 += float(e.prom_mat3)
-		sum_hmii += float(e.prom_hmii)
-		sum_liti += float(e.prom_liti)
-		sum_dc2 += float(e.prom_dc2)
-		sum_mat4 += float(e.prom_mat4)
-		sum_esm += float(e.prom_esm)
-		sum_lit2 += float(e.prom_lit2)
-		sum_geog += float(e.prom_geog)
-		sum_huc += float(e.prom_huc)
-		sum_cc += float(e.prom_cc)
-	#Asignar de forma ordenada conforme el archivo excel una vez nos entregen todos los módulos
-	prom_ev = sum_ev / size
-	prom_mat1 = sum_mat1 / size
-	prom_ics = sum_ics / size
-	prom_ev2 = sum_ev2 / size
-	prom_mat2 = sum_mat2 / size
-	prom_hmi = sum_hmi / size
-	prom_dc1 = sum_dc1 / size
-	prom_mat3 = sum_mat3 / size
-	prom_hmii = sum_hmii / size
-	prom_liti = sum_liti / size
-	prom_dc2 = sum_dc2 / size
-	prom_mat4 = sum_mat4 / size
-	prom_esm = sum_esm / size
-	prom_lit2 = sum_lit2 / size
-	prom_geog = sum_geog / size
-	prom_huc = sum_huc / size
-	prom_cc = sum_cc / size
-	data = [prom_ev , prom_mat1 , prom_ics , prom_ev2 , prom_mat2 , prom_hmi , prom_dc1 , prom_mat3 , prom_hmii , prom_liti , prom_dc2 , prom_mat4 , prom_esm , prom_lit2 , prom_geog , prom_huc , prom_cc]
-	for mod in Modulos:
-		labels.append(mod.nombre_modulo)
-		#data.append(mod.semestre_modulo_id)
-	
-	#Para generar reporte por módulos, almacenar las calificaciones de cada modulo y sacar datos correspondientes a ponderación de [0-5, 6, 7, 8, 9, 10] (estos serán los labels)
-	labels2 = ['0-5', 6, 7, 8, 9, 10]
-	ev, mat1, ics, ev2, mat2, hmi, dc1, mat3, hmii, liti, dc2, mat4, esm, lit2, geog, huc, cc = [], [], [], [], [] ,[] ,[], [], [], [], [], [], [], [], [], [], []
-	for m in Estadistica_modulos:
-		ev.append(float(m.prom_ev1))
-		mat1.append(float(m.prom_mat1))
-		ics.append(float(m.prom_icsp))
-		ev2.append(float(m.prom_ev2))
-		mat2.append(float(m.prom_mat2))
-		hmi.append(float(m.prom_hmi))
-		dc1.append(float(m.prom_dc1))
-		mat3.append(float(m.prom_mat3))
-		hmii.append(float(m.prom_hmii))
-		liti.append(float(m.prom_liti))
-		dc2.append(float(m.prom_dc2))
-		mat4.append(float(m.prom_mat4))
-		esm.append(float(m.prom_esm))
-		lit2.append(float(m.prom_lit2))
-		geog.append(float(m.prom_geog))
-		huc.append(float(m.prom_huc))
-		cc.append(float(m.prom_cc))
-	#Se procede a buscar en el arreglo y llevar conteo de cuantos pertenecen a la ponderación [0-5, 6, 7, 8, 9, 10]
-	f = s = sv = e = n = t = 0 #[0-5, 6, 7, 8, 9, 10]
-	#Se crea un solo arreglo con todos los modulos y sus promedios (ev[6,7,6,1,2,], mat1[10,9,5,4] => arr[[],[]])
-	totalAlumnos = len(ev)
-	arr = [ev, mat1, ics, ev2, mat2, hmi, dc1, mat3, hmii, liti, dc2, mat4, esm, lit2, geog, huc, cc]
-	data2 = []
-	for row in arr:
-		for elem in row:
-			if elem >= 0 and elem < 6:
-				f += 1
-			if elem >= 6 and elem < 7:
-				s += 1
-			if elem >= 7 and elem < 8:
-				sv += 1
-			if elem >= 8 and elem < 9:
-				e += 1
-			if elem >= 9 and elem < 10:
-				n += 1
-			if elem == 10:
-				t += 1
-		p2 = [f, s, sv, e, n, t]
-		data2.append(p2)
-		f = s = sv = e = n = t = 0
-	#data2 contiene los arreglos con los conteos de cada modulo mat1=[16,11,10,10,5,0]
-	print(totalAlumnos)
-	ir = 0
-	idMod = 1
-	labels3 = []
-	data3 = []
-	for row in arr:
-		for elem in row:
-			if elem < 6:
-				ir += 1
-		data3.append(ir)
-		labels3.append(idMod)
-		idMod += 1
-		ir = 0
-	#labels3 tiene el id del modulo
-	#data3 tiene los indices de reprobacion por modulo (en el orden de los id de los modulos)
-	
-	#Se debe de filtrar los arreglos de data3 y labels3 dejando solo los que tengan indice de reprobacion real -> no sea 0 ni sea igual al total de alumnos (modulo no evaluado)
-	#Para obtener y generar los indices de los modulos con mayor reprobacion
-	#Se hará uso de arr, que contiene todos los promedios de todos los modulos de la institución
-	auxData3 = []
-	auxLabels3 = []
-	for idx, i in enumerate(data3):
-		if i !=0 and i != totalAlumnos:
-			auxData3.append(i)
-			auxLabels3.append(labels[idx])
-			#auxLabels3.append(idx+1)
-	#auxLabels3 contiene los id de los modulos con indice de reprobacion ya filtrado
-	#auxData3 contiene los indices de reprobacion de los modulos correspondientes
-
-
 	if not request.user.is_authenticated:
 			return HttpResponseRedirect(reverse('login'))
 	usuarioLogueado = request.user
+
+	Alumnos = Alumno.objects.filter(cct = request.user.last_name) #TODO:Cambiar cuando se actualice los campos a cct
+	Usuarios = CustomUser.objects.all()
+	Archivos = Archivo.objects.all()
+	Modulos = Modulo.objects.all()
+	Asignaturas = Asignatura.objects.all()
+	
+	#Se filtra la tabla de estadística para encontrar los registros correspondientes a la institución (request.user.last_name)
+	try:
+		if usuarioLogueado.tipo_usuario == '6':
+			Estadistica_modulos = Estadistica_modulo.objects.filter(nombre_escuela = request.user.municipio).order_by('id_estadistica_modulo')
+		if usuarioLogueado.tipo_usuario == '1':
+			Estadistica_modulos = Estadistica_modulo.objects.filter(cct = request.user.last_name).order_by('id_estadistica_modulo')
+	except:
+		Estadistica_modulos = None
+
+	#Se llama la función para generar los reportes declarando antes las variables a usar
+	totalAlumnos = 0
+	labels, data, labels2, data2, auxData3, auxLabels3 = [], [], [], [], [], []
+	labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos = generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos)
 
 	#Si el usuario logeado es un docente tipo_usuario = 6, entonces se procede a asignar el idDocente correspondiente
 	if usuarioLogueado.tipo_usuario == '6':
@@ -294,103 +182,329 @@ def consultaAlumnos(request):
 				idAlumno = field_value + 1
 			except:
 				idAlumno = 1
-			#try:
-			nuevoAlumno = Alumno(id_alumno = idAlumno, nombre_alumno = nombreAlumno, email = email, tel_fijo = telFijo, tel_celular = telCelular, curp_alumno = curp,
-			num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria, beca = beca, subsistema_nombre = subsistema)
-			nuevoAlumno.save()
-			nuevoAlumnoUser = CustomUser(password = contrasena, username = email, last_name = nombreAlumno, email = email, curp_rfc = curp,
-			municipio = nombreEscuela, celular = telCelular, tipo_usuario = 7, tipo_persona = 1)
-			#Código para guardar los archivos [acta, curp, y certificado] en la carpeta TODO: Guardar en la tabla archivo tambien
 			try:
-				acta = request.FILES['acta']
-				#fsActa = FileSystemStorage("media/TBC/Datos/Alumnos")
-				#nameActa = fsActa.save(acta.name, acta)
-				#urlActa = fsActa.url(nameActa)
-				#aqui guardar el registro en la tabla de archivos
-
-				#Se obtiene el id del archivo actual para incrementar en 1 e insertarlo
+				nuevoAlumno = Alumno(id_alumno = idAlumno, nombre_alumno = nombreAlumno, email = email, tel_fijo = telFijo, tel_celular = telCelular, curp_alumno = curp,
+				num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria, beca = beca, subsistema_nombre = subsistema)
+				nuevoAlumno.save()
+				nuevoAlumnoUser = CustomUser(password = contrasena, username = email, last_name = nombreAlumno, email = email, curp_rfc = curp,
+				municipio = nombreEscuela, celular = telCelular, tipo_usuario = 7, tipo_persona = 1, first_name = numMatricula)
+				#Código para guardar los archivos [acta, curp, y certificado] en la carpeta TODO: Guardar en la tabla archivo tambien
 				try:
-					field_name = 'id_archivo'
-					obj = Archivo.objects.last()
-					field_value = getattr(obj, field_name)
-					idArchivo = field_value + 1
+					acta = request.FILES['acta']
+					#Se obtiene el id del archivo actual para incrementar en 1 e insertarlo
+					try:
+						field_name = 'id_archivo'
+						obj = Archivo.objects.last()
+						field_value = getattr(obj, field_name)
+						idArchivo = field_value + 1
+					except:
+						idArchivo = 1
+					url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+acta.name #'/media/TBC/Datos/Alumnos/'+acta.name
+					nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = acta.name, tipo_archivo = 'Acta nacimiento', url = url, id_alumno = idAlumno)
+					nuevoArchivo.archivo = acta
+					nuevoArchivo.save()
 				except:
-					idArchivo = 1
-				
-				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+acta.name #'/media/TBC/Datos/Alumnos/'+acta.name
-				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = acta.name, tipo_archivo = 'Acta nacimiento', url = url, id_alumno = idAlumno)
-				nuevoArchivo.archivo = acta
-				nuevoArchivo.save()
-			except:
-				print('')
-			try:
-				curp = request.FILES['curpArchivo']
-				#fsCurp = FileSystemStorage("media/TBC/Datos/Alumnos")
-				#nameCurp = fsCurp.save(curp.name, curp)
-				#urlCurp = fsCurp.url(nameCurp)
-				#aqui guardar el registro en la tabla de archivos
-
+					print('')
 				try:
-					field_name = 'id_archivo'
-					obj = Archivo.objects.last()
-					field_value = getattr(obj, field_name)
-					idArchivo = field_value + 1
+					curp = request.FILES['curpArchivo']
+					try:
+						field_name = 'id_archivo'
+						obj = Archivo.objects.last()
+						field_value = getattr(obj, field_name)
+						idArchivo = field_value + 1
+					except:
+						idArchivo = 1
+					url =  'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+curp.name #'/media/TBC/Datos/Alumnos/'+curp.name
+					nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = curp.name, tipo_archivo = 'Curp', url = url, id_alumno = idAlumno)
+					nuevoArchivo.archivo = curp
+					nuevoArchivo.save()
 				except:
-					idArchivo = 1
-				
-				url =  'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+curp.name #'/media/TBC/Datos/Alumnos/'+curp.name
-				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = curp.name, tipo_archivo = 'Curp', url = url, id_alumno = idAlumno)
-				nuevoArchivo.archivo = curp
-				nuevoArchivo.save()
-			except:
-				print('')
-			try:
-				certificado = request.FILES['certificado']
-				#fsCertificado = FileSystemStorage("media/TBC/Datos/Alumnos")
-				#nameCertificado = fsCertificado.save(certificado.name, certificado)
-				#urlCertificado = fsCertificado.url(nameCertificado)
-				#aqui guardar el registro en la tabla de archivos
-
+					print('')
 				try:
-					field_name = 'id_archivo'
-					obj = Archivo.objects.last()
-					field_value = getattr(obj, field_name)
-					idArchivo = field_value + 1
+					certificado = request.FILES['certificado']
+					#aqui guardar el registro en la tabla de archivos
+					try:
+						field_name = 'id_archivo'
+						obj = Archivo.objects.last()
+						field_value = getattr(obj, field_name)
+						idArchivo = field_value + 1
+					except:
+						idArchivo = 1
+					url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+certificado.name #'/media/TBC/Datos/Alumnos/'+certificado.name
+					nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = certificado.name, tipo_archivo = 'Certificado secundaria', url = url, id_alumno = idAlumno)
+					nuevoArchivo.archivo = certificado
+					nuevoArchivo.save()
 				except:
-					idArchivo = 1
-				
-				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+certificado.name #'/media/TBC/Datos/Alumnos/'+certificado.name
-				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = certificado.name, tipo_archivo = 'Certificado secundaria', url = url, id_alumno = idAlumno)
-				nuevoArchivo.archivo = certificado
-				nuevoArchivo.save()
-			except:
-				print('')
-			try:
-				subsistema_archivo = request.FILES['subsistema']
+					print('')
 				try:
-					field_name = 'id_archivo'
-					obj = Archivo.objects.last()
-					field_value = getattr(obj, field_name)
-					idArchivo = field_value + 1
+					subsistema_archivo = request.FILES['subsistema']
+					try:
+						field_name = 'id_archivo'
+						obj = Archivo.objects.last()
+						field_value = getattr(obj, field_name)
+						idArchivo = field_value + 1
+					except:
+						idArchivo = 1
+					url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+subsistema_archivo.name #'/media/TBC/Datos/Alumnos/'+subsistema_archivo.name
+					nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = subsistema_archivo.name, tipo_archivo = 'Subsistema', url = url, id_alumno = idAlumno)
+					nuevoArchivo.archivo = subsistema_archivo
+					nuevoArchivo.save()
 				except:
-					idArchivo = 1
-				url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+subsistema_archivo.name #'/media/TBC/Datos/Alumnos/'+subsistema_archivo.name
-				nuevoArchivo = Archivo(id_archivo = idArchivo, nombre_archivo = subsistema_archivo.name, tipo_archivo = 'Subsistema', url = url, id_alumno = idAlumno)
-				nuevoArchivo.archivo = subsistema_archivo
-				nuevoArchivo.save()
+					print('')
+				nuevoAlumnoUser.save()
+				sweetify.success(request, 'Se insertó', text='El alumno fue registrado exitosamente', persistent='Ok', icon="success")
 			except:
-				print('')
-			nuevoAlumnoUser.save()
-			sweetify.success(request, 'Se insertó', text='El alumno fue registrado exitosamente', persistent='Ok', icon="success")
-			#except:
-			#	sweetify.error(request, 'No se insertó', text='Ocurrió un error', persistent='Ok', icon="error")
+				sweetify.error(request, 'No se insertó', text='Ocurrió un error', persistent='Ok', icon="error")
 		else:
 			#Se pretende actualizar un registro existente
 			Alumno.objects.filter(id_alumno = idAlumno).update(nombre_alumno = nombreAlumno, email = email, tel_fijo = telFijo, tel_celular = telCelular, curp_alumno = curp,
 				num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria, beca = beca, subsistema_nombre = subsistema)
 			#CustomUser.objects.filter(email = email).update(password = contrasena)
 			sweetify.success(request, 'Se actualizó', text='El alumno fue actualizado exitosamente', persistent='Ok', icon="success")
-	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos, 'modulo':Modulos, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, 'data3':auxData3, 'labels3':auxLabels3 })
+	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos, 'modulo':Modulos, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, 'data3':auxData3, 'labels3':auxLabels3, 'totalAlumnos':totalAlumnos })
+
+#Función para generar los reportes
+def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos):	
+	#Para generar un reporte por módulos de manera general
+	labels = []
+	data = []
+	try:
+		size = len(Estadistica_modulos)
+		if size == 0:
+			size = 1
+	except:
+		size = 1
+	#Para generar los promedios por modulos, se declaran variables para la suma y promedio de cada asignatura (32)
+	#TODO:Analizar cambiarlos por arreglos y/o del modelo traido de la bd de los modelos (añadir clave de campo) no c pudo
+	sum_mat1 = sum_fis1 = sum_ev1 = sum_met_inv = sum_tlr1 = sum_ing1 = sum_mat2 = sum_fis2 = sum_ev2 = sum_ics = sum_tlr2 = sum_ing2 = sum_mat3 = sum_q1 = sum_bio1 = sum_hm1 = sum_lit1 = sum_ing3 = sum_sft1 = sum_mat4 = sum_q2 = sum_bio2 = sum_hm2 = sum_lit2 = sum_ing4 = sum_sft2 = sum_geog = sum_huc = sum_cdemyce = sum_cdecsyh = sum_cdec = sum_sft3 = sum_filos = sum_ema = sum_met_invx = sum_derech2 = sum_cc2 = sum_cs2 = sum_proyes2 =  0
+	prom_mat1 = prom_fis1 = prom_ev1 = prom_met_inv = prom_tlr1 = prom_ing1 = prom_mat2 = prom_fis2 = prom_ev2 = prom_ics = prom_tlr2 = prom_ing2 = prom_mat3 = prom_q1 = prom_bio1 = prom_hm1 = prom_lit1 = prom_ing3 = prom_sft1 = prom_mat4 = prom_q2 = prom_bio2 = prom_hm2 = prom_lit2 = prom_ing4 = prom_sft2 = prom_geog = prom_huc = prom_cdemyce = prom_cdecsyh = prom_cdec = prom_sft3 = prom_filos = prom_ema = prom_met_invx = prom_derech2 = prom_cc2 = prom_cs2 = prom_proyes2 =  0
+	#Se acumulan los promedios por cada asignatura
+	for e in Estadistica_modulos:
+		sum_mat1 += float(e.prom_mat1)
+		sum_fis1 += float(e.prom_fis1)
+		sum_ev1 += float(e.prom_ev1)
+		sum_met_inv += float(e.prom_met_inv)
+		sum_tlr1 += float(e.prom_tlr1)
+		sum_ing1 += float(e.prom_ing1)
+		sum_mat2 += float(e.prom_mat2)
+		sum_fis2 += float(e.prom_fis2)
+		sum_ev2 += float(e.prom_ev2)
+		sum_ics += float(e.prom_ics)
+		sum_tlr2 += float(e.prom_tlr2)
+		sum_ing2 += float(e.prom_ing2)
+		sum_mat3 += float(e.prom_mat3)
+		sum_q1 += float(e.prom_q1)
+		sum_bio1 += float(e.prom_bio1)
+		sum_hm1 += float(e.prom_hm1)
+		sum_lit1 += float(e.prom_lit1)
+		sum_ing3 += float(e.prom_ing3)
+		sum_sft1 += float(e.prom_sft1)
+		sum_mat4 += float(e.prom_mat4)
+		sum_q2 += float(e.prom_q2)
+		sum_bio2 += float(e.prom_bio2)
+		sum_hm2 += float(e.prom_hm2)
+		sum_lit2 += float(e.prom_lit2)
+		sum_ing4 += float(e.prom_ing4)
+		sum_sft2 += float(e.prom_sft2)
+		sum_geog += float(e.prom_geog)
+		sum_huc += float(e.prom_huc)
+		sum_cdemyce += float(e.prom_cdemyce)
+		sum_cdecsyh += float(e.prom_cdecsyh)
+		sum_cdec += float(e.prom_cdec)
+		sum_sft3 += float(e.prom_sft3)
+		sum_filos += float(e.prom_filos)
+		sum_ema += float(e.prom_ema)
+		sum_met_invx += float(e.prom_met_invx)
+		sum_derech2 += float(e.prom_derech2)
+		sum_cc2 += float(e.prom_cc2)
+		sum_cs2 += float(e.prom_cs2)
+		sum_proyes2 += float(e.prom_proyes2)
+	#Calcular los promedios de las sumas de cada asignatura entre los registros
+	prom_mat1 = sum_mat1 / size
+	prom_fis1 = sum_fis1 / size
+	prom_ev1 = sum_ev1 / size
+	prom_met_inv = sum_met_inv / size
+	prom_tlr1 = sum_tlr1 / size
+	prom_ing1 = sum_ing1 / size
+	prom_mat2 = sum_mat2 / size
+	prom_fis2 = sum_fis2 / size
+	prom_ev2 = sum_ev2 / size
+	prom_ics = sum_ics / size
+	prom_tlr2 = sum_tlr2 / size
+	prom_ing2 = sum_ing2 / size
+	prom_mat3 = sum_mat3 / size
+	prom_q1 = sum_q1 / size
+	prom_bio1 = sum_bio1 / size
+	prom_hm1 = sum_hm1 / size
+	prom_lit1 = sum_lit1 / size
+	prom_ing3 = sum_ing3 / size
+	prom_sft1 = sum_sft1 / size
+	prom_mat4 = sum_mat4 / size
+	prom_q2 = sum_q2 / size
+	prom_bio2 = sum_bio2 / size
+	prom_hm2 = sum_hm2 / size
+	prom_lit2 = sum_lit2 / size
+	prom_ing4 = sum_ing4 / size
+	prom_sft2 = sum_sft2 / size
+	prom_geog = sum_geog / size
+	prom_huc = sum_huc / size
+	prom_cdemyce = sum_cdemyce / size
+	prom_cdecsyh = sum_cdecsyh / size
+	prom_cdec = sum_cdec / size
+	prom_sft3 = sum_sft3 / size
+	prom_filos = sum_filos / size
+	prom_ema = sum_ema / size
+	prom_met_invx = sum_met_invx / size
+	prom_derech2 = sum_derech2 / size
+	prom_cc2 = sum_cc2 / size
+	prom_cs2 = sum_cs2 / size
+	prom_proyes2 = sum_proyes2 / size
+	#data contiene todos los promedios de todas las asignaturas
+	data = [prom_mat1,  prom_fis1,  prom_ev1,  prom_met_inv,  prom_tlr1,  prom_ing1,  prom_mat2,  prom_fis2,  prom_ev2, prom_ics, prom_tlr2,  prom_ing2,  prom_mat3,  prom_q1,  prom_bio1,  prom_hm1,  prom_lit1,  prom_ing3,  prom_sft1,  prom_mat4,  prom_q2,  prom_bio2,  prom_hm2,  prom_lit2,  prom_ing4,  prom_sft2,  prom_geog,  prom_huc,  prom_cdemyce,  prom_cdecsyh,  prom_cdec,  prom_sft3,  prom_filos,  prom_ema,  prom_met_invx,  prom_derech2,  prom_cc2,  prom_cs2,  prom_proyes2]
+	#Para acomodar las asignaturas x modulo
+	mod1 = (prom_mat1 + prom_fis1)/2
+	mod2 = (prom_ev1 + prom_met_inv)/2
+	mod3 = (prom_tlr1 + prom_ing1)/2
+	mod4 = (prom_mat2 + prom_fis2)/2
+	mod5 = (prom_ev2 + prom_ics)/2
+	mod6 = (prom_tlr2 + prom_ing2)/2
+	mod7 = (prom_mat3 + prom_q1 + prom_bio1)/3
+	mod8 = prom_hm1
+	mod9 = (prom_lit1 + prom_ing3)/2
+	mod10 = prom_sft1
+	mod11 = (prom_mat4 + prom_q2 + prom_bio2)/3
+	mod12 = prom_hm2
+	mod13 = (prom_lit2 + prom_ing4)/2
+	mod14 = prom_sft2
+	mod15 = prom_geog
+	mod16 = prom_huc
+	mod17 = prom_cdemyce
+	mod18 = prom_cdecsyh
+	mod19 = prom_cdec
+	mod20 = prom_sft3
+	#data ahora contiene todos los promedios de todos los modulos
+	data = [mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, mod10, mod11, mod12, mod13, mod14, mod15, mod16, mod17, mod18, mod19, mod20]
+	for mod in Modulos:
+		labels.append(mod.nombre_modulo)
+	#Para generar reporte por módulos, almacenar las calificaciones de cada modulo y sacar datos correspondientes a ponderación de [0-5, 6, 7, 8, 9, 10] (estos serán los labels)
+	labels2 = ['0-5', 6, 7, 8, 9, 10]
+	mat1, fis1, ev1, met_inv, tlr1, ing1, mat2, fis2, ev2, ics ,tlr2, ing2, mat3, q1, bio1, hm1, lit1, ing3, sft1, mat4, q2, bio2, hm2, lit2, ing4, sft2, geog, huc, cdemyce, cdecsyh, cdec, sft3, filos, ema, met_invx, derech2, cc2, cs2, proyes2 = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
+	#Se almacenan todas los promedios
+	for e in Estadistica_modulos:
+		mat1.append(float(e.prom_mat1))
+		fis1.append(float(e.prom_fis1))
+		ev1.append(float(e.prom_ev1))
+		met_inv.append(float(e.prom_met_inv))
+		tlr1.append(float(e.prom_tlr1))
+		ing1.append(float(e.prom_ing1))
+		mat2.append(float(e.prom_mat2))
+		fis2.append(float(e.prom_fis2))
+		ev2.append(float(e.prom_ev2))
+		ics.append(float(e.prom_ics))
+		tlr2.append(float(e.prom_tlr2))
+		ing2.append(float(e.prom_ing2))
+		mat3.append(float(e.prom_mat3))
+		q1.append(float(e.prom_q1))
+		bio1.append(float(e.prom_bio1))
+		hm1.append(float(e.prom_hm1))
+		lit1.append(float(e.prom_lit1))
+		ing3.append(float(e.prom_ing3))
+		sft1.append(float(e.prom_sft1))
+		mat4.append(float(e.prom_mat4))
+		q2.append(float(e.prom_q2))
+		bio2.append(float(e.prom_bio2))
+		hm2.append(float(e.prom_hm2))
+		lit2.append(float(e.prom_lit2))
+		ing4.append(float(e.prom_ing4))
+		sft2.append(float(e.prom_sft2))
+		geog.append(float(e.prom_geog))
+		huc.append(float(e.prom_huc))
+		cdemyce.append(float(e.prom_cdemyce))
+		cdecsyh.append(float(e.prom_cdecsyh))
+		cdec.append(float(e.prom_cdec))
+		sft3.append(float(e.prom_sft3))
+		filos.append(float(e.prom_filos))
+		ema.append(float(e.prom_ema))
+		met_invx.append(float(e.prom_met_invx))
+		derech2.append(float(e.prom_derech2))
+		cc2.append(float(e.prom_cc2))
+		cs2.append(float(e.prom_cs2))
+		proyes2.append(float(e.prom_proyes2))
+	#Se procede a buscar en el arreglo y llevar conteo de cuantos pertenecen a la ponderación [0-5, 6, 7, 8, 9, 10]
+	f = s = sv = e = n = t = 0 #[0-5, 6, 7, 8, 9, 10]
+	#Se genera el total de alumnos por institución
+	totalAlumnos = len(ev1)
+	#Se acomodan los modulos respecto a sus asignaturas
+	mod1 = mat1 + fis1
+	mod2 = ev1 + met_inv
+	mod3 = tlr1 + ing1
+	mod4 = mat2 + fis2
+	mod5 = ev2 + ics
+	mod6 = tlr2 + ing2
+	mod7 = mat3 + q1 + bio1
+	mod8 = hm1
+	mod9 = lit1 + ing3
+	mod10 = sft1
+	mod11 = mat4 + q2 + bio2
+	mod12 = hm2
+	mod13 = lit2 + ing4
+	mod14 = sft2
+	mod15 = geog
+	mod16 = huc
+	mod17 = cdemyce
+	mod18 = cdecsyh
+	mod19 = cdec
+	mod20 = sft3
+	#arr contendrá los arreglos de todos los prmedios por modulo i.e -> mod1[6,7,8.2,9,5,1,2,3]
+	arr = [mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, mod10, mod11, mod12, mod13, mod14, mod15, mod16, mod17, mod18, mod19, mod20]
+	data2 = []
+	#Ciclo para recorrer cada elemento de arr y evaluar a que ponderacion pertenece
+	for row in arr:
+		for elem in row:
+			if elem >= 0 and elem < 6:
+				f += 1
+			if elem >= 6 and elem < 7:
+				s += 1
+			if elem >= 7 and elem < 8:
+				sv += 1
+			if elem >= 8 and elem < 9:
+				e += 1
+			if elem >= 9 and elem < 10:
+				n += 1
+			if elem == 10:
+				t += 1
+		p2 = [f, s, sv, e, n, t]
+		data2.append(p2)
+		f = s = sv = e = n = t = 0
+	#data2 contiene los arreglos con los conteos de cada modulo mat1=[16,11,10,10,5,0]
+	#Para generar el indice de reprobacion
+	ir = 0
+	idMod = 1
+	labels3 = []
+	data3 = []
+	for row in arr:
+		for elem in row:
+			if elem < 6:
+				ir += 1
+		data3.append(ir)
+		labels3.append(idMod)
+		idMod += 1
+		ir = 0
+	#labels3 tiene el id del modulo
+	#data3 tiene los indices de reprobacion por modulo (en el orden de los id de los modulos)
+	#Se debe de filtrar los arreglos de data3 y labels3 dejando solo los que tengan indice de reprobacion real -> no sea 0 ni sea igual al total de alumnos (modulo no evaluado)
+	#Para obtener y generar los indices de los modulos con mayor reprobacion
+	#Se hará uso de arr, que contiene todos los promedios de todos los modulos de la institución
+	auxData3 = []
+	auxLabels3 = []
+	for idx, i in enumerate(data3):
+		if i != 0 and i != totalAlumnos:
+			auxPorcentaje = (i * 100) / totalAlumnos
+			auxData3.append(data3[idx])
+			auxLabels3.append(labels[idx])
+	#auxLabels3 contiene los nombres de los modulos con indice de reprobacion ya filtrado
+	#auxData3 contiene los indices de reprobacion de los modulos correspondientes
+	return labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos
 
 #Función para eliminar un alumnos, dado un id (id como parámetro)
 
@@ -1505,9 +1619,6 @@ def generarCertificado(request):
 def materialDidactico(request):
 	return render(request, 'materialDidactico.html', {})
 
-def subirEstadistica(request):
-	return render(request, 'subirEstadistica.html', {})
-
 def estadistica(request):
 	return render(request, 'estadistica.html', {})
 
@@ -1518,3 +1629,326 @@ Fin de la ección de vistas de prueba TODO: Eliminarlas al final
 #Fin de Vistas de sección de vistas de la primer versión
 
 #Comienza sección de vistas de la segunda versión
+
+#Función para que el docente suba el archivo de la información estadística con formato ya establecido
+def subirEstadistica(request):
+	if not request.user.is_authenticated:
+			return HttpResponseRedirect(reverse('login'))
+	usuarioLogueado = request.user
+
+	#Si el usuario logeado es un docente tipo_usuario = 6, entonces se procede a asignar el idDocente correspondiente
+	if usuarioLogueado.tipo_usuario == '6':
+		try:
+			#Para sacar el idDocente de la tabla de tbc con base en el registro CustomUser
+			field_name = 'id_docente'
+			obj = Docente.objects.get(email = request.user.email) #TODO: Cambiar last_name ya que se la haya dado más espacio
+			field_value = getattr(obj, field_name)
+			idDocente = field_value
+		except:
+			print('')
+	
+	#Si el usuario logeado es un alumno tipo_usuario = 7, entonces se procede a asignar el idAlumno correspondiente
+	if usuarioLogueado.tipo_usuario == '7':
+		try:
+			#Para sacar el idAlumno de la tabla de tbc con base en el registro de CustomUser
+			field_name = 'id_alumno'
+			obj = Alumno.objects.get(email = request.user.email) #TODO:Cambiar last_name ya que se le haya dado más espacio
+			field_value = getattr(obj, field_name)
+			idAlumnoI = field_value
+		except:
+			print('')
+	Modulos = Modulo.objects.all()
+	Docentes = Docente.objects.all()
+	Archivo_e = Archivo_estadistica.objects.filter(tipo_archivo='estadistica').order_by('id_archivo_estadistica')
+	if request.method == 'POST':
+		fecha = request.POST['fecha']
+		nombre_archivo = request.POST['nombreArchivo']
+		try:
+			archivo = request.FILES['archivo']
+			try:
+				field_name = 'id_archivo_estadistica'
+				obj = Archivo_estadistica.objects.last()
+				field_value = getattr(obj, field_name)
+				idArchivo = field_value + 1
+			except:
+				idArchivo = 1
+			url = 'https://storage.googleapis.com/plataformase.appspot.com/TBC/archivos/'+archivo.name #'/media/TBC/Datos/Alumnos/'+archivo.name
+			nuevoArchivo = Archivo_estadistica(id_archivo_estadistica = idArchivo, nombre_archivo = nombre_archivo, nombre_archivoL = archivo.name, tipo_archivo = 'estadistica', url = url, id_docente = idDocente, fecha = fecha)
+			nuevoArchivo.archivo = archivo
+			nuevoArchivo.save()
+		except:
+			print('error al importar archivo')
+		
+	return render(request, 'subirEstadistica.html', { 'usuario':usuarioLogueado, 'modulo':Modulos, 'docente':Docentes, 'archivoEstadistica':Archivo_e })
+
+#Funcion para mostrar cuando inicie sesión un alumno
+def alumno(request, id):
+	if not request.user.is_authenticated:
+			return HttpResponseRedirect(reverse('login'))
+	usuarioLogueado = request.user
+	Modulos = Modulo.objects.all()
+	Asignaturas = Asignatura.objects.all().order_by('id_asignatura')
+	AlumnoS = Alumno.objects.get(id_alumno = id)
+	Estadistica_alumno = Estadistica_modulo.objects.get(num_matricula = usuarioLogueado.first_name)
+
+	#Se llama la función para generar los reportes declarando antes las variables a usar
+	totalAlumnos = 0
+	labels, data, labels2, data2, auxData3, auxLabels3 = [], [], [], [], [], []
+	labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos = generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_alumno, Modulos, totalAlumnos, Asignaturas)
+
+	return render(request, 'alumno.html', { 'usuario':usuarioLogueado, 'modulo':Modulos, 'alumnoSel':AlumnoS, 'estadistica':Estadistica_alumno, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, })	
+
+#Función para generar los reportes
+def generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos, Asignaturas):	
+	#Para generar un reporte por módulos de manera general
+	labels = []
+	data = []
+	try:
+		size = len(Estadistica_modulos)
+		if size == 0:
+			size = 1
+	except:
+		size = 1
+	#Para generar los promedios por modulos, se declaran variables para la suma y promedio de cada asignatura (32)
+	#TODO:Analizar cambiarlos por arreglos y/o del modelo traido de la bd de los modelos (añadir clave de campo) no c pudo
+	sum_mat1 = sum_fis1 = sum_ev1 = sum_met_inv = sum_tlr1 = sum_ing1 = sum_mat2 = sum_fis2 = sum_ev2 = sum_ics = sum_tlr2 = sum_ing2 = sum_mat3 = sum_q1 = sum_bio1 = sum_hm1 = sum_lit1 = sum_ing3 = sum_sft1 = sum_mat4 = sum_q2 = sum_bio2 = sum_hm2 = sum_lit2 = sum_ing4 = sum_sft2 = sum_geog = sum_huc = sum_cdemyce = sum_cdecsyh = sum_cdec = sum_sft3 = sum_filos = sum_ema = sum_met_invx = sum_derech2 = sum_cc2 = sum_cs2 = sum_proyes2 =  0
+	prom_mat1 = prom_fis1 = prom_ev1 = prom_met_inv = prom_tlr1 = prom_ing1 = prom_mat2 = prom_fis2 = prom_ev2 = prom_ics = prom_tlr2 = prom_ing2 = prom_mat3 = prom_q1 = prom_bio1 = prom_hm1 = prom_lit1 = prom_ing3 = prom_sft1 = prom_mat4 = prom_q2 = prom_bio2 = prom_hm2 = prom_lit2 = prom_ing4 = prom_sft2 = prom_geog = prom_huc = prom_cdemyce = prom_cdecsyh = prom_cdec = prom_sft3 = prom_filos = prom_ema = prom_met_invx = prom_derech2 = prom_cc2 = prom_cs2 = prom_proyes2 =  0
+	#Se acumulan los promedios por cada asignatura
+	#for e in Estadistica_modulos:
+	prom_mat1 = float(Estadistica_modulos.prom_mat1)
+	prom_fis1 = float(Estadistica_modulos.prom_fis1)
+	prom_ev1 = float(Estadistica_modulos.prom_ev1)
+	prom_met_inv = float(Estadistica_modulos.prom_met_inv)
+	prom_tlr1 = float(Estadistica_modulos.prom_tlr1)
+	prom_ing1 = float(Estadistica_modulos.prom_ing1)
+	prom_mat2 = float(Estadistica_modulos.prom_mat2)
+	prom_fis2 = float(Estadistica_modulos.prom_fis2)
+	prom_ev2 = float(Estadistica_modulos.prom_ev2)
+	prom_ics = float(Estadistica_modulos.prom_ics)
+	prom_tlr2 = float(Estadistica_modulos.prom_tlr2)
+	prom_ing2 = float(Estadistica_modulos.prom_ing2)
+	prom_mat3 = float(Estadistica_modulos.prom_mat3)
+	prom_q1 = float(Estadistica_modulos.prom_q1)
+	prom_bio1 = float(Estadistica_modulos.prom_bio1)
+	prom_hm1 = float(Estadistica_modulos.prom_hm1)
+	prom_lit1 = float(Estadistica_modulos.prom_lit1)
+	prom_ing3 = float(Estadistica_modulos.prom_ing3)
+	prom_sft1 = float(Estadistica_modulos.prom_sft1)
+	prom_mat4 = float(Estadistica_modulos.prom_mat4)
+	prom_q2 = float(Estadistica_modulos.prom_q2)
+	prom_bio2 = float(Estadistica_modulos.prom_bio2)
+	prom_hm2 = float(Estadistica_modulos.prom_hm2)
+	prom_lit2 = float(Estadistica_modulos.prom_lit2)
+	prom_ing4 = float(Estadistica_modulos.prom_ing4)
+	prom_sft2 = float(Estadistica_modulos.prom_sft2)
+	prom_geog = float(Estadistica_modulos.prom_geog)
+	prom_huc = float(Estadistica_modulos.prom_huc)
+	prom_cdemyce = float(Estadistica_modulos.prom_cdemyce)
+	prom_cdecsyh = float(Estadistica_modulos.prom_cdecsyh)
+	prom_cdec = float(Estadistica_modulos.prom_cdec)
+	prom_sft3 = float(Estadistica_modulos.prom_sft3)
+	prom_filos = float(Estadistica_modulos.prom_filos)
+	prom_ema = float(Estadistica_modulos.prom_ema)
+	prom_met_invx = float(Estadistica_modulos.prom_met_invx)
+	prom_derech2 = float(Estadistica_modulos.prom_derech2)
+	prom_cc2 = float(Estadistica_modulos.prom_cc2)
+	prom_cs2 = float(Estadistica_modulos.prom_cs2)
+	prom_proyes2 = float(Estadistica_modulos.prom_proyes2)
+	#Calcular los promedios de las sumas de cada asignatura entre los registros
+	# prom_mat1 = sum_mat1 / size
+	# prom_fis1 = sum_fis1 / size
+	# prom_ev1 = sum_ev1 / size
+	# prom_met_inv = sum_met_inv / size
+	# prom_tlr1 = sum_tlr1 / size
+	# prom_ing1 = sum_ing1 / size
+	# prom_mat2 = sum_mat2 / size
+	# prom_fis2 = sum_fis2 / size
+	# prom_ev2 = sum_ev2 / size
+	# prom_ics = sum_ics / size
+	# prom_tlr2 = sum_tlr2 / size
+	# prom_ing2 = sum_ing2 / size
+	# prom_mat3 = sum_mat3 / size
+	# prom_q1 = sum_q1 / size
+	# prom_bio1 = sum_bio1 / size
+	# prom_hm1 = sum_hm1 / size
+	# prom_lit1 = sum_lit1 / size
+	# prom_ing3 = sum_ing3 / size
+	# prom_sft1 = sum_sft1 / size
+	# prom_mat4 = sum_mat4 / size
+	# prom_q2 = sum_q2 / size
+	# prom_bio2 = sum_bio2 / size
+	# prom_hm2 = sum_hm2 / size
+	# prom_lit2 = sum_lit2 / size
+	# prom_ing4 = sum_ing4 / size
+	# prom_sft2 = sum_sft2 / size
+	# prom_geog = sum_geog / size
+	# prom_huc = sum_huc / size
+	# prom_cdemyce = sum_cdemyce / size
+	# prom_cdecsyh = sum_cdecsyh / size
+	# prom_cdec = sum_cdec / size
+	# prom_sft3 = sum_sft3 / size
+	# prom_filos = sum_filos / size
+	# prom_ema = sum_ema / size
+	# prom_met_invx = sum_met_invx / size
+	# prom_derech2 = sum_derech2 / size
+	# prom_cc2 = sum_cc2 / size
+	# prom_cs2 = sum_cs2 / size
+	# prom_proyes2 = sum_proyes2 / size
+	#data contiene todos los promedios de todas las asignaturas
+	data = [prom_mat1,  prom_fis1,  prom_ev1,  prom_met_inv,  prom_tlr1,  prom_ing1,  prom_mat2,  prom_fis2,  prom_ev2, prom_ics, prom_tlr2,  prom_ing2,  prom_mat3,  prom_q1,  prom_bio1,  prom_hm1,  prom_lit1,  prom_ing3,  prom_sft1,  prom_mat4,  prom_q2,  prom_bio2,  prom_hm2,  prom_lit2,  prom_ing4,  prom_sft2,  prom_geog,  prom_huc,  prom_cdemyce,  prom_cdecsyh,  prom_cdec,  prom_sft3,  prom_filos,  prom_ema,  prom_met_invx,  prom_derech2,  prom_cc2,  prom_cs2,  prom_proyes2]
+	#Para acomodar las asignaturas x modulo
+	mod1 = (prom_mat1 + prom_fis1)/2
+	mod2 = (prom_ev1 + prom_met_inv)/2
+	mod3 = (prom_tlr1 + prom_ing1)/2
+	mod4 = (prom_mat2 + prom_fis2)/2
+	mod5 = (prom_ev2 + prom_ics)/2
+	mod6 = (prom_tlr2 + prom_ing2)/2
+	mod7 = (prom_mat3 + prom_q1 + prom_bio1)/3
+	mod8 = prom_hm1
+	mod9 = (prom_lit1 + prom_ing3)/2
+	mod10 = prom_sft1
+	mod11 = (prom_mat4 + prom_q2 + prom_bio2)/3
+	mod12 = prom_hm2
+	mod13 = (prom_lit2 + prom_ing4)/2
+	mod14 = prom_sft2
+	mod15 = prom_geog
+	mod16 = prom_huc
+	mod17 = prom_cdemyce
+	mod18 = prom_cdecsyh
+	mod19 = prom_cdec
+	mod20 = prom_sft3
+	#data ahora contiene todos los promedios de todos los modulos
+	data = [mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, mod10, mod11, mod12, mod13, mod14, mod15, mod16, mod17, mod18, mod19, mod20]
+	for mod in Modulos:
+		labels.append(mod.nombre_modulo)
+	
+	#Para generar reporte por módulos, almacenar las calificaciones de cada modulo y sacar datos correspondientes a ponderación de [0-5, 6, 7, 8, 9, 10] (estos serán los labels)
+	#labels2 = ['0-5', 6, 7, 8, 9, 10]
+	for asi in Asignaturas:
+		labels2.append(asi.nombre_asignatura)
+	mat1, fis1, ev1, met_inv, tlr1, ing1, mat2, fis2, ev2, ics ,tlr2, ing2, mat3, q1, bio1, hm1, lit1, ing3, sft1, mat4, q2, bio2, hm2, lit2, ing4, sft2, geog, huc, cdemyce, cdecsyh, cdec, sft3, filos, ema, met_invx, derech2, cc2, cs2, proyes2 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	#Se almacenan todas los promedios
+	#for e in Estadistica_modulos:
+	mat1 = float(Estadistica_modulos.prom_mat1)
+	fis1 = float(Estadistica_modulos.prom_fis1)
+	ev1 = float(Estadistica_modulos.prom_ev1)
+	met_inv = float(Estadistica_modulos.prom_met_inv)
+	tlr1 = float(Estadistica_modulos.prom_tlr1)
+	ing1 = float(Estadistica_modulos.prom_ing1)
+	mat2 = float(Estadistica_modulos.prom_mat2)
+	fis2 = float(Estadistica_modulos.prom_fis2)
+	ev2 = float(Estadistica_modulos.prom_ev2)
+	ics = float(Estadistica_modulos.prom_ics)
+	tlr2 = float(Estadistica_modulos.prom_tlr2)
+	ing2 = float(Estadistica_modulos.prom_ing2)
+	mat3 = float(Estadistica_modulos.prom_mat3)
+	q1 = float(Estadistica_modulos.prom_q1)
+	bio1 = float(Estadistica_modulos.prom_bio1)
+	hm1 = float(Estadistica_modulos.prom_hm1)
+	lit1 = float(Estadistica_modulos.prom_lit1)
+	ing3 = float(Estadistica_modulos.prom_ing3)
+	sft1 = float(Estadistica_modulos.prom_sft1)
+	mat4 = float(Estadistica_modulos.prom_mat4)
+	q2 = float(Estadistica_modulos.prom_q2)
+	bio2 = float(Estadistica_modulos.prom_bio2)
+	hm2 = float(Estadistica_modulos.prom_hm2)
+	lit2 = float(Estadistica_modulos.prom_lit2)
+	ing4 = float(Estadistica_modulos.prom_ing4)
+	sft2 = float(Estadistica_modulos.prom_sft2)
+	geog = float(Estadistica_modulos.prom_geog)
+	huc = float(Estadistica_modulos.prom_huc)
+	cdemyce = float(Estadistica_modulos.prom_cdemyce)
+	cdecsyh = float(Estadistica_modulos.prom_cdecsyh)
+	cdec = float(Estadistica_modulos.prom_cdec)
+	sft3 = float(Estadistica_modulos.prom_sft3)
+	filos = float(Estadistica_modulos.prom_filos)
+	ema = float(Estadistica_modulos.prom_ema)
+	met_invx = float(Estadistica_modulos.prom_met_invx)
+	derech2 = float(Estadistica_modulos.prom_derech2)
+	cc2 = float(Estadistica_modulos.prom_cc2)
+	cs2 = float(Estadistica_modulos.prom_cs2)
+	proyes2 = float(Estadistica_modulos.prom_proyes2)
+	#Se procede a buscar en el arreglo y llevar conteo de cuantos pertenecen a la ponderación [0-5, 6, 7, 8, 9, 10]
+	f = s = sv = e = n = t = 0 #[0-5, 6, 7, 8, 9, 10]
+	#Se genera el total de alumnos por institución
+	totalAlumnos = 1
+	#Se acomodan los modulos respecto a sus asignaturas
+	#modM1 = mat1 + fis1
+	modM1, modM2, modM3, modM4, modM5, modM6, modM7, modM8, modM9, modM10, modM11, modM12, modM13, modM14, modM15, modM16, modM17, modM18, modM19, modM20,  = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
+	modM1.append(mat1)
+	modM1.append(fis1)
+	
+	modM2.append(ev1)
+	modM2.append(met_inv)
+	
+	modM3.append(tlr1)
+	modM3.append(ing1)
+
+	modM4.append(mat2)
+	modM4.append(fis2)
+
+	modM5.append(ev2)
+	modM5.append(ics)
+
+	modM6.append(tlr2)
+	modM6.append(ing2)
+
+	modM7.append(mat3)
+	modM7.append(q1)
+	modM7.append(bio1)
+
+	modM8.append(hm1)
+
+	modM9.append(lit1)
+	modM9.append(ing3)
+
+	modM10.append(sft1)
+
+	modM11.append(mat4)
+	modM11.append(q2)
+	modM11.append(bio2)
+
+	modM12.append(hm2)
+
+	modM13.append(lit2)
+	modM13.append(ing4)
+
+	modM14.append(sft2)
+
+	modM15.append(geog)
+
+	modM16.append(huc)
+
+	modM17.append(cdemyce)
+
+	modM18.append(cdecsyh)
+
+	modM19.append(cdec)
+
+	modM20.append(sft3)
+
+	#arr contendrá los arreglos de todos los prmedios por modMulo i.e -> modM1[6,7,8.2,9,5,1,2,3]
+	data2 = []
+	data2 = [modM1, modM2, modM3, modM4, modM5, modM6, modM7, modM8, modM9, modM10, modM11, modM12, modM13, modM14, modM15, modM16, modM17, modM18, modM19, modM20]
+	#data2 = []
+	#Ciclo para recorrer cada elemento de arr y evaluar a que ponderacion pertenece
+	# for row in arr:
+	# 	for elem in row:
+	# 		if elem >= 0 and elem < 6:
+	# 			f += 1
+	# 		if elem >= 6 and elem < 7:
+	# 			s += 1
+	# 		if elem >= 7 and elem < 8:
+	# 			sv += 1
+	# 		if elem >= 8 and elem < 9:
+	# 			e += 1
+	# 		if elem >= 9 and elem < 10:
+	# 			n += 1
+	# 		if elem == 10:
+	# 			t += 1
+	# 	p2 = [f, s, sv, e, n, t]
+	# 	data2.append(p2)
+	# 	f = s = sv = e = n = t = 0
+	#data2.append(modM1)
+	#data2 contiene los arreglos con los conteos de cada modulo mat1=[16,11,10,10,5,0]
+	return labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos

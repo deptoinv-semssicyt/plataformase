@@ -143,7 +143,13 @@
 	          							<i class="fa fa-edit"></i>
 	          							Consulta
 	          						</a>
-	          					</li>
+								</li>
+								<li>
+									<a href="/TBC/subir-estadistica">
+										<i class="fas fa-file-upload"></i>
+										Subir información estadística
+									</a>
+								</li>
 	          					<li  hidden>
 	          						<a href="/TBC/historial-academico">
 	          							<i class="fa fa-vcard"></i>
@@ -163,6 +169,11 @@
 									</a>	
 								</li>
 	          				</ul>
+						{% endif %}
+						{% if usuario.tipo_usuario == "1" %}
+							<li>
+								<a href="{% url 'perfil' %}" ><i class="fas fa-arrow-left"></i>&emsp;&nbsp;&nbsp;Volver</a>
+							</li>
 						{% endif %}
 						<li>
 							<a href="{% url 'logout' %}" ><i class="fas fa-sign-out-alt"></i>&emsp;&nbsp;&nbsp;Cerrar sesión</a>

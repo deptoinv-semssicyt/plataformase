@@ -45,7 +45,7 @@ urlpatterns = [
    #Fin de las urls de la primera versión
 
    #Comienzan urls de la segunda versión
-   
+   path('alumno/<int:id>', alumno, name="alumno"),
    #Fin de las urls de la segunda versión
    
 ]
