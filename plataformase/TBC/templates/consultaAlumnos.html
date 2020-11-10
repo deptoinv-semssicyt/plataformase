@@ -36,7 +36,11 @@
                                             <th scope="row" style="width: 27%;">{{ forloop.counter }}</th>
                                             <td style="width: 57.5%;">{{ al.nombre_alumno }}</td>
                                             <td style="width: 20%;">{{ al.num_matricula }}</td>
-                                            <td><button class="btn btn-outline-info btn-sm" type="submit" onclick="seleccionaAlumno('{{ al.id_alumno }}', '{{ al.nombre_alumno }}', '{{ al.email | default_if_none:'' }}', '{{ al.tel_fijo | default_if_none:'' }}', '{{ al.tel_celular| default_if_none:'' }}', '{{ al.curp_alumno| default_if_none:'' }}', '{{ al.nombre_escuela| default_if_none:'' }}', '{{ al.cct| default_if_none:'' }}', '{{ al.num_matricula| default_if_none:'' }}' , '{{ al.periodo2 | default_if_none:'' }}' , '{{ al.promedio_final | default_if_none:'' }}', '{{ al.prom_general_1 | default_if_none:'' }}', '{{ al.promedio_general_2 | default_if_none:'' }}', '{{ al.promedio_general_3 | default_if_none:'' }}', '{{ al.promedio_general_4 | default_if_none:'' }}', '{{ al.promedio_general_5 | default_if_none:'' }}', '{{ al.promedio_general_6 | default_if_none:'' }}'  , '{{ al.semestre | default_if_none:'' }}', '{{ al.tipo_secundaria | default_if_none:'' }}', '{{ al.beca | default_if_none:'' }}', '{{ al.subsistema_nombre | default_if_none:'' }}'    ); "><i class="far fa-edit"></i></button></td>
+                                            {% for e in estadistica %}
+                                                {% if al.num_matricula == e.num_matricula %}
+                                                    <td><button class="btn btn-outline-info btn-sm" type="submit" onclick="seleccionaAlumno('{{ al.id_alumno }}', '{{ al.nombre_alumno }}', '{{ al.email | default_if_none:'' }}', '{{ al.tel_fijo | default_if_none:'' }}', '{{ al.tel_celular| default_if_none:'' }}', '{{ al.curp_alumno| default_if_none:'' }}', '{{ al.nombre_escuela| default_if_none:'' }}', '{{ al.cct| default_if_none:'' }}', '{{ al.num_matricula| default_if_none:'' }}' , '{{ al.periodo2 | default_if_none:'' }}' , '{{ e.promedio_final | default_if_none:'' }}', '{{ e.prom_general_1 | default_if_none:'' }}', '{{ e.promedio_general_2 | default_if_none:'' }}', '{{ e.promedio_general_3 | default_if_none:'' }}', '{{ e.promedio_general_4 | default_if_none:'' }}', '{{ e.promedio_general_5 | default_if_none:'' }}', '{{ e.promedio_general_6 | default_if_none:'' }}'  , '{{ al.semestre | default_if_none:'' }}', '{{ al.tipo_secundaria | default_if_none:'' }}', '{{ al.beca | default_if_none:'' }}', '{{ al.subsistema_nombre | default_if_none:'' }}'    ); "><i class="far fa-edit"></i></button></td>
+                                                {% endif %}
+                                            {% endfor %}
                                             {% if usuario.tipo_usuario == "1" %}
                                                 <td><button class="btn btn-outline-danger btn-sm" onclick="confirmDialogDelete('{{ al.id_alumno }}')" style="cursor: pointer;"> <i class="far fa-trash-alt"></i> </button></td>
                                             {% endif %}
@@ -375,15 +379,29 @@
                                   </tr>
                                 </thead>
                                 <tbody style="overflow-y: scroll; height: 307px; width: 95%; position: absolute;">
-                                        {% for modulo in modulo %}
-                                            <tr>
-                                                <td style="width: 5%">{{ forloop.counter }}</td>
-                                                <td style="width: 60%;">{{ modulo.nombre_modulo }}</td>
-                                                <td style="width: 15%;">{{ modulo.semestre_modulo_id }}</td>
-                                                <td style="width: 15%;">{{ modulo.creditos_modulo }}</td>
-                                                <td ><button class="btn btn-outline-warning btn-sm" onclick="graficoModulo('{{ modulo.id_modulo }}');"><i class="far fa-eye"></i></button></td>
-                                            </tr>
-                                        {% endfor %}
+                                        {% if usuario.tipo_usuario == "1" %}
+                                            {% for modulo in modulo %}
+                                                <tr>
+                                                    <td style="width: 5%">{{ forloop.counter }}</td>
+                                                    <td style="width: 60%;">{{ modulo.nombre_modulo }}</td>
+                                                    <td style="width: 15%;">{{ modulo.semestre_modulo_id }}</td>
+                                                    <td style="width: 15%;">{{ modulo.creditos_modulo }}</td>
+                                                    <td ><button class="btn btn-outline-warning btn-sm" onclick="graficoModulo('{{ modulo.id_modulo }}');"><i class="far fa-eye"></i></button></td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        <!-- Usuario: docente (6) -->
+                                        {% if usuario.tipo_usuario == "6" %} 
+                                            {% for modulo in modulosDocente %}
+                                                <tr>
+                                                    <td style="width: 5%">{{ forloop.counter }}</td>
+                                                    <td style="width: 60%;">{{ modulo.nombre_modulo }}</td>
+                                                    <td style="width: 15%;">{{ modulo.semestre_modulo_id }}</td>
+                                                    <td style="width: 15%;">{{ modulo.creditos_modulo }}</td>
+                                                    <td ><button class="btn btn-outline-warning btn-sm" onclick="graficoModulo('{{ modulo.id_modulo }}');"><i class="far fa-eye"></i></button></td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
                                 </tbody>
                             </table>
                         </div>
@@ -408,16 +426,51 @@
         </div>
     </div>
     <script>
+        var usuarioA = {% autoescape off %}{{ usuario.tipo_usuario }}{% endautoescape %}
+        if(usuarioA === 6 ){
+            //Funcion para filtrar la data de la grafica de indice de repro
+            //Se comprueba si el usuario activo es un docente -> if
+            var dataAux = {% autoescape off %}{{ data3 }}{% endautoescape %}
+            var labelsAux = {% autoescape off %}{{ labels3 }}{% endautoescape %}
+            var data3 = []
+            var labels3 = []
+            
+            //Con la info de auxData3 y auxLabels3 se filtrará la info con los modulos que le pertenezcan al docente
+            var indices = {% autoescape off %}{{ indices3 }}{% endautoescape %} //indices contiene los indices de todos los modulos con indice de reprobacion
+            //Se procede a comparar los indices con los indices de los modulos que imparte el docente
+            var indicesDocente = {% autoescape off %}{{ indicesDocente }}{% endautoescape %} //indicesDocente contiene los indices de los modulos que imparte el docente
+            console.log(indices)
+            console.log(indicesDocente)
+            for(var i = 0; i < indices.length; i++){
+                for(var j = 0; j < indicesDocente.length; j++){
+                    if (indices[i] === indicesDocente[j]){
+                        data3.push(dataAux[i])
+                        labels3.push(labelsAux[i])
+                        //console.log('entro')
+                    }
+                }
+            }
+        }else{
+            //Si no es docente entonces data3 y labels3 toman su valor original sin alterarlo
+            var data3= {% autoescape off %}{{ data3 }}{% endautoescape %}
+            var labels3 = {% autoescape off %}{{ labels3 }}{% endautoescape %}
+        }
+
+        //Funcion cuando selecciona una secundaria
         function seleccionaSecundaria(){
             var sel = document.getElementById('selectSecundaria')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('tipo_secundaria').value = val
         }
+
+        //Funcion para cuando se selecciona una beca
         function seleccionaBeca(){
             var sel = document.getElementById('selectBeca')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('beca').value = val
         }
+
+        //Funcion para filtrar alumnos
         function filtraAlumno() {
         // Declare variables 
             var input, filter, table, tr, td, i;
@@ -439,6 +492,7 @@
             }
         }
 
+        //Funcion cuando se selecciona un alumno
         function seleccionaAlumno(idAlumno, nombreAlumno, email, telFijo, telCelular, curp, nombreEscuela, cct, numMatricula, fechaIngreso, promGeneral, prom_general_1, 
         prom_general_2, prom_general_3, prom_general_4, prom_general_5, prom_general_6, semestre, tipo_secundaria, beca, subsistema_nombre){
             inputs = document.getElementsByClassName('inputsActa');
@@ -579,6 +633,7 @@
             promedio_general_2_6.textContent = prom_general_6;
         }
 
+        //Funcion para un alert de confirmacion
         function confirmDialog(){
             Swal.fire({
                 title: '¿Está seguro?',
@@ -612,6 +667,7 @@
                 })
         }
 
+        //Función para filtrar los moduos de la tabla
         function filtraModulo() {
         // Declare variables 
             var input, filter, table, tr, td, i;
@@ -633,7 +689,7 @@
             }
         }
 
-        //Comienza sección de gráficas
+        //Gráfica de reporte general (todos los modulos)
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'bar',
@@ -643,22 +699,10 @@
                     label: 'Promedio por módulo',
                     data: {% autoescape off %}{{ data }}{% endautoescape %}, //[8.3, 7.0, 7.0, 7.0, 6.0, 7.0, 8.3, 8.0, 8.0, 7.0, 7.8, 9.6, 6.7, 8.9, 6.4, 9.9, 9.6],
                     backgroundColor: [
-                        '#ff4500',
-                        '#da70d6',
-                        '#eee8aa',
-                        '#98fb98',
-                        '#afeeee',
-                        '#db7093',
-                        '#ffefd5',
-                        '#ffdab9',
-                        '#cd853f',
-                        '#ffc0cb',
-                        '#dda0dd',
-                        '#b0e0e6',
-                        '#800080',
-                        '#ff0000',
-                        '#bc8f8f',
-                        '#fa8072',
+                        '#ff4500','#da70d6','#eee8aa','#98fb98',
+                        '#afeeee','#db7093','#ffefd5','#ffdab9',
+                        '#cd853f','#ffc0cb','#dda0dd','#b0e0e6',
+                        '#800080','#ff0000','#bc8f8f','#fa8072',
                         '#f4a460'
                     ],
                     borderColor: [],
@@ -666,6 +710,13 @@
                 }]
             },
             options: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        fontColor: "#000000",
+                    }
+                },
                 scales: {
                     yAxes: [{
                         ticks: {
@@ -678,13 +729,14 @@
                 }
             }
         });
-        //Pastel
+        //Gráfica de pastel de indice de reprobacion
+        
         new Chart(document.getElementById("myChart2"), {
             type: 'pie',
             data: {
-            labels: {% autoescape off %}{{ labels3 }}{% endautoescape %},
+            labels: labels3,
             datasets: [{
-                label: "Reporte de asistencias",
+                label: "índice de reprobación",
                 backgroundColor: ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', 
                 '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
                 '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', 
@@ -695,7 +747,7 @@
                 '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
                 '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3', 
                 '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'],
-                data: {% autoescape off %}{{ data3 }}{% endautoescape %}
+                data: data3
             }]
             },
             options: {
@@ -782,11 +834,12 @@
             updateConfigAsNewObject(myChart, data, labels2);
         }
         
+        //Funcion para actualizar la grafica seleccionada
         function updateConfigAsNewObject(chart, newData, labels2) {
             chart.data = {
                 labels: labels2,
                 datasets: [{
-                    label: 'Número de alumnos por promedio',
+                    label: 'Número de alumnos por rango de promedios',
                     data: newData,
                     backgroundColor: [
                     '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680', 
@@ -806,6 +859,13 @@
                 }]
             }
             chart.options = {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        fontColor: "#000000",
+                    }
+                },
                 scales: {
                     xAxes: [{
                         barPercentage: 0.4
@@ -814,6 +874,7 @@
             }
             chart.update();
         }
+        
         //Se cambian los id de los modulos por sus nombres correspondientes
         var rows = document.getElementsByTagName("table")[0].rows;
         var last = rows[rows.length - 1];
@@ -836,6 +897,7 @@
                 }
                 })
         }
+
     </script>
     
 {% endblock %}

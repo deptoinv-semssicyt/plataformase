@@ -197,7 +197,7 @@ class Docente(models.Model):
     tel_fijo = models.CharField(max_length=150, null=True)
     tel_cel = models.CharField(max_length=150)
     nombre_escuela = models.CharField(max_length=150)
-    areadisciplinar_docente = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE, null=True)
+    areadisciplinar_docente_id = models.IntegerField()#areadisciplinar_docente = models.ForeignKey(Area_disciplinar, on_delete=models.CASCADE, null=True)
     domicilio = models.CharField(max_length=500, null=True)
     num_empleado = models.CharField(max_length=150, null=True)
     curriculum = models.FileField(upload_to='TBC/Archivos', blank=True, null=True)

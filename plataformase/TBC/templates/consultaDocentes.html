@@ -36,7 +36,7 @@
                                             <th scope="row" style="width: 27%;">{{ forloop.counter }}</th>
                                             <td style="width: 54.5%;"> {{ doc.nombres_docente }} </td>
                                             <td style="width: 20%;">{{ doc.num_empleado }}</td>
-                                            <td><button class="btn btn-outline-info btn-sm" type="submit" onclick="seleccionaDocente('{{ doc.id_docente }}', '{{ doc.nombres_docente }}', '{{ doc.apellidos_docente | default_if_none:'' }}', '{{ doc.edad_docente | default_if_none:'' }}', '{{ doc.email | default_if_none:'' }}', '{{ doc.tel_fijo | default_if_none:'' }}', '{{ doc.tel_cel | default_if_none:'' }}', '{{ doc.curp_docente | default_if_none:'' }}', '{{ doc.rfc_docente | default_if_none:'' }}', '{{ doc.clave_docente | default_if_none:'' }}', '{{ doc.nombre_escuela | default_if_none:'' }}', '{{ doc.cct | default_if_none:'' }}' , '{{ doc.domicilio | default_if_none:'' }}', '{{ doc.num_empleado | default_if_none:'' }}', '{{ doc.perfil_profesional | default_if_none:'' }}', '{{ doc.maximo_grado | default_if_none:'' }}'   ); "><i class="far fa-edit"></i></button></td>
+                                            <td><button class="btn btn-outline-info btn-sm" type="submit" onclick="seleccionaDocente('{{ doc.id_docente }}', '{{ doc.nombres_docente }}', '{{ doc.apellidos_docente | default_if_none:'' }}', '{{ doc.edad_docente | default_if_none:'' }}', '{{ doc.email | default_if_none:'' }}', '{{ doc.tel_fijo | default_if_none:'' }}', '{{ doc.tel_cel | default_if_none:'' }}', '{{ doc.curp_docente | default_if_none:'' }}', '{{ doc.rfc_docente | default_if_none:'' }}', '{{ doc.areadisciplinar_docente_id | default_if_none:'' }}', '{{ doc.nombre_escuela | default_if_none:'' }}', '{{ doc.cct | default_if_none:'' }}' , '{{ doc.domicilio | default_if_none:'' }}', '{{ doc.num_empleado | default_if_none:'' }}', '{{ doc.perfil_profesional | default_if_none:'' }}', '{{ doc.maximo_grado | default_if_none:'' }}'   ); "><i class="far fa-edit"></i></button></td>
                                             <td><button class="btn btn-outline-danger btn-sm" onclick="confirmDialogDelete('{{ doc.id_docente }}')" style="cursor: pointer;"> <i class="far fa-trash-alt"></i> </button></td>
                                             {% for ar in archivo %}
                                                 {% if ar.id_docente == doc.id_docente %}
@@ -228,11 +228,13 @@
                             <div class="card-text p-3">
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
-                                        <label for="clave">Clave</label>
-                                        <input type="text" class="form-control border border-ligth" id="clave" name="claveDocente" placeholder="Clave" required >
-                                        <div class="invalid-tooltip">
-                                            Por favor introduzca la clave
-                                        </div>
+                                        <label for="area">Area disciplinar</label>
+                                        <select class="selectpicker" data-live-search="true" title="Seleccione..." data-width="100%" id="selectArea" onchange="seleccionaArea();">
+                                            <option value="1">Matemáticas y ciencias experimentales</option>
+                                            <option value="2">Ciencias sociales y humanidades</option>
+                                            <option value="3">Comunicación</option>
+                                        </select>
+                                        <input hidden type="text" class="form-control border border-ligth" id="areaDocente" name="areaDocente" placeholder="area" required >
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="nombreEscuela">Nombre de la institución</label>
@@ -313,6 +315,12 @@
         </div>
     </div>
     <script>
+        //Cuando cambia de área 
+        function seleccionaArea(){
+            var x = document.getElementById('selectArea').value;
+            document.getElementById('areaDocente').value = x;
+        }
+
         function filtraDocente() {
         // Declare variables 
             var input, filter, table, tr, td, i;
@@ -338,7 +346,7 @@
             alert('huevos')
         }
 
-        function seleccionaDocente(idDocente, nombresDocente, apellidosDocente, edad, email, telFijo, telCelular, curp, rfc, clave, nombreEscuela, cct, domicilio, num_empleado, 
+        function seleccionaDocente(idDocente, nombresDocente, apellidosDocente, edad, email, telFijo, telCelular, curp, rfc, areadisciplinar_docente, nombreEscuela, cct, domicilio, num_empleado, 
         perfil_profesional, maximo_grado){
             
             inputs = document.getElementsByClassName('inputsCurriculum');
@@ -388,7 +396,7 @@
             var telCelularA = document.getElementById('telCelular');
             var curpA = document.getElementById('curp');
             var rfcA = document.getElementById('rfc');
-            var claveA = document.getElementById('clave');
+            var areadisciplinar_docenteA = document.getElementById('areaDocente');
             var nombreEscuelaA = document.getElementById('nombreEscuela');
             var cctA = document.getElementById('cct');
             var domicilioA = document.getElementById('domicilio');
@@ -404,14 +412,15 @@
             telCelularA.value = telCelular;
             curpA.value = curp;
             rfcA.value = rfc;
-            claveA.value = clave;
+            areadisciplinar_docenteA.value = areadisciplinar_docente;
             nombreEscuelaA.value = nombreEscuela;
             cctA.value = cct;
             domicilioA.value = domicilio;
             num_empleadoA.value = num_empleado;
             perfil_profesionalA.value = perfil_profesional;
             maximo_gradoA.value = maximo_grado;
-
+            $('#selectArea').selectpicker('val', areadisciplinar_docente);
+            
             //Asignación a los labels del resumen del alumno
             var nombresA_l = document.getElementById('l_nombre_docente');
             var claveA_l = document.getElementById('l_clave');
@@ -421,7 +430,7 @@
             var cctA_l = document.getElementById('l_cct');
 
             nombresA_l.textContent = nombresDocente + ' ' + apellidosDocente;
-            claveA_l.textContent = clave;
+            claveA_l.textContent = num_empleado;
             rfcA_l.textContent = rfc;
             emailA_l.textContent = email;
             num_celA_l.textContent = telCelular;

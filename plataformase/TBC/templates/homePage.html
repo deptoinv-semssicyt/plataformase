@@ -69,133 +69,112 @@
                 </div>
             </div>
             {% endif %}
-            <!--Inicio acordeon de Alumnos-->
-            <div class="col-md-12 mb-3">
-                <div  class="container-flex" id="wwg-accordian">
-                    <div class="card">
-                        <div class="card-header" id="alumnos-heading" style="background-color: white;">      
-                            <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#alumnos" style="cursor:pointer;"><i class="fas fa-users"></i>&nbsp;Alumnos</h5>
+        </div>
+        <!--Fin de la columna total del lado izquierdo de la pagina-->
+        <div class="col-md-5 mt-3">
+            <div  class="container-flex" id="wwg-accordian">
+                <div class="card">
+                    <div class="card-header" id="alumnos-heading" style="background-color: white;">      
+                        <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#alumnos" style="cursor:pointer;"><i class="fas fa-users"></i>&nbsp;Alumnos</h5>
+                    </div>
+                    <div class="collapse show" id="alumnos">
+                        <div class="card-text p-3">
+                        <!--Lista que mostrará el resumen estadistico de cada docente-->
+                        <table class="table table-borderless table-hover" id="listaAlumnos" style="height: 362px; display: -moz-groupbox;">
+                            <thead>
+                                <tr style="width: 100%; display: inline-table; height:60px; table-layout: fixed;">
+                                <th>#</th>
+                                <th style="width: 57%;">Nombre</th>
+                                <th>Matrícula</th>
+                                </tr>
+                            </thead>
+                            <tbody style="overflow-y: scroll; height: 312px; width: 95%; position: absolute;">
+                                    <!-- Para institución [1] -->
+                                    {% if usuario.tipo_usuario == "1" %}
+                                        {% for al in alumnoI %}
+                                        {% csrf_token %}
+                                            <tr>
+                                                <th scope="row" style="width: 10.9%;">{{ forloop.counter }}</th>
+                                                <td style="width: 75%;">{{ al.nombre_alumno }}</td>
+                                                <td style="width: 20%;">{{ al.num_matricula }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <!-- Para docente [6] -->
+                                    {% if usuario.tipo_usuario == "6" %}
+                                        {% for al in alumnoD %}
+                                        {% csrf_token %}
+                                            <tr>
+                                                <th scope="row" style="width: 10.9%;">{{ forloop.counter }}</th>
+                                                <td style="width: 77%;">{{ al.nombre_alumno }}</td>
+                                                <td>{{ al.num_matricula }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                            </tbody>
+                        </table>
                         </div>
-                        <div class="collapse show" id="alumnos">
-                            <div class="card-text p-3">
-                            <!--Lista que mostrará el resumen estadistico de cada docente-->
-                            <table class="table table-borderless table-hover" id="listaAlumnos" style="height: 250px; display: -moz-groupbox;">
-                                <thead>
-                                    <tr style="width: 100%; display: inline-table; height:60px; table-layout: fixed;">
-                                    <th>#</th>
-                                    <th style="width: 65%;">Nombre</th>
-                                    <th>Matrícula</th>
-                                    </tr>
-                                </thead>
-                                <tbody style="overflow-y: scroll; height: 200px; width: 95%; position: absolute;">
-                                        <!-- Para institución [1] -->
-                                        {% if usuario.tipo_usuario == "1" %}
-                                            {% for al in alumnoI %}
-                                            {% csrf_token %}
-                                                <tr>
-                                                    <th scope="row" style="width: 10.9%;">{{ forloop.counter }}</th>
-                                                    <td style="width: 75%;">{{ al.nombre_alumno }}</td>
-                                                    <td style="width: 20%;">{{ al.num_matricula }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% endif %}
-                                        <!-- Para docente [6] -->
-                                        {% if usuario.tipo_usuario == "6" %}
-                                            {% for al in alumnoD %}
-                                            {% csrf_token %}
-                                                <tr>
-                                                    <th scope="row" style="width: 10.9%;">{{ forloop.counter }}</th>
-                                                    <td style="width: 77%;">{{ al.nombre_alumno }}</td>
-                                                    <td>{{ al.num_matricula }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% endif %}
-                                </tbody>
-                            </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container-flex mt-3" id="wwg-accordian">
+                <div class="card">
+                    <div class="card-header" id="accesos-heading" style="background-color: white;">      
+                        <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#accesos" style="cursor:pointer;"><i class="fas fa-thumbtack"></i>&nbsp;Accesos rápidos</h5>
+                    </div>
+                    <div class="collapse show" id="accesos">
+                        <div class="card-text p-4">
+                            <div class="form-row">
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <a href="/TBC/consulta-alumnos" style="color: grey;"><i class="fa fa-users" style="font-size: 3em;"></i></a>
+                                </div>
+                                {% if usuario.tipo_usuario == "1" %}
+                                    <div class="col-md-3 d-flex justify-content-center">
+                                        <a href="/TBC/consulta-docentes" style="color: grey;"><i class="fas fa-chalkboard-teacher " style="font-size: 3em;"></i></a>
+                                    </div>
+                                {% endif %}
+                                {% if usuario.tipo_usuario == "1" %}
+                                    <div class="col-md-3 d-flex justify-content-center">
+                                        <a href="/TBC/" style="color: grey;"><i class="fa fa-mortar-board " style="font-size: 3em;"></i></a>
+                                    </div>
+                                {% endif %}
+                                {% if usuario.tipo_usuario == "6" %}
+                                    <div class="col-md-3 d-flex justify-content-center">
+                                        <a href="/TBC/subir-estadistica" style="color: grey;"><i class="fas fa-file-upload" style="font-size: 3em;"></i></a>
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <a href="{% url 'perfil' %}"  style="color: grey;"><i class="fas fa-arrow-left" style="font-size: 3em;"></i></a>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <label for="consulta">Consulta alumnos</label>
+                                </div>
+                                {% if usuario.tipo_usuario == "1" %}
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <label for="consulta">Consulta docentes</label>
+                                </div>
+                                {% endif %}
+                                {% if usuario.tipo_usuario == "1" %}
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <label for="consulta">Certificados</label>
+                                </div>
+                                {% endif %}
+                                {% if usuario.tipo_usuario == "6" %}
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <label for="consulta">Estadística</label>
+                                </div>
+                                {% endif %}
+                                <div class="col-md-3 d-flex justify-content-center">
+                                    <label for="consulta">Volver</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!--Fin de la columna total del lado izquierdo de la pagina-->
-        <div class="col-md-5 mt-3">
-            <div class="container-flex mb-3" id="wwg-accordian">
-                <div class="card">
-                    <div class="card-header" id="notificaciones-heading" style="background-color: white;">      
-                        <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#notificaciones" style="cursor:pointer;"><i class="far fa-bell"></i>&nbsp;Notificaciones<span class="badge badge-pill badge-danger" style="margin-left: 2%; font-size: 80%; padding-top: 1.2%;">5</h5></span>
-                    </div>
-                    <div class="collapse " id="notificaciones">
-                        <div class="card-text p-3">
-
-							{% for notificaciones in notificaciones %}
-								{% for notif in notificacion %}
-									{% if notif.id_docente == docente.id_docente %}
-										{% if notificaciones.id_notificacion == notif.id_notificacion %}
-											{% if notif.status == 0 and notificaciones.tipo == 1 %}
-												{% for cu in modulo %}
-													{% if cu.id_modulo == notificaciones.id_curso %}
-														<div class="alert alert-info" role="alert">
-															<div class="form-row">
-																<strong class="col-md-7">Asignación a módulo</strong>
-																<strong>&emsp;&emsp;&emsp;&nbsp;</strong>
-																<strong class="col-md-4">{{ notif.fecha_hora }}</strong>
-															</div>
-															Fue asignado al módulo de {{ cu.nombre_modulo }}
-														</div>
-													{% endif %}
-												{% endfor %}
-											{% endif %}
-										{% endif %}
-									{% endif %}
-								{% endfor %}
-							{% endfor %}
-							<!--Tercer alert-->
-							<div class="alert alert-warning" role="alert">
-  								<div class="form-row">
-  									<strong class="col-md-7">Certificación detenida</strong>
-  									<strong class="col-md-4">24 Abril 2020</strong>
-  									<strong>13:25</strong>
-  								</div>
-  								Hubo un problema al expedir el certificado para el alumno Ulises Alegría Salmerón. Revisar documentación o pago pendiente.
-							</div>
-							<!--Cuarto alert-->
-							<div class="alert alert-success" role="alert">
-  								<div class="form-row">
-  									<strong class="col-md-7">Actividad Evaluada</strong>
-  									<strong class="col-md-4">24 Abril 2020</strong>
-  									<strong>16:32</strong>
-  								</div>
-  								La actividad: Resumen ¿Qué es ética? , ha sido evaluado por el docente 
-							</div>
-							<!--Quinto alert-->
-							<div class="alert alert-success" role="alert">
-  								<div class="form-row">
-  									<strong class="col-md-7">Parcial Finalizado</strong>
-  									<strong class="col-md-4">24 Abril 2020</strong>
-  									<strong>16:32</strong>
-  								</div>
-  								El primer parcial ha concluido. Click para consultar su calificación
-							</div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="container-flex h-40 mb-3" id="wwg-accordian">
-                <div class="card">
-                    <div class="card-header" id="ingresaronhoy-heading" style="background-color: white;">
-                        <h5 data-toggle="collapse" data-parent="#wwg-accordian" href="#ingresaron-hoy" style="cursor:pointer;"><i class="fas fa-tasks"></i>&nbsp;Uso de la plataforma</h5>
-                    </div>
-                    <div class="collapse " id="ingresaron-hoy">
-                        <div class="card-text p-3">
-            				<div id="Iniciaron" style=" height: 300px; width: 100%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
         </div>
 		<!--Fin de la columna total derecha de la pagina-->
     <script type="text/javascript">

@@ -121,20 +121,30 @@ def consultaAlumnos(request):
 	Archivos = Archivo.objects.all()
 	Modulos = Modulo.objects.all()
 	Asignaturas = Asignatura.objects.all()
-	
+	indicesDocente = []
+	Estadistica = Estadistica_modulo.objects.filter(cct = request.user.last_name).order_by('id_estadistica_modulo')
 	#Se filtra la tabla de estadística para encontrar los registros correspondientes a la institución (request.user.last_name)
 	try:
 		if usuarioLogueado.tipo_usuario == '6':
+			#Se saca el areaDocente del usuario conectado
+			field_name = 'areadisciplinar_docente_id'
+			obj = Docente.objects.get(email = request.user.email) #TODO: Cambiar last_name ya que se la haya dado más espacio
+			field_value = getattr(obj, field_name)
+			areaDocente = field_value
 			Estadistica_modulos = Estadistica_modulo.objects.filter(nombre_escuela = request.user.municipio).order_by('id_estadistica_modulo')
+			ModulosDocente = Modulo.objects.filter(areadisciplinar_modulo_id = areaDocente)
+			for m in ModulosDocente:
+				indicesDocente.append(m.id_modulo)
 		if usuarioLogueado.tipo_usuario == '1':
+			ModulosDocente = None
 			Estadistica_modulos = Estadistica_modulo.objects.filter(cct = request.user.last_name).order_by('id_estadistica_modulo')
 	except:
 		Estadistica_modulos = None
 
 	#Se llama la función para generar los reportes declarando antes las variables a usar
 	totalAlumnos = 0
-	labels, data, labels2, data2, auxData3, auxLabels3 = [], [], [], [], [], []
-	labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos = generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos)
+	labels, data, labels2, data2, auxData3, auxLabels3, indices3 = [], [], [], [], [], [], []
+	labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos, indices3, indicesDocente = generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos, indices3, indicesDocente)
 
 	#Si el usuario logeado es un docente tipo_usuario = 6, entonces se procede a asignar el idDocente correspondiente
 	if usuarioLogueado.tipo_usuario == '6':
@@ -261,10 +271,10 @@ def consultaAlumnos(request):
 				num_matricula = numMatricula, nombre_escuela = nombreEscuela, cct = cct, semestre = semestre, tipo_secundaria = tipo_secundaria, beca = beca, subsistema_nombre = subsistema)
 			#CustomUser.objects.filter(email = email).update(password = contrasena)
 			sweetify.success(request, 'Se actualizó', text='El alumno fue actualizado exitosamente', persistent='Ok', icon="success")
-	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos, 'modulo':Modulos, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, 'data3':auxData3, 'labels3':auxLabels3, 'totalAlumnos':totalAlumnos })
+	return render(request, 'consultaAlumnos.html', {'usuario':usuarioLogueado, "alumno":Alumnos, 'archivo':Archivos, 'modulo':Modulos, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, 'data3':auxData3, 'labels3':auxLabels3, 'totalAlumnos':totalAlumnos, 'modulosDocente':ModulosDocente, 'indices3':indices3, 'indicesDocente':indicesDocente, 'estadistica':Estadistica })
 
 #Función para generar los reportes
-def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos):	
+def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos, indices3, indicesDocente):	
 	#Para generar un reporte por módulos de manera general
 	labels = []
 	data = []
@@ -299,6 +309,7 @@ def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadist
 		sum_lit1 += float(e.prom_lit1)
 		sum_ing3 += float(e.prom_ing3)
 		sum_sft1 += float(e.prom_sft1)
+		#sum_mat4 += lambda e.prom_mat4 : 0 if (float(e.prom_mat4) is None) else float(e.prom_mat4)
 		sum_mat4 += float(e.prom_mat4)
 		sum_q2 += float(e.prom_q2)
 		sum_bio2 += float(e.prom_bio2)
@@ -387,7 +398,7 @@ def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadist
 	for mod in Modulos:
 		labels.append(mod.nombre_modulo)
 	#Para generar reporte por módulos, almacenar las calificaciones de cada modulo y sacar datos correspondientes a ponderación de [0-5, 6, 7, 8, 9, 10] (estos serán los labels)
-	labels2 = ['0-5', 6, 7, 8, 9, 10]
+	labels2 = ['Promedio: 0-5', 'Promedio: 6', 'Promedio: 7', 'Promedio: 8', 'Promedio: 9', 'Promedio: 10']
 	mat1, fis1, ev1, met_inv, tlr1, ing1, mat2, fis2, ev2, ics ,tlr2, ing2, mat3, q1, bio1, hm1, lit1, ing3, sft1, mat4, q2, bio2, hm2, lit2, ing4, sft2, geog, huc, cdemyce, cdecsyh, cdec, sft3, filos, ema, met_invx, derech2, cc2, cs2, proyes2 = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 	#Se almacenan todas los promedios
 	for e in Estadistica_modulos:
@@ -497,14 +508,16 @@ def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadist
 	#Se hará uso de arr, que contiene todos los promedios de todos los modulos de la institución
 	auxData3 = []
 	auxLabels3 = []
+	indices3 = []
 	for idx, i in enumerate(data3):
-		if i != 0 and i != totalAlumnos:
+		if i != 0 and i != totalAlumnos and i != (totalAlumnos * 2) and i != (totalAlumnos * 3) and i!= (totalAlumnos * 4):
 			auxPorcentaje = (i * 100) / totalAlumnos
 			auxData3.append(data3[idx])
 			auxLabels3.append(labels[idx])
+			indices3.append(idx+1)
 	#auxLabels3 contiene los nombres de los modulos con indice de reprobacion ya filtrado
 	#auxData3 contiene los indices de reprobacion de los modulos correspondientes
-	return labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos
+	return labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos, indices3, indicesDocente
 
 #Función para eliminar un alumnos, dado un id (id como parámetro)
 
@@ -713,13 +726,13 @@ def consultaDocentes(request):
 		apellidosDocente = request.POST['apellidosDocente']
 		edad = request.POST['edad']
 		email = request.POST['email']
-		clave_docente = request.POST['claveDocente']
 		cct = request.POST['cct']
 		curp_docente = request.POST['curp']
 		rfc = request.POST['rfc']
 		telFijo = request.POST['telFijo']
 		telCelular = request.POST['telCelular']
 		nombreEscuela = request.POST['nombreEscuela']
+		area = request.POST['areaDocente']
 
 		domicilio = request.POST['domicilio']
 		num_empleado = request.POST['num_empleado']
@@ -739,10 +752,10 @@ def consultaDocentes(request):
 				idDocente = 1
 			try:
 				nuevoDocente = Docente(id_docente = idDocente, nombres_docente = nombresDocente, apellidos_docente = apellidosDocente, edad_docente = edad, email = email, 
-				clave_docente = clave_docente, cct = cct, curp_docente = curp_docente, rfc_docente = rfc, tel_fijo = telFijo, tel_cel = telCelular, nombre_escuela = nombreEscuela,
-				domicilio = domicilio, num_empleado = num_empleado, perfil_profesional = perfil_profesional, maximo_grado = maximo_grado)
+				cct = cct, curp_docente = curp_docente, rfc_docente = rfc, tel_fijo = telFijo, tel_cel = telCelular, nombre_escuela = nombreEscuela,
+				domicilio = domicilio, num_empleado = num_empleado, perfil_profesional = perfil_profesional, maximo_grado = maximo_grado, areadisciplinar_docente_id = area)
 				nuevoDocente.save()
-				nuevoDocenteU = CustomUser(password = contrasena, username = email, first_name = nombresDocente, last_name = apellidosDocente, email = email, curp_rfc = rfc, 
+				nuevoDocenteU = CustomUser(password = contrasena, username = email, first_name = nombresDocente, last_name = cct, email = email, curp_rfc = rfc, 
 				municipio = nombreEscuela, tipo_usuario = 6, tipo_persona = 1)
 				nuevoDocenteU.save()
 
@@ -777,8 +790,8 @@ def consultaDocentes(request):
 		else:
 			#Se pretende actualizar un registro existente
 			Docente.objects.filter(id_docente = idDocente).update(id_docente = idDocente, nombres_docente = nombresDocente, apellidos_docente = apellidosDocente, edad_docente = edad, email = email, 
-				clave_docente = clave_docente, cct = cct, curp_docente = curp_docente, rfc_docente = rfc, tel_fijo = telFijo, tel_cel = telCelular, nombre_escuela = nombreEscuela,
-				domicilio = domicilio, num_empleado = num_empleado, perfil_profesional = perfil_profesional, maximo_grado = maximo_grado)
+			 	cct = cct, curp_docente = curp_docente, rfc_docente = rfc, tel_fijo = telFijo, tel_cel = telCelular, nombre_escuela = nombreEscuela,
+				domicilio = domicilio, num_empleado = num_empleado, perfil_profesional = perfil_profesional, maximo_grado = maximo_grado, areadisciplinar_docente_id = area)
 			#CustomUser.objects.filter(email = email).update(password = contrasena)
 			sweetify.success(request, 'Se actualizó', text='El docente fue actualizado exitosamente', persistent='Ok', icon="success")
 	return render(request, 'consultaDocentes.html', {'usuario':usuarioLogueado, "docente":Docentes, 'archivo':Archivos, })
