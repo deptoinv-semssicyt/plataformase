@@ -152,6 +152,7 @@
             </div>
         </div>
     <script>
+        //Funcion para generar los inputos
         inputArchivo = document.getElementById("archivoEstadisticaI");
         inputArchivo.onchange = function(event) {
         var fileList = inputArchivo.files;
@@ -173,7 +174,7 @@
             }
         }
 
-        //Sweetalert para nss
+        //Sweetalert para descagar formato
         function descargarFormato(){
             Swal.fire({
                 title: '¡Atención!',

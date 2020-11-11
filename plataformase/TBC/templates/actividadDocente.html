@@ -114,7 +114,6 @@
                     </div>
                 </div>
             </div>
-
             <!--Columna derecha-->
             <div class="col-md-5 mt-3">
                 <!--Tarjeta con formulario de configuración-->
@@ -262,9 +261,7 @@
         </div>
     </div>
     <script>
-        /*
-        Función para mostrar mensaje de confirmación de inserción y actualización
-        */
+        //Función para mostrar mensaje de confirmación de inserción y actualización
         function confirmDialog(){
             Swal.fire({
                 title: '¿Está seguro?',
@@ -281,9 +278,7 @@
                 })
         }
 
-        /*
-        Función al dar click al eliminar archivo
-        */
+        //Función al dar click al eliminar archivo
         function confirmDialogDelete(idAct, tipo, name){
             Swal.fire({
                 title: '¿Está seguro?',
@@ -300,9 +295,7 @@
                 })
         }
 
-        /*
         // Función para quitar los labels y los inputs cuando se selecciona un nuevo archivo de recurso
-        */
         function limpiaInputsRecursos(){
             var list = document.getElementsByClassName('lblRecurso'); 
             for(var i = list.length - 1; 0 <= i; i--)
@@ -314,9 +307,7 @@
                     inp[i].parentElement.removeChild(inp[i]);
         }
 
-        /*
         // Función para quitar los labels y los inputs cuando se selecciona un nuevo archivo de rubrica
-        */
         function limpiaInputsRubricas(){
             var list = document.getElementsByClassName('lblRubrica'); 
             for(var i = list.length - 1; 0 <= i; i--)
@@ -328,9 +319,7 @@
                     inp[i].parentElement.removeChild(inp[i]);
         }
 
-        /*
         // Función para que por cada archivo selccionado se inserte un input para ingresar la descripción (recurso)
-        */
         inputElementR = document.getElementById("inputRecursos");
         inputElementR.onchange = function(event) {
             var fileList = inputElementR.files;
@@ -352,9 +341,7 @@
             }
         }
 
-        /*
         // Función para que por cada archivo selccionado se inserte un input para ingresar la descripción (rubrica)
-        */
         inputElement = document.getElementById("inputRubricas");
         inputElement.onchange = function(event) {
             var fileList = inputElement.files;

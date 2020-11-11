@@ -119,7 +119,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+            </div>
         </div>
     </div>
     <div class="form-row">
@@ -193,12 +193,9 @@
         window.addEventListener('load', function () {
             var inputs = document.getElementsByClassName('inputNA')
             var spn = document.getElementById('spanNA')
-            //spn.removeAttribute('hidden')
-            //spn.innerHTML = inputs.length
             var table = document.getElementById("tablaModulos");    
             for (var i = 0, row; row = table.rows[i]; i++) {
                 p = row.getElementsByClassName('inputNA')
-                //alert(p.length)
                 if(p.length > 0){
                     sp = row.getElementsByClassName('badge badge-pill badge-danger')
                     sp[0].removeAttribute('hidden')
@@ -244,6 +241,7 @@
                 }
                 })
         }
+        
     </script>
     
 {% endblock %}

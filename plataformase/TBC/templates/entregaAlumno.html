@@ -106,7 +106,6 @@
                     </div>
                 </div>
             </div>
-
             <!--Columna derecha-->
             <div class="col-md-5 mt-3">
                 <!--Tarjeta con formulario de configuración-->
@@ -241,18 +240,17 @@
     </div>
 </form>
     <script>
-        /*
-        Se comprueba si la actividad  ya fue entregada
-        */
+        //Se comprueba si la actividad  ya fue entregada
         window.addEventListener('load', function () {
             var entregada = document.getElementById('entregada');
             if (entregada.value == 'True'){
+                //Alert para avisar que ya fue entregada
                 Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: '¡Ya has entregado esta actividad!',
-                showConfirmButton: false,
-                timer: 2000
+                    position: 'top-end',
+                    icon: 'success',
+                    title: '¡Ya has entregado esta actividad!',
+                    showConfirmButton: false,
+                    timer: 2000
                 })
                 var comentario = document.getElementById('comentario')
                 comentario.disabled = true;
@@ -268,9 +266,8 @@
 
             }
         })
-        /*
-        Función para mostrar mensaje de confirmación de inserción y actualización
-        */
+        
+        //Función para mostrar mensaje de confirmación de inserción y actualización
         function confirmDialog(){
             var nA = document.getElementById('nombreActividad').value
             document.getElementById('nombreAct').value = nA
@@ -290,9 +287,7 @@
                 })
         }
 
-        /*
-        Función al dar click al eliminar archivo
-        */
+        //Función al dar click al eliminar archivo
         function confirmDialogDelete(idAct, tipo, name){
             Swal.fire({
                 title: '¿Está seguro?',
@@ -306,13 +301,10 @@
                 if (result.value) {
                     window.location.replace('/TBC/delete-archivo/'+idAct+'/'+tipo+'/'+name);
                 }
-                })
+            })
         }
 
-
-        /*
         // Función para que por cada archivo selccionado se inserte un input para ingresar la descripción (recurso)
-        */
         inputElementR = document.getElementById("inputRecursosAlumno");
         inputElementR.onchange = function(event) {
             var fileList = inputElementR.files;

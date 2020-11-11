@@ -37,15 +37,15 @@ urlpatterns = [
    path('relacionar-modulo', relacionarModulo, name="relacionarModulo"),
    path('material-aprendizaje/<slug:id>', catalogo_material_didactico, name="catalogo_material_didactico"),
    #Comienzan urls de prueba TODO: Eliminar al final
-   path('generar-certificado', generarCertificado, name="generarCertificado"),
    path('material-didactico', materialDidactico, name="materialDidactico"),
-   path('subir-estadistica', subirEstadistica, name="subirEstadistica"),
    path('estadistica', estadistica, name="estadistica"),
    #Fin de urls de prueba
    #Fin de las urls de la primera versión
 
    #Comienzan urls de la segunda versión
+   path('generar-certificado', generarCertificado, name="generarCertificado"),
    path('alumno/<int:id>', alumno, name="alumno"),
+   path('subir-estadistica', subirEstadistica, name="subirEstadistica"),
    #Fin de las urls de la segunda versión
    
 ]

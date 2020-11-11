@@ -36,22 +36,12 @@
                                     <div class="col-md-12">
                                         <form method="post">
                                             {% csrf_token %}
-                                            <!-- <input type="text" id="inputMateria" name="materia" hidden required>
-                                            <input type="text" id="inputGrupo" name="grupo" hidden required> -->
                                             <input type="text" name="bandera" value="False" hidden required>
                                             <input type="text" id="inputDocente" name="docente" hidden required>
                                             <input type="text" id="inputModulo" name="modulo" hidden required>
                                             <button class="btn btn-outline-success btn-block" type="submit">Guardar</button>
                                         </form>
                                     </div>
-                                    <!-- <div class="col-md-6 mb-3">
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="text" id="inputAlumno" name="nombreAlumno" hidden>
-                                            <input type="text" id="inputGrupo" name="grupo" hidden> 
-                                            <button class="btn btn-outline-success btn-block" type="submit">Guardar</button>
-                                        </form>
-                                    </div> -->
                                 </div>
                                 <hr>
                                 <label for="tabla">Tabla con los módulos y su docente correspondiente</label>
@@ -84,7 +74,6 @@
                         </div>
                     </div>
                 </div>
-            
                 <!--Tarjeta oculta TODO:Eliminar-->
                 <div hidden class="container-flex mb-3" id="wwg-accordian">
                     <div class="card">
@@ -287,12 +276,14 @@
             </div>
         </div>
     <script>
+        //Funcion para cuando se selecciona un docente-modulo
         function seleccionDocenteModulo(){
             var sel = document.getElementById('selectDocenteModulo')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('inputDocenteModulo').value = val
         }
 
+        //Funcion para poder seleccionar todo de la tanbla
         function toggle(source) {
             var checkboxes = document.querySelectorAll('input[type="checkbox"]');
             for (var i = 0; i < checkboxes.length; i++) {
@@ -300,18 +291,22 @@
                     checkboxes[i].checked = source.checked;
             }
         }
+
+        // Funcion para cuando se selcciona un docente
         function seleccionDocente(){
             var sel = document.getElementById('selectDocente')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('inputDocente').value = val
         }
 
+        // Funcion cuando se selecciona un modulo
         function seleccionModulo(){
             var sel = document.getElementById('selectModulo')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('inputModulo').value = val
         }
 
+        // Funcion filtar alumnos
         function filtraAlumno() {
         // Declare variables 
             var input, filter, table, tr, td, i;

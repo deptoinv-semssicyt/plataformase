@@ -60,7 +60,6 @@
             </div>
         </div>
     </div>
-
     <!--Tarjeta del historial-->
     <div class="container-flex mb-3" id="wwg-accordian">
         <div class="card">
@@ -98,12 +97,7 @@
         </div>
     </div>
 
-    <!-- {% for p in prueba %}
-        <p>{{ p.nombre_alumno }}</p>
-    {% endfor %} -->
-
     <script>
-
         //Función para quitar valores repetidos de grupos (cct)
         var optionValues =[];
         $('#selectGrupo option').each(function(){
@@ -123,22 +117,26 @@
             });
         });
 
+        //Funcion para cuando se selecciona a un alumno
         function seleccionAlumno(){
             var sel = document.getElementById('selectAlumnos')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('inputAlumno').value = val
         }
 
+        //Funcion para cuando se selecciona un semestre
         function seleccionSemestreI(){
             var sel = document.getElementById('selectSemestre')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('inputSemestre').value = val
         }
 
+        //Funcion para cuando se selecciona un grupo
         function seleccionGrupo(){
             var sel = document.getElementById('selectGrupo')
             var val = sel.options[sel.selectedIndex].value
             document.getElementById('inputGrupo').value = val
         }
+        
     </script>    
 {% endblock %}

@@ -343,12 +343,8 @@
         </div>
     </div>
 
-    <!-- {% for p in prueba %}
-        <p>{{ p.nombre_alumno }}</p>
-    {% endfor %} -->
-
-
       <script>
+        //Funcion para filtrar los alumnos
         $(document).ready(function(){
             $("#myInput").on("keyup", function() {
             var value = $(this).val().toLowerCase();
@@ -358,6 +354,7 @@
             });
         });
 
+        //Funcion para cuando se selecciona un alumno
         function seleccionAlumno(){
             var val = document.getElementById('selectAlumnos').value 
             document.getElementById('inputAlumno').value = val
@@ -373,6 +370,7 @@
                 }
         });
 
+        //Funcion para cuando se selecciona un grupo
         function seleccionGrupo(){
             var sel = document.getElementById('selectGrupo')
             var val = sel.options[sel.selectedIndex].value

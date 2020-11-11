@@ -315,12 +315,13 @@
         </div>
     </div>
     <script>
-        //Cuando cambia de área 
+        //Funcion para cuando cambia de área 
         function seleccionaArea(){
             var x = document.getElementById('selectArea').value;
             document.getElementById('areaDocente').value = x;
         }
 
+        //Funcion para filtar a la tabla de docentes
         function filtraDocente() {
         // Declare variables 
             var input, filter, table, tr, td, i;
@@ -342,10 +343,7 @@
             }
         }
 
-        function prueba(){
-            alert('huevos')
-        }
-
+        //Funcin para cuando se selecciona un docente
         function seleccionaDocente(idDocente, nombresDocente, apellidosDocente, edad, email, telFijo, telCelular, curp, rfc, areadisciplinar_docente, nombreEscuela, cct, domicilio, num_empleado, 
         perfil_profesional, maximo_grado){
             
@@ -438,6 +436,7 @@
             
         }
 
+        //Alerta para confrimar acción de guardar
         function confirmDialog(){
             Swal.fire({
                 title: '¿Está seguro?',
@@ -470,5 +469,6 @@
                 }
                 })
         }
+
     </script>
 {% endblock %}

@@ -87,6 +87,7 @@
         </div>
     </div>
     <script type="text/javascript">
+        //Grafico de barras
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'bar',
@@ -96,16 +97,8 @@
                     label: 'Promedio',
                     data: [8.3, 7.0, 7.0, 7.0, 6.0, 7.0, 8.3, 8.0, 8.0, 7.0],
                     backgroundColor: [
-                        '#9C27B0',
-                        '#F44336',
-                        '#FFEB3B',
-                        '#FF5722',
-                        '#4CAF50',
-                        '#00BCD4',
-                        '#8BC34A',
-                        '#795548',
-                        '#673AB7',
-                        '#FFC107'
+                        '#9C27B0', '#F44336','#FFEB3B','#FF5722','#4CAF50','#00BCD4',
+                        '#8BC34A','#795548', '#673AB7', '#FFC107'
                     ],
                     borderColor: [],
                     borderWidth: 1
@@ -121,7 +114,7 @@
                 }
             }
         });
-        //Otro
+        //Pastel
         new Chart(document.getElementById("myChart2"), {
             type: 'pie',
             data: {

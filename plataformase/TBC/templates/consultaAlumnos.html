@@ -276,7 +276,7 @@
                                         <input style="margin-top: 0.5em;" type="text" class="form-control border border-ligth" id="subsistema_nombre" name="subsistema_nombre" placeholder="Subsistema" >
                                     </div>
                                     <div class="col-md-3 mb-3">
-                                        <label for="subsistemaF">Subir archivo</label>
+                                        <label for="subsistemaF">Subir equivalencia</label>
                                         <div class="form-row">
                                             <div class="col-md-6 mb-3">
                                                 <input type="file" name="subsistema" id="inputSubsistema" style="display: none;" />
@@ -434,7 +434,6 @@
             var labelsAux = {% autoescape off %}{{ labels3 }}{% endautoescape %}
             var data3 = []
             var labels3 = []
-            
             //Con la info de auxData3 y auxLabels3 se filtrará la info con los modulos que le pertenezcan al docente
             var indices = {% autoescape off %}{{ indices3 }}{% endautoescape %} //indices contiene los indices de todos los modulos con indice de reprobacion
             //Se procede a comparar los indices con los indices de los modulos que imparte el docente

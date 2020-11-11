@@ -1,6 +1,5 @@
 from django.db import models
 
-# Modelo de alumno
 class Alumno(models.Model):
     id_alumno = models.IntegerField(primary_key= True)
     nombre_escuela = models.CharField(max_length=150)
@@ -34,8 +33,6 @@ class Curso(models.Model):
 
 class Docente_curso(models.Model):
     id_dc = models.AutoField(primary_key= True)
-    #id_curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    #id_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
     id_curso = models.IntegerField()
     id_docente = models.IntegerField()
 
@@ -43,11 +40,6 @@ class Alumno_curso(models.Model):
     id_ac = models.AutoField(primary_key= True)
     id_dc = models.IntegerField()
     id_alumno = models.IntegerField()
-    #TODO: Ver porqué no me elimina este registro al querer eliminar un alumno 
-    #Debido a esto comenté las foreignKey para que funcionara
-    #id_dc = models.ForeignKey(Docente_curso, on_delete=models.CASCADE)
-    #id_alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE)
-
 
 class Actividad_docente(models.Model):
     id_actividad =  models.IntegerField(primary_key= True)#models.CharField(primary_key=True, max_length=300)
@@ -81,25 +73,14 @@ class Entrega_actividad(models.Model):
     totalO = models.IntegerField()
     totalO = models.CharField(max_length=500)
     
-#Modelo de semestre
 class Semestre(models.Model):
     id_semestre = models.AutoField(primary_key=True)
     nombre_semestre = models.CharField(max_length=10)
-'''
-class Modulo(models.Model):
-    id_modulo = models.CharField(primary_key=True, max_length=30)
-    id_semestre = models.ForeignKey(Semestre,on_delete=models.CASCADE)
-    nombre_modulo = models.CharField(max_length=100)
-    objetivo_modulo = models.CharField(max_length=400)
-    competencias_modulo = models.CharField(max_length=500)
-    programa_modulo = models.FileField(upload_to='programas/TBC')
-'''
-#Modelo de Area Disciplinar
+
 class Area_disciplinar(models.Model):
     id_areadisciplinar = models.IntegerField(primary_key=True)
     nombre_areadisciplinar = models.CharField(max_length=200)
 
-#Modelo de modulo
 class Modulo(models.Model):
     id_modulo = models.AutoField(primary_key=True)
     nombre_modulo = models.CharField(max_length=150)
@@ -110,14 +91,12 @@ class Modulo(models.Model):
     creditos_modulo = models.IntegerField()  
     siglas_modulo = models.CharField(max_length=30, null=True)
 
-#Modelo de unidades de modulo
 class Unidad_modulo(models.Model):
     id_unidad = models.AutoField(primary_key=True)
     id_modulo_unidad = models.ForeignKey(Modulo, on_delete=models.CASCADE)
     nombre_unidad = models.CharField(max_length=500)
     proposito_unidad = models.CharField(max_length=800)
 
-#Modelo de aprendizaje esperado
 class Aprendizaje_esperado_modulo(models.Model):
     id = models.AutoField(primary_key=True)
     unidad_aprendizaje_esperado = models.ForeignKey(Unidad_modulo, on_delete=models.CASCADE)
@@ -183,7 +162,6 @@ class Asistencia(models.Model):
     justificacion = models.BooleanField()
     falta = models.BooleanField()
 
-#Modelo de docente
 class Docente(models.Model):
     id_docente = models.IntegerField(primary_key= True)
     nombres_docente = models.CharField(max_length=150)

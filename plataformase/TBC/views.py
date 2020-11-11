@@ -55,7 +55,6 @@ def catalogo_material_didactico(request,id):
 
 def homePage(request):
 	if not request.user.is_authenticated:
-            #return render(request,'../../login/templates/registration/login.html')
 			return HttpResponseRedirect(reverse('login'))
 	usuarioLogueado = request.user
 
@@ -81,12 +80,10 @@ def homePage(request):
 		except:
 			print('')
 	try:
-		#Docentes = Docente.objects.get(id_docente = idDocente)
 		Docentes = Docente.objects.filter(cct = usuarioLogueado.last_name)#TODO:Cambiar last_name 
 		NotificacionesDocente = Notificacion_mod.objects.all()
 		NotificacionesDocenteModulo = Notificacion_mod_docente.objects.filter(id_docente = idDocente)
 	except:
-		#Docentes = None
 		NotificacionesDocente = None
 		NotificacionesDocenteModulo = None
 		cctDocente = None
@@ -103,7 +100,6 @@ def homePage(request):
 		print('')
 	AlumnosD = Alumno.objects.filter(cct = cctDocente)
 	
-
 	if request.user.tipo_usuario == "7":
 		return redirect('/TBC/alumno/'+str(idAlumnoI))
 
@@ -290,45 +286,83 @@ def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadist
 	prom_mat1 = prom_fis1 = prom_ev1 = prom_met_inv = prom_tlr1 = prom_ing1 = prom_mat2 = prom_fis2 = prom_ev2 = prom_ics = prom_tlr2 = prom_ing2 = prom_mat3 = prom_q1 = prom_bio1 = prom_hm1 = prom_lit1 = prom_ing3 = prom_sft1 = prom_mat4 = prom_q2 = prom_bio2 = prom_hm2 = prom_lit2 = prom_ing4 = prom_sft2 = prom_geog = prom_huc = prom_cdemyce = prom_cdecsyh = prom_cdec = prom_sft3 = prom_filos = prom_ema = prom_met_invx = prom_derech2 = prom_cc2 = prom_cs2 = prom_proyes2 =  0
 	#Se acumulan los promedios por cada asignatura
 	for e in Estadistica_modulos:
+		if e.prom_mat1 == None: e.prom_mat1 = 0  
 		sum_mat1 += float(e.prom_mat1)
+		if e.prom_fis1 == None: e.prom_fis1 = 0
 		sum_fis1 += float(e.prom_fis1)
+		if e.prom_ev1 == None: e.prom_ev1 = 0
 		sum_ev1 += float(e.prom_ev1)
+		if e.prom_met_inv == None: e.prom_met_inv = 0
 		sum_met_inv += float(e.prom_met_inv)
+		if e.prom_tlr1 == None: e.prom_tlr1 = 0
 		sum_tlr1 += float(e.prom_tlr1)
+		if e.prom_ing1 == None: e.prom_ing1 = 0
 		sum_ing1 += float(e.prom_ing1)
+		if e.prom_mat2 == None: e.prom_mat2 = 0
 		sum_mat2 += float(e.prom_mat2)
+		if e.prom_fis2 == None: e.prom_fis2 = 0 
 		sum_fis2 += float(e.prom_fis2)
+		if e.prom_ev2 == None: e.prom_ev2 = 0 
 		sum_ev2 += float(e.prom_ev2)
+		if e.prom_ics == None: e.prom_ics = 0 
 		sum_ics += float(e.prom_ics)
+		if e.prom_tlr2 == None: e.prom_tlr2 = 0 
 		sum_tlr2 += float(e.prom_tlr2)
+		if e.prom_ing2 == None: e.prom_ing2 = 0 
 		sum_ing2 += float(e.prom_ing2)
+		if e.prom_mat3 == None: e.prom_mat3 = 0
 		sum_mat3 += float(e.prom_mat3)
+		if e.prom_q1 == None: e.prom_q1 = 0
 		sum_q1 += float(e.prom_q1)
+		if e.prom_bio1 == None: e.prom_bio1 = 0
 		sum_bio1 += float(e.prom_bio1)
+		if e.prom_hm1 == None: e.prom_hm1 = 0
 		sum_hm1 += float(e.prom_hm1)
+		if e.prom_lit1 == None: e.prom_lit1 = 0
 		sum_lit1 += float(e.prom_lit1)
+		if e.prom_ing3 == None: e.prom_ing3 = 0
 		sum_ing3 += float(e.prom_ing3)
+		if e.prom_sft1 == None: e.prom_sft1 = 0
 		sum_sft1 += float(e.prom_sft1)
-		#sum_mat4 += lambda e.prom_mat4 : 0 if (float(e.prom_mat4) is None) else float(e.prom_mat4)
+		if e.prom_mat4 == None: e.prom_mat4 = 0
 		sum_mat4 += float(e.prom_mat4)
+		if e.prom_q2 == None: e.prom_q2 = 0
 		sum_q2 += float(e.prom_q2)
+		if e.prom_bio2 == None: e.prom_bio2 = 0
 		sum_bio2 += float(e.prom_bio2)
+		if e.prom_hm2 == None: e.prom_hm2 = 0
 		sum_hm2 += float(e.prom_hm2)
+		if e.prom_lit2 == None: e.prom_lit2 = 0
 		sum_lit2 += float(e.prom_lit2)
+		if e.prom_ing4 == None: e.prom_ing4 = 0
 		sum_ing4 += float(e.prom_ing4)
+		if e.prom_sft2 == None: e.prom_sft2 = 0
 		sum_sft2 += float(e.prom_sft2)
+		if e.prom_geog == None: e.prom_geog = 0
 		sum_geog += float(e.prom_geog)
+		if e.prom_huc == None: e.prom_huc = 0
 		sum_huc += float(e.prom_huc)
+		if e.prom_cdemyce == None: e.prom_cdemyce = 0
 		sum_cdemyce += float(e.prom_cdemyce)
+		if e.prom_cdecsyh == None: e.prom_cdecsyh = 0
 		sum_cdecsyh += float(e.prom_cdecsyh)
+		if e.prom_cdec == None: e.prom_cdec = 0
 		sum_cdec += float(e.prom_cdec)
+		if e.prom_sft3 == None: e.prom_sft3 = 0
 		sum_sft3 += float(e.prom_sft3)
+		if e.prom_filos == None: e.prom_filos = 0
 		sum_filos += float(e.prom_filos)
+		if e.prom_ema == None: e.prom_ema = 0
 		sum_ema += float(e.prom_ema)
+		if e.prom_met_invx == None: e.prom_met_invx = 0
 		sum_met_invx += float(e.prom_met_invx)
+		if e.prom_derech2 == None: e.prom_derech2 = 0
 		sum_derech2 += float(e.prom_derech2)
+		if e.prom_cc2 == None: e.prom_cc2 = 0
 		sum_cc2 += float(e.prom_cc2)
+		if e.prom_cs2 == None: e.prom_cs2 = 0 
 		sum_cs2 += float(e.prom_cs2)
+		if e.prom_proyes2 == None: e.prom_proyes2 = 0
 		sum_proyes2 += float(e.prom_proyes2)
 	#Calcular los promedios de las sumas de cada asignatura entre los registros
 	prom_mat1 = sum_mat1 / size
@@ -402,44 +436,83 @@ def generar_reporte(labels, data, labels2, data2, auxData3, auxLabels3, Estadist
 	mat1, fis1, ev1, met_inv, tlr1, ing1, mat2, fis2, ev2, ics ,tlr2, ing2, mat3, q1, bio1, hm1, lit1, ing3, sft1, mat4, q2, bio2, hm2, lit2, ing4, sft2, geog, huc, cdemyce, cdecsyh, cdec, sft3, filos, ema, met_invx, derech2, cc2, cs2, proyes2 = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 	#Se almacenan todas los promedios
 	for e in Estadistica_modulos:
+		if e.prom_mat1 == None: e.prom_mat1 = 0  
 		mat1.append(float(e.prom_mat1))
+		if e.prom_fis1 == None: e.prom_fis1 = 0  
 		fis1.append(float(e.prom_fis1))
+		if e.prom_ev1 == None: e.prom_ev1 = 0  
 		ev1.append(float(e.prom_ev1))
+		if e.prom_met_inv == None: e.prom_met_inv = 0  
 		met_inv.append(float(e.prom_met_inv))
+		if e.prom_tlr1 == None: e.prom_tlr1 = 0  
 		tlr1.append(float(e.prom_tlr1))
+		if e.prom_ing1 == None: e.prom_ing1 = 0  
 		ing1.append(float(e.prom_ing1))
+		if e.prom_mat2 == None: e.prom_mat2 = 0  
 		mat2.append(float(e.prom_mat2))
+		if e.prom_fis2 == None: e.prom_fis2 = 0  
 		fis2.append(float(e.prom_fis2))
+		if e.prom_ev2 == None: e.prom_ev2 = 0  
 		ev2.append(float(e.prom_ev2))
+		if e.prom_ics == None: e.prom_ics = 0  
 		ics.append(float(e.prom_ics))
+		if e.prom_tlr2 == None: e.prom_tlr2 = 0  
 		tlr2.append(float(e.prom_tlr2))
+		if e.prom_ing2 == None: e.prom_ing2 = 0  
 		ing2.append(float(e.prom_ing2))
+		if e.prom_mat3 == None: e.prom_mat3 = 0  
 		mat3.append(float(e.prom_mat3))
+		if e.prom_q1 == None: e.prom_q1 = 0  
 		q1.append(float(e.prom_q1))
+		if e.prom_bio1 == None: e.prom_bio1 = 0  
 		bio1.append(float(e.prom_bio1))
+		if e.prom_hm1 == None: e.prom_hm1 = 0  
 		hm1.append(float(e.prom_hm1))
+		if e.prom_lit1 == None: e.prom_lit1 = 0  
 		lit1.append(float(e.prom_lit1))
+		if e.prom_ing3 == None: e.prom_ing3 = 0  
 		ing3.append(float(e.prom_ing3))
+		if e.prom_sft1 == None: e.prom_sft1 = 0  
 		sft1.append(float(e.prom_sft1))
+		if e.prom_mat4 == None: e.prom_mat4 = 0  
 		mat4.append(float(e.prom_mat4))
+		if e.prom_q2 == None: e.prom_q2 = 0  
 		q2.append(float(e.prom_q2))
+		if e.prom_bio2 == None: e.prom_bio2 = 0  
 		bio2.append(float(e.prom_bio2))
+		if e.prom_hm2 == None: e.prom_hm2 = 0  
 		hm2.append(float(e.prom_hm2))
+		if e.prom_lit2 == None: e.prom_lit2 = 0  
 		lit2.append(float(e.prom_lit2))
+		if e.prom_ing4 == None: e.prom_ing4 = 0  
 		ing4.append(float(e.prom_ing4))
+		if e.prom_sft2 == None: e.prom_sft2 = 0  
 		sft2.append(float(e.prom_sft2))
+		if e.prom_geog == None: e.prom_geog = 0  
 		geog.append(float(e.prom_geog))
+		if e.prom_huc == None: e.prom_huc = 0  
 		huc.append(float(e.prom_huc))
+		if e.prom_cdemyce == None: e.prom_cdemyce = 0  
 		cdemyce.append(float(e.prom_cdemyce))
+		if e.prom_cdecsyh == None: e.prom_cdecsyh = 0  
 		cdecsyh.append(float(e.prom_cdecsyh))
+		if e.prom_cdecsyh == None: e.prom_cdecsyh = 0 
 		cdec.append(float(e.prom_cdec))
+		if e.prom_sft3 == None: e.prom_sft3 = 0  
 		sft3.append(float(e.prom_sft3))
+		if e.prom_filos == None: e.prom_filos = 0  
 		filos.append(float(e.prom_filos))
+		if e.prom_ema == None: e.prom_ema = 0  
 		ema.append(float(e.prom_ema))
+		if e.prom_met_invx == None: e.prom_met_invx = 0  
 		met_invx.append(float(e.prom_met_invx))
+		if e.prom_derech2 == None: e.prom_derech2 = 0  
 		derech2.append(float(e.prom_derech2))
+		if e.prom_cc2 == None: e.prom_cc2 = 0  
 		cc2.append(float(e.prom_cc2))
+		if e.prom_cs2 == None: e.prom_cs2 = 0  
 		cs2.append(float(e.prom_cs2))
+		if e.prom_cs2 == None: e.prom_cs2 = 0   
 		proyes2.append(float(e.prom_proyes2))
 	#Se procede a buscar en el arreglo y llevar conteo de cuantos pertenecen a la ponderación [0-5, 6, 7, 8, 9, 10]
 	f = s = sv = e = n = t = 0 #[0-5, 6, 7, 8, 9, 10]
@@ -766,7 +839,6 @@ def consultaDocentes(request):
 					#nameCurriculum = fsCurriculum.save(curriculum.name, curriculum)
 					#urlCurriculum = fsCurriculum.url(nameCurriculum)
 					#aqui guardar el registro en la tabla de archivos
-					
 					#Se obtiene el id del archivo actual para incrementar en 1 e insertarlo
 					try:
 						field_name = 'id_archivo'
@@ -1703,13 +1775,20 @@ def alumno(request, id):
 	Asignaturas = Asignatura.objects.all().order_by('id_asignatura')
 	AlumnoS = Alumno.objects.get(id_alumno = id)
 	Estadistica_alumno = Estadistica_modulo.objects.get(num_matricula = usuarioLogueado.first_name)
+	ArchivoSubsistema = ['-']
+	try:
+		ArchivoSubsistemaA = Archivo.objects.get(id_alumno = id, tipo_archivo='Subsistema')
+		ArchivoSubsistema.append(ArchivoSubsistemaA.tipo_archivo)
+	except:
+		ArchivoSubsistemaA = None
+	Archivos = Archivo.objects.filter(id_alumno = id)
 
 	#Se llama la función para generar los reportes declarando antes las variables a usar
 	totalAlumnos = 0
 	labels, data, labels2, data2, auxData3, auxLabels3 = [], [], [], [], [], []
 	labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos = generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_alumno, Modulos, totalAlumnos, Asignaturas)
 
-	return render(request, 'alumno.html', { 'usuario':usuarioLogueado, 'modulo':Modulos, 'alumnoSel':AlumnoS, 'estadistica':Estadistica_alumno, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, })	
+	return render(request, 'alumno.html', { 'usuario':usuarioLogueado, 'modulo':Modulos, 'alumnoSel':AlumnoS, 'estadistica':Estadistica_alumno, 'labels':labels, 'data':data, 'labels2':labels2, 'data2':data2, 'archivoSubsistema':ArchivoSubsistema, 'archivos':Archivos})	
 
 #Función para generar los reportes
 def generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadistica_modulos, Modulos, totalAlumnos, Asignaturas):	
@@ -1728,85 +1807,84 @@ def generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadis
 	prom_mat1 = prom_fis1 = prom_ev1 = prom_met_inv = prom_tlr1 = prom_ing1 = prom_mat2 = prom_fis2 = prom_ev2 = prom_ics = prom_tlr2 = prom_ing2 = prom_mat3 = prom_q1 = prom_bio1 = prom_hm1 = prom_lit1 = prom_ing3 = prom_sft1 = prom_mat4 = prom_q2 = prom_bio2 = prom_hm2 = prom_lit2 = prom_ing4 = prom_sft2 = prom_geog = prom_huc = prom_cdemyce = prom_cdecsyh = prom_cdec = prom_sft3 = prom_filos = prom_ema = prom_met_invx = prom_derech2 = prom_cc2 = prom_cs2 = prom_proyes2 =  0
 	#Se acumulan los promedios por cada asignatura
 	#for e in Estadistica_modulos:
+	if Estadistica_modulos.prom_mat1 == None: Estadistica_modulos.prom_mat1 = 0  
 	prom_mat1 = float(Estadistica_modulos.prom_mat1)
+	if Estadistica_modulos.prom_fis1 == None: Estadistica_modulos.prom_fis1 = 0  
 	prom_fis1 = float(Estadistica_modulos.prom_fis1)
+	if Estadistica_modulos.prom_ev1 == None: Estadistica_modulos.prom_ev1 = 0  
 	prom_ev1 = float(Estadistica_modulos.prom_ev1)
+	if Estadistica_modulos.prom_met_inv == None: Estadistica_modulos.prom_met_inv = 0  
 	prom_met_inv = float(Estadistica_modulos.prom_met_inv)
+	if Estadistica_modulos.prom_tlr1 == None: Estadistica_modulos.prom_tlr1 = 0  
 	prom_tlr1 = float(Estadistica_modulos.prom_tlr1)
+	if Estadistica_modulos.prom_ing1 == None: Estadistica_modulos.prom_ing1 = 0  
 	prom_ing1 = float(Estadistica_modulos.prom_ing1)
+	if Estadistica_modulos.prom_mat2 == None: Estadistica_modulos.prom_mat2 = 0  
 	prom_mat2 = float(Estadistica_modulos.prom_mat2)
+	if Estadistica_modulos.prom_fis2 == None: Estadistica_modulos.prom_fis2 = 0  
 	prom_fis2 = float(Estadistica_modulos.prom_fis2)
+	if Estadistica_modulos.prom_ev2 == None: Estadistica_modulos.prom_ev2 = 0  
 	prom_ev2 = float(Estadistica_modulos.prom_ev2)
+	if Estadistica_modulos.prom_ics == None: Estadistica_modulos.prom_ics = 0    
 	prom_ics = float(Estadistica_modulos.prom_ics)
+	if Estadistica_modulos.prom_tlr2 == None: Estadistica_modulos.prom_tlr2 = 0  
 	prom_tlr2 = float(Estadistica_modulos.prom_tlr2)
+	if Estadistica_modulos.prom_ing2 == None: Estadistica_modulos.prom_ing2 = 0  
 	prom_ing2 = float(Estadistica_modulos.prom_ing2)
+	if Estadistica_modulos.prom_mat3 == None: Estadistica_modulos.prom_mat3 = 0  
 	prom_mat3 = float(Estadistica_modulos.prom_mat3)
+	if Estadistica_modulos.prom_q1 == None: Estadistica_modulos.prom_q1 = 0  
 	prom_q1 = float(Estadistica_modulos.prom_q1)
+	if Estadistica_modulos.prom_bio1 == None: Estadistica_modulos.prom_bio1 = 0  
 	prom_bio1 = float(Estadistica_modulos.prom_bio1)
+	if Estadistica_modulos.prom_hm1 == None: Estadistica_modulos.prom_hm1 = 0  
 	prom_hm1 = float(Estadistica_modulos.prom_hm1)
+	if Estadistica_modulos.prom_lit1 == None: Estadistica_modulos.prom_lit1 = 0  
 	prom_lit1 = float(Estadistica_modulos.prom_lit1)
+	if Estadistica_modulos.prom_ing3 == None: Estadistica_modulos.prom_ing3 = 0  
 	prom_ing3 = float(Estadistica_modulos.prom_ing3)
+	if Estadistica_modulos.prom_sft1 == None: Estadistica_modulos.prom_sft1 = 0  
 	prom_sft1 = float(Estadistica_modulos.prom_sft1)
+	if Estadistica_modulos.prom_mat4 == None: Estadistica_modulos.prom_mat4 = 0  
 	prom_mat4 = float(Estadistica_modulos.prom_mat4)
+	if Estadistica_modulos.prom_q2 == None: Estadistica_modulos.prom_q2 = 0  
 	prom_q2 = float(Estadistica_modulos.prom_q2)
+	if Estadistica_modulos.prom_bio2 == None: Estadistica_modulos.prom_bio2 = 0  
 	prom_bio2 = float(Estadistica_modulos.prom_bio2)
+	if Estadistica_modulos.prom_hm2 == None: Estadistica_modulos.prom_hm2 = 0  
 	prom_hm2 = float(Estadistica_modulos.prom_hm2)
+	if Estadistica_modulos.prom_lit2 == None: Estadistica_modulos.prom_lit2 = 0 
 	prom_lit2 = float(Estadistica_modulos.prom_lit2)
+	if Estadistica_modulos.prom_ing4 == None: Estadistica_modulos.prom_ing4 = 0 
 	prom_ing4 = float(Estadistica_modulos.prom_ing4)
+	if Estadistica_modulos.prom_sft2 == None: Estadistica_modulos.prom_sft2 = 0 
 	prom_sft2 = float(Estadistica_modulos.prom_sft2)
+	if Estadistica_modulos.prom_geog == None: Estadistica_modulos.prom_geog = 0  
 	prom_geog = float(Estadistica_modulos.prom_geog)
+	if Estadistica_modulos.prom_huc == None: Estadistica_modulos.prom_huc = 0 
 	prom_huc = float(Estadistica_modulos.prom_huc)
+	if Estadistica_modulos.prom_cdemyce == None: Estadistica_modulos.prom_cdemyce = 0  
 	prom_cdemyce = float(Estadistica_modulos.prom_cdemyce)
+	if Estadistica_modulos.prom_cdecsyh == None: Estadistica_modulos.prom_cdecsyh = 0 
 	prom_cdecsyh = float(Estadistica_modulos.prom_cdecsyh)
+	if Estadistica_modulos.prom_cdec == None: Estadistica_modulos.prom_cdec = 0 
 	prom_cdec = float(Estadistica_modulos.prom_cdec)
+	if Estadistica_modulos.prom_sft3 == None: Estadistica_modulos.prom_sft3 = 0 
 	prom_sft3 = float(Estadistica_modulos.prom_sft3)
+	if Estadistica_modulos.prom_filos == None: Estadistica_modulos.prom_filos = 0 
 	prom_filos = float(Estadistica_modulos.prom_filos)
+	if Estadistica_modulos.prom_ema == None: Estadistica_modulos.prom_ema = 0 
 	prom_ema = float(Estadistica_modulos.prom_ema)
+	if Estadistica_modulos.prom_met_invx == None: Estadistica_modulos.prom_met_invx = 0
 	prom_met_invx = float(Estadistica_modulos.prom_met_invx)
+	if Estadistica_modulos.prom_derech2 == None: Estadistica_modulos.prom_derech2 = 0
 	prom_derech2 = float(Estadistica_modulos.prom_derech2)
+	if Estadistica_modulos.prom_cc2 == None: Estadistica_modulos.prom_cc2 = 0 
 	prom_cc2 = float(Estadistica_modulos.prom_cc2)
+	if Estadistica_modulos.prom_cs2 == None: Estadistica_modulos.prom_cs2 = 0  
 	prom_cs2 = float(Estadistica_modulos.prom_cs2)
+	if Estadistica_modulos.prom_proyes2 == None: Estadistica_modulos.prom_proyes2 = 0  
 	prom_proyes2 = float(Estadistica_modulos.prom_proyes2)
-	#Calcular los promedios de las sumas de cada asignatura entre los registros
-	# prom_mat1 = sum_mat1 / size
-	# prom_fis1 = sum_fis1 / size
-	# prom_ev1 = sum_ev1 / size
-	# prom_met_inv = sum_met_inv / size
-	# prom_tlr1 = sum_tlr1 / size
-	# prom_ing1 = sum_ing1 / size
-	# prom_mat2 = sum_mat2 / size
-	# prom_fis2 = sum_fis2 / size
-	# prom_ev2 = sum_ev2 / size
-	# prom_ics = sum_ics / size
-	# prom_tlr2 = sum_tlr2 / size
-	# prom_ing2 = sum_ing2 / size
-	# prom_mat3 = sum_mat3 / size
-	# prom_q1 = sum_q1 / size
-	# prom_bio1 = sum_bio1 / size
-	# prom_hm1 = sum_hm1 / size
-	# prom_lit1 = sum_lit1 / size
-	# prom_ing3 = sum_ing3 / size
-	# prom_sft1 = sum_sft1 / size
-	# prom_mat4 = sum_mat4 / size
-	# prom_q2 = sum_q2 / size
-	# prom_bio2 = sum_bio2 / size
-	# prom_hm2 = sum_hm2 / size
-	# prom_lit2 = sum_lit2 / size
-	# prom_ing4 = sum_ing4 / size
-	# prom_sft2 = sum_sft2 / size
-	# prom_geog = sum_geog / size
-	# prom_huc = sum_huc / size
-	# prom_cdemyce = sum_cdemyce / size
-	# prom_cdecsyh = sum_cdecsyh / size
-	# prom_cdec = sum_cdec / size
-	# prom_sft3 = sum_sft3 / size
-	# prom_filos = sum_filos / size
-	# prom_ema = sum_ema / size
-	# prom_met_invx = sum_met_invx / size
-	# prom_derech2 = sum_derech2 / size
-	# prom_cc2 = sum_cc2 / size
-	# prom_cs2 = sum_cs2 / size
-	# prom_proyes2 = sum_proyes2 / size
 	#data contiene todos los promedios de todas las asignaturas
 	data = [prom_mat1,  prom_fis1,  prom_ev1,  prom_met_inv,  prom_tlr1,  prom_ing1,  prom_mat2,  prom_fis2,  prom_ev2, prom_ics, prom_tlr2,  prom_ing2,  prom_mat3,  prom_q1,  prom_bio1,  prom_hm1,  prom_lit1,  prom_ing3,  prom_sft1,  prom_mat4,  prom_q2,  prom_bio2,  prom_hm2,  prom_lit2,  prom_ing4,  prom_sft2,  prom_geog,  prom_huc,  prom_cdemyce,  prom_cdecsyh,  prom_cdec,  prom_sft3,  prom_filos,  prom_ema,  prom_met_invx,  prom_derech2,  prom_cc2,  prom_cs2,  prom_proyes2]
 	#Para acomodar las asignaturas x modulo
@@ -1834,7 +1912,6 @@ def generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadis
 	data = [mod1, mod2, mod3, mod4, mod5, mod6, mod7, mod8, mod9, mod10, mod11, mod12, mod13, mod14, mod15, mod16, mod17, mod18, mod19, mod20]
 	for mod in Modulos:
 		labels.append(mod.nombre_modulo)
-	
 	#Para generar reporte por módulos, almacenar las calificaciones de cada modulo y sacar datos correspondientes a ponderación de [0-5, 6, 7, 8, 9, 10] (estos serán los labels)
 	#labels2 = ['0-5', 6, 7, 8, 9, 10]
 	for asi in Asignaturas:
@@ -1842,44 +1919,83 @@ def generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadis
 	mat1, fis1, ev1, met_inv, tlr1, ing1, mat2, fis2, ev2, ics ,tlr2, ing2, mat3, q1, bio1, hm1, lit1, ing3, sft1, mat4, q2, bio2, hm2, lit2, ing4, sft2, geog, huc, cdemyce, cdecsyh, cdec, sft3, filos, ema, met_invx, derech2, cc2, cs2, proyes2 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	#Se almacenan todas los promedios
 	#for e in Estadistica_modulos:
+	if Estadistica_modulos.prom_mat1 == None: Estadistica_modulos.prom_mat1 = 0
 	mat1 = float(Estadistica_modulos.prom_mat1)
+	if Estadistica_modulos.prom_fis1 == None: Estadistica_modulos.prom_fis1 = 0 
 	fis1 = float(Estadistica_modulos.prom_fis1)
+	if Estadistica_modulos.prom_ev1 == None: Estadistica_modulos.prom_ev1 = 0  
 	ev1 = float(Estadistica_modulos.prom_ev1)
+	if Estadistica_modulos.prom_met_inv == None: Estadistica_modulos.prom_met_inv = 0
 	met_inv = float(Estadistica_modulos.prom_met_inv)
+	if Estadistica_modulos.prom_tlr1 == None: Estadistica_modulos.prom_tlr1 = 0 
 	tlr1 = float(Estadistica_modulos.prom_tlr1)
+	if Estadistica_modulos.prom_ing1 == None: Estadistica_modulos.prom_ing1 = 0 
 	ing1 = float(Estadistica_modulos.prom_ing1)
+	if Estadistica_modulos.prom_mat2 == None: Estadistica_modulos.prom_mat2 = 0 
 	mat2 = float(Estadistica_modulos.prom_mat2)
+	if Estadistica_modulos.prom_fis2 == None: Estadistica_modulos.prom_fis2 = 0  
 	fis2 = float(Estadistica_modulos.prom_fis2)
+	if Estadistica_modulos.prom_ev2 == None: Estadistica_modulos.prom_ev2 = 0  
 	ev2 = float(Estadistica_modulos.prom_ev2)
+	if Estadistica_modulos.prom_ics == None: Estadistica_modulos.prom_ics = 0   
 	ics = float(Estadistica_modulos.prom_ics)
+	if Estadistica_modulos.prom_tlr2 == None: Estadistica_modulos.prom_tlr2 = 0
 	tlr2 = float(Estadistica_modulos.prom_tlr2)
+	if Estadistica_modulos.prom_ing2 == None: Estadistica_modulos.prom_ing2 = 0 
 	ing2 = float(Estadistica_modulos.prom_ing2)
+	if Estadistica_modulos.prom_mat3 == None: Estadistica_modulos.prom_mat3 = 0
 	mat3 = float(Estadistica_modulos.prom_mat3)
+	if Estadistica_modulos.prom_q1 == None: Estadistica_modulos.prom_q1 = 0 
 	q1 = float(Estadistica_modulos.prom_q1)
+	if Estadistica_modulos.prom_bio1 == None: Estadistica_modulos.prom_bio1 = 0 
 	bio1 = float(Estadistica_modulos.prom_bio1)
+	if Estadistica_modulos.prom_hm1 == None: Estadistica_modulos.prom_hm1 = 0 
 	hm1 = float(Estadistica_modulos.prom_hm1)
+	if Estadistica_modulos.prom_lit1 == None: Estadistica_modulos.prom_lit1 = 0
 	lit1 = float(Estadistica_modulos.prom_lit1)
+	if Estadistica_modulos.prom_ing3 == None: Estadistica_modulos.prom_ing3 = 0
 	ing3 = float(Estadistica_modulos.prom_ing3)
+	if Estadistica_modulos.prom_sft1 == None: Estadistica_modulos.prom_sft1 = 0 
 	sft1 = float(Estadistica_modulos.prom_sft1)
+	if Estadistica_modulos.prom_mat4 == None: Estadistica_modulos.prom_mat4 = 0 
 	mat4 = float(Estadistica_modulos.prom_mat4)
+	if Estadistica_modulos.prom_q2 == None: Estadistica_modulos.prom_q2 = 0 
 	q2 = float(Estadistica_modulos.prom_q2)
+	if Estadistica_modulos.prom_bio2 == None: Estadistica_modulos.prom_bio2 = 0 
 	bio2 = float(Estadistica_modulos.prom_bio2)
+	if Estadistica_modulos.prom_hm2 == None: Estadistica_modulos.prom_hm2 = 0  
 	hm2 = float(Estadistica_modulos.prom_hm2)
+	if Estadistica_modulos.prom_lit2 == None: Estadistica_modulos.prom_lit2 = 0
 	lit2 = float(Estadistica_modulos.prom_lit2)
+	if Estadistica_modulos.prom_ing4 == None: Estadistica_modulos.prom_ing4 = 0 
 	ing4 = float(Estadistica_modulos.prom_ing4)
+	if Estadistica_modulos.prom_sft2 == None: Estadistica_modulos.prom_sft2 = 0
 	sft2 = float(Estadistica_modulos.prom_sft2)
+	if Estadistica_modulos.prom_geog == None: Estadistica_modulos.prom_geog = 0
 	geog = float(Estadistica_modulos.prom_geog)
+	if Estadistica_modulos.prom_huc == None: Estadistica_modulos.prom_huc = 0 
 	huc = float(Estadistica_modulos.prom_huc)
+	if Estadistica_modulos.prom_cdemyce == None: Estadistica_modulos.prom_cdemyce = 0
 	cdemyce = float(Estadistica_modulos.prom_cdemyce)
+	if Estadistica_modulos.prom_cdecsyh == None: Estadistica_modulos.prom_cdecsyh = 0
 	cdecsyh = float(Estadistica_modulos.prom_cdecsyh)
+	if Estadistica_modulos.prom_cdec == None: Estadistica_modulos.prom_cdec = 0 
 	cdec = float(Estadistica_modulos.prom_cdec)
+	if Estadistica_modulos.prom_sft3 == None: Estadistica_modulos.prom_sft3 = 0 
 	sft3 = float(Estadistica_modulos.prom_sft3)
+	if Estadistica_modulos.prom_filos == None: Estadistica_modulos.prom_filos = 0 
 	filos = float(Estadistica_modulos.prom_filos)
+	if Estadistica_modulos.prom_ema == None: Estadistica_modulos.prom_ema = 0 
 	ema = float(Estadistica_modulos.prom_ema)
+	if Estadistica_modulos.prom_met_invx == None: Estadistica_modulos.prom_met_invx = 0
 	met_invx = float(Estadistica_modulos.prom_met_invx)
+	if Estadistica_modulos.prom_derech2 == None: Estadistica_modulos.prom_derech2 = 0
 	derech2 = float(Estadistica_modulos.prom_derech2)
+	if Estadistica_modulos.prom_cc2 == None: Estadistica_modulos.prom_cc2 = 0 
 	cc2 = float(Estadistica_modulos.prom_cc2)
+	if Estadistica_modulos.prom_cs2 == None: Estadistica_modulos.prom_cs2 = 0 
 	cs2 = float(Estadistica_modulos.prom_cs2)
+	if Estadistica_modulos.prom_proyes2 == None: Estadistica_modulos.prom_proyes2 = 0
 	proyes2 = float(Estadistica_modulos.prom_proyes2)
 	#Se procede a buscar en el arreglo y llevar conteo de cuantos pertenecen a la ponderación [0-5, 6, 7, 8, 9, 10]
 	f = s = sv = e = n = t = 0 #[0-5, 6, 7, 8, 9, 10]
@@ -1890,78 +2006,37 @@ def generar_reporteA(labels, data, labels2, data2, auxData3, auxLabels3, Estadis
 	modM1, modM2, modM3, modM4, modM5, modM6, modM7, modM8, modM9, modM10, modM11, modM12, modM13, modM14, modM15, modM16, modM17, modM18, modM19, modM20,  = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 	modM1.append(mat1)
 	modM1.append(fis1)
-	
 	modM2.append(ev1)
 	modM2.append(met_inv)
-	
 	modM3.append(tlr1)
 	modM3.append(ing1)
-
 	modM4.append(mat2)
 	modM4.append(fis2)
-
 	modM5.append(ev2)
 	modM5.append(ics)
-
 	modM6.append(tlr2)
 	modM6.append(ing2)
-
 	modM7.append(mat3)
 	modM7.append(q1)
 	modM7.append(bio1)
-
 	modM8.append(hm1)
-
 	modM9.append(lit1)
 	modM9.append(ing3)
-
 	modM10.append(sft1)
-
 	modM11.append(mat4)
 	modM11.append(q2)
 	modM11.append(bio2)
-
 	modM12.append(hm2)
-
 	modM13.append(lit2)
 	modM13.append(ing4)
-
 	modM14.append(sft2)
-
 	modM15.append(geog)
-
 	modM16.append(huc)
-
 	modM17.append(cdemyce)
-
 	modM18.append(cdecsyh)
-
 	modM19.append(cdec)
-
 	modM20.append(sft3)
-
 	#arr contendrá los arreglos de todos los prmedios por modMulo i.e -> modM1[6,7,8.2,9,5,1,2,3]
 	data2 = []
 	data2 = [modM1, modM2, modM3, modM4, modM5, modM6, modM7, modM8, modM9, modM10, modM11, modM12, modM13, modM14, modM15, modM16, modM17, modM18, modM19, modM20]
-	#data2 = []
-	#Ciclo para recorrer cada elemento de arr y evaluar a que ponderacion pertenece
-	# for row in arr:
-	# 	for elem in row:
-	# 		if elem >= 0 and elem < 6:
-	# 			f += 1
-	# 		if elem >= 6 and elem < 7:
-	# 			s += 1
-	# 		if elem >= 7 and elem < 8:
-	# 			sv += 1
-	# 		if elem >= 8 and elem < 9:
-	# 			e += 1
-	# 		if elem >= 9 and elem < 10:
-	# 			n += 1
-	# 		if elem == 10:
-	# 			t += 1
-	# 	p2 = [f, s, sv, e, n, t]
-	# 	data2.append(p2)
-	# 	f = s = sv = e = n = t = 0
-	#data2.append(modM1)
-	#data2 contiene los arreglos con los conteos de cada modulo mat1=[16,11,10,10,5,0]
 	return labels, data, labels2, data2, auxData3, auxLabels3, totalAlumnos
