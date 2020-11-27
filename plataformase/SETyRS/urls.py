@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/lead/', views.LeadListCreate.as_view()),#API Obtiene datos de tabla Lead
     path('api/ArchivosSinodales/', views.ArchivosSinodalesListCreate.as_view()),#API Obtiene datos de tabla Archivos Sinodales
     path('api/estampados', views.estampadosList ),
+    path('api/solicitudExamen', views.solicitudExamen ),
 
     #urls del administrador SINODALES
     path('admin/',login_required(views.index_admin), name='SETyRS_admin_index'), #INDEX del administrador

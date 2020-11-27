@@ -16,11 +16,14 @@ from django.core.files.storage import FileSystemStorage
 from django.core import serializers
 
 #PRUEBAS BLOCKCHAIN
-from .serializers import LeadSerializer, estampadosSerializer, ArchivosSinodalesSerializer
+from .serializers import *
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
+
+from django.core.files import File
+from io import BytesIO
 
 class LeadListCreate(generics.ListCreateAPIView):
     queryset = Lead.objects.all()
@@ -29,6 +32,16 @@ class LeadListCreate(generics.ListCreateAPIView):
 class ArchivosSinodalesListCreate(generics.ListCreateAPIView):
     queryset = ArchivosSinodales.objects.all()
     serializer_class = ArchivosSinodalesSerializer
+
+@api_view(['GET'])
+def solicitudExamen(request):
+    if request.method == 'GET':
+        idSolicitud = request.query_params.get('id', None)
+        if idSolicitud is not None:
+            solExamen = SolicitudExamen.objects.filter(id=idSolicitud)
+            solExamen_serializer = SolicitudExamenSerializer(solExamen, many=True)
+            return JsonResponse(solExamen_serializer.data, safe=False)
+        return JsonResponse(solExamen_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST'])
 def estampadosList(request):
@@ -393,6 +406,44 @@ def aceptar_solicitud(request, id):
             h_solicitud.save()
             jefe = CustomUser.objects.get(id=h_solicitud.user_id)
 
+            solAddFile = get_object_or_404(SolicitudExamen, pk=id)
+            params = {
+                'solicitud': solicitud,
+                'alumnos':Alumnos.objects.filter(id_solicitud_id=id),
+                # 'request': request,
+                'escuela': UsuarioInstitucion.objects.get(cct=solicitud.CCT),
+                'presidente': Sinodales.objects.get(id=solicitud.id_presidente),
+                'secretario': Sinodales.objects.get(id=solicitud.id_secretario),
+                'vocal': Sinodales.objects.get(id=solicitud.id_vocal),
+                'jefe': jefe,
+                'bucket': settings.MEDIA_URL
+            }
+            c = solicitud.categoria
+            # Se hace la comparación en char porque la BD de producción tiene la columna categoria como varchar y no int
+            if c=='1':
+                solicitud.categoria = 'SEMINARIO DE TITULACION'
+            elif c=='2':
+                solicitud.categoria = 'TESIS EXTERNA'
+            elif c=='3':
+                solicitud.categoria = 'INFORME SOBRE SERVICIO SOCIAL'
+            elif c=='4':
+                solicitud.categoria = 'ESTUDIOS DE POSGRADO'
+            elif c=='5':
+                solicitud.categoria = 'EXAMEN GENERAL DE CONOCIMIENTOS'
+            elif c=='6':
+                solicitud.categoria = 'EXAMEN CENEVAL'
+            elif c=='7':
+                solicitud.categoria = 'ALTO RENDIMIENTO DE LICENCIATURA'
+            elif c=='8':
+                solicitud.categoria = 'EXPERIENCIA PROFESIONAL'
+            elif c=='9':
+                solicitud.categoria = 'OPCIÓN ESPECIFICADA POR LA INSTITUCIÓN'
+            filename = 'Admision_de_tramite_%s.pdf' % (id)
+            pdf = Render.render('institucion/examenes/formato_aprobacion_solicitud.html', params)
+            receipt_file = File( BytesIO( pdf.content ) )
+            solAddFile.archivo_admision = File(receipt_file, filename)
+            solAddFile.save()
+
             #Aqui poner el codigo para enviar el correo de aceptación a control escolar,dirección y al departamento correspondiente
 
             #Si dirección aceptó la solicitud entonces:
@@ -731,7 +782,10 @@ def nueva_solicitud_examen(request):
         context = {'notificacion':notificacion,'notificaciones':num_notifi,'sinodales':sinodales,'centrosRegistrados':centrosRegistrados}
         return render(request, 'institucion/sinodales/examenes/nueva_solicitud.html', context)
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == '2' or request.user.tipo_usuario == '3':
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def detalle_solicitud_examen(request, id):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
@@ -832,7 +886,10 @@ def crear_solicitud_examen(request):
         else:
             return redirect('SETyRS_nueva_solicitud_examen')
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == '2' or request.user.tipo_usuario == '3':
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def agregar_alumno(request, id):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
@@ -848,7 +905,10 @@ def agregar_alumno(request, id):
         else:
             return redirect('SETyRS_detalle_solicitud_examen', id)
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == 2 or request.user.tipo_usuario == s3:
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def editar_alumno(request):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
@@ -865,7 +925,10 @@ def editar_alumno(request):
         else:
             raise Http404('El usuario no tiene permiso de ver esta página')
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == '2' or request.user.tipo_usuario == '3':
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def eliminar_alumno(request):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
@@ -878,7 +941,10 @@ def eliminar_alumno(request):
         else:
             raise Http404('El usuario no tiene permiso de ver esta página')
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == '2' or request.user.tipo_usuario == '3':
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def agregar_documentos_alumno(request, id):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
@@ -890,7 +956,10 @@ def agregar_documentos_alumno(request, id):
         else:
             return redirect('SETyRS_detalle_solicitud_examen', id)
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == '2' or request.user.tipo_usuario == '3':
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def subir_documentos_alumno(request, id):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':
@@ -905,7 +974,10 @@ def subir_documentos_alumno(request, id):
         else:
             return redirect('SETyRS_detalle_solicitud_examen', id)
     else:
-        raise Http404('El usuario no tiene permiso de ver esta página')
+        if request.user.tipo_usuario == '2' or request.user.tipo_usuario == '3':
+            return redirect('SETyRS_admin_index')
+        else:
+            return redirect('SETyRS_institucion_index')
 
 def editar_documentos_alumno(request, id):
     if request.user.tipo_usuario=='1' and request.user.tipo_persona=='2':

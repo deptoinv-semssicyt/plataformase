@@ -23,11 +23,12 @@ class estampados(models.Model):
     blockHash = models.TextField()
     blockNumber = models.IntegerField()
     solicitud = models.IntegerField(default=1)
+    #solicitud = modelsmodels.ForeignKey(SolicitudExamen, on_delete=models.CASCADE, default=1)
 
 #--------------------------------------- Modelos de Institución ------------------------------------------------------------
 # Tabla de las solicitudes de examenes a titulo
 class SolicitudExamen(models.Model):
-    categoria = models.CharField(max_length=100,default='opcion vacia', blank=True)
+    categoria = models.CharField(max_length=200,default='opcion vacia', blank=True)
     institucion = models.IntegerField(default=1)
     CCT = models.CharField(max_length=30)
     area_carrera = models.CharField(max_length=30, blank=True)
@@ -40,9 +41,10 @@ class SolicitudExamen(models.Model):
     fecha = models.DateField('fecha de publicacion')
     nivel_educativo = models.IntegerField(default=1)
     fecha_exa = models.DateField(default='2020-06-06')
-    lugar_exa = models.CharField(max_length=50,default='Algun lugar')
+    lugar_exa = models.CharField(max_length=200,default='Algun lugar')
     hora_exa = models.CharField(max_length=10,default='12:00')
     estampado = models.BooleanField(default=False)#Indica si esta solicitud ya ha sido estampada, True: ya estampado - False: no ha sido estampado
+    archivo_admision = models.FileField(upload_to='SETyRS/archivos/docs_admision', null=True, blank=True)
 
     class Meta:
         db_table = 'SETyRS_solicitud_examen'
@@ -50,7 +52,7 @@ class SolicitudExamen(models.Model):
 # Tabla de alumnos candidatos a graduarse registrados en las solicitudes de las instituciones
 class Alumnos(models.Model):
     no_certificado = models.CharField(max_length=20)
-    nombre_alumno = models.CharField(max_length=100)
+    nombre_alumno = models.CharField(max_length=200)
     CURP = models.CharField(max_length=50)
     id_solicitud = models.ForeignKey(SolicitudExamen, on_delete=models.CASCADE)
     folio_pago = models.CharField(max_length=50,default='1234', blank=True)
@@ -67,7 +69,7 @@ class Alumnos(models.Model):
 class SolicitudSinodal(models.Model):
     estatus = models.IntegerField(default=1)
     CCT = models.CharField(max_length=30)
-    institucion = models.CharField(max_length=150)
+    institucion = models.CharField(max_length=200)
     fase = models.IntegerField(default=1)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     fecha = models.DateField('fecha de publicacion')
@@ -85,7 +87,7 @@ class Sinodales(models.Model):
     estatus = models.IntegerField(default=1)
     id_solicitud = models.ForeignKey(SolicitudSinodal, on_delete=models.CASCADE)
     nivel_educativo = models.IntegerField(default=1)
-    institucion = models.CharField(max_length = 150, default='Instituto Tecnologico de Tepic')
+    institucion = models.CharField(max_length = 200, default='Instituto Tecnologico de Tepic')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -106,7 +108,7 @@ class ArchivosSinodales(models.Model):
 
 # Tabla de notificaciones de las instituciones
 class Notificaciones(models.Model):
-    descripcion = models.CharField(max_length=150)
+    descripcion = models.CharField(max_length=200)
     visto = models.BooleanField(default=False)
     fecha = models.DateTimeField('fecha de publicacion')
     solicitud_id = models.IntegerField()

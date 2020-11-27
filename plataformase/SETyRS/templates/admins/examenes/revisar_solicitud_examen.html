@@ -8,7 +8,7 @@
     {% if solicitud.estatus == 'Aceptada' %}
         <p><strong>¡Exito!</strong></p>
         <p>Puedes descargar el informe de aprobación de solicitud a continuación</p>
-        <a href="{% url 'SETyRS_generar_pdf' solicitud.id %}">
+        <a target="_blank" href="{{ solicitud.archivo_admision.url }}">
             <span class="material-icons" style="font-size:55px;"> picture_as_pdf </span>
             <br>
             <u>Ver Informe</u>

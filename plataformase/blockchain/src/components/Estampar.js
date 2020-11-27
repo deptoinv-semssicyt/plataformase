@@ -126,15 +126,24 @@ class Estampar extends Component {
 
   async captureFile() {
     const id_solicitud = document.getElementById('IDSolicitud').value;
+    const bucket = document.getElementById('bucket').value;
+    var path = "";
+    await fetch("SETyRS/api/solicitudExamen?id=" + id_solicitud)
+      .then((resp) => resp.json()) // Transform the data into json
+      .then(function(data) {
+        path = data[0].archivo_admision;
+        console.log("path", path);
+        })
+      .catch( (e) => console.log(e));
+    await this.setState({ pathFile: path })
+    console.log(this.state.pathFile);
     this.setState(prevState => {
       let estampados = Object.assign({}, prevState.estampados);
       estampados.solicitud = id_solicitud;
       return { estampados };
     })
-    let blob = await fetch('SETyRS/institucion/solicitud/'
-      + id_solicitud
-      + '/informe_aprobacion_solicitud'
-    ).then(r => r.blob());
+
+    let blob = await fetch(this.state.pathFile).then(r => r.blob());
     const reader = new window.FileReader()
     reader.readAsArrayBuffer(blob)
     reader.onloadend = () => {
@@ -168,14 +177,14 @@ class Estampar extends Component {
     return (
       <>
         <form id="form">
-          <div class="form-inline">
-            <label for="idNombre">Nombre:</label>
+          <div className="form-inline">
+            <label htmlFor="idNombre">Nombre:</label>
             <input onChange={ event => this.handleChangeNom(event)}
               className="form-control col-6 ml-2"
               id="idNombre"/>
           </div>
-          <div class="form-group">
-            <label for="idDescripcion">Descripción del documento a estampar:</label>
+          <div className="form-group">
+            <label htmlFor="idDescripcion">Descripción del documento a estampar:</label>
             <textarea onChange={ event => this.handleChangeDes(event)}
               className="md-textarea form-control"
               rows="2"

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Lead, estampados, ArchivosSinodales
+from .models import Lead, estampados, ArchivosSinodales, SolicitudExamen
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class ArchivosSinodalesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArchivosSinodales
         fields = ('id', 'sinodal', 'curriculum', 'cedula', 'solicitud')
+
+class SolicitudExamenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SolicitudExamen
+        fields = ('__all__')

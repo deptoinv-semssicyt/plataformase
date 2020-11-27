@@ -34,10 +34,13 @@ class Verificar extends Component {
     document.getElementById("alert").setAttribute("class", "")
     document.getElementById("resultado").innerHTML = ""
     const result = await ipfs.add(this.state.buffer)
+    console.log("path ->", result.path);
     await fetch('../SETyRS/api/estampados?hashInfura='+result.path)
       .then((resp) => resp.json()) // Transform the data into json
       .then( data => {
+        console.log("data -> ",data);
           data.map( e => {
+            console.log("hashInfura ->",e.hashInfura);
             if(e.hashInfura == result.path)
               this.setState({ path: "https://ipfs.infura.io/ipfs/"+e.hashInfura })
           })
@@ -70,7 +73,7 @@ class Verificar extends Component {
           </div>
           <div className="row mt-3 justify-content-center">
             <div id="spinner" className="spinner-border text-info" role="status">
-              <span class="sr-only">Loading...</span>
+              <span className="sr-only">Loading...</span>
             </div>
             <div role="alert" id="alert">
               <p id="resultado" className="text-center"></p>

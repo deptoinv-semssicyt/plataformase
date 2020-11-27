@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
     jefe = models.CharField(max_length=1, default='0', blank=True, null=True)#Establece si es jefe o no (0: no, 1: si)
     registro = models.ForeignKey("CustomUser", on_delete=models.CASCADE, blank=True, null=True)#Usuario que registro a este usuario
     firma_digital = models.FileField(upload_to ='firmas_digitales/', blank=True, null=True)
-    localidad = models.TextField(blank=True, null=True) 
+    localidad = models.TextField(blank=True, null=True)
     identificacion = models.TextField(blank=True, null=True)
     folio_id = models.TextField(null=True, blank=True)
     dom_legal_part = models.TextField(null=True, blank=True)
@@ -42,7 +42,8 @@ class CustomUser(AbstractUser):
         Retorna
         -:return: Retorna el nombre y apellido el usuario
         """
-        return self.first_name , self.last_name
+        template = '{0.first_name} {0.last_name}'
+        return template.format(self)
 
 
 class UsuarioInstitucion(models.Model):
