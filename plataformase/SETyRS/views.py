@@ -781,13 +781,19 @@ def crear_solicitud_examen(request):
             secretario = request.POST["secretario"]
             cct = request.POST["cct"]
             vocal = request.POST["vocal"]
+
+            presidente_suplente = request.POST["presidenteSuplente"]
+            secretario_suplente = request.POST["secretarioSuplente"]
+            vocal_suplente = request.POST["vocalSuplente"]
+
+
             escuela = CustomUser.objects.get(id=request.user.id)
             #if escuela.nivel_educativo == 3:
             nivel_educativo = request.POST['nivel']
             fecha_e = request.POST["fecha_exa"]
             lugar_e = request.POST["Lugar_exa"]
             hora_e = request.POST["hora_exa"]
-            solicitud = SolicitudExamen(categoria=categoria, id_presidente=presidente, id_secretario=secretario, id_vocal=vocal, 
+            solicitud = SolicitudExamen(categoria=categoria, id_presidente=presidente, id_secretario=secretario, id_vocal=vocal, id_presidente_suplente=presidente_suplente, id_secretario_suplente=secretario_suplente, id_vocal_suplente=vocal_suplente,
                                         institucion=escuela.id, user_id=request.user.id, fecha=date.today(), nivel_educativo=nivel_educativo,fecha_exa=fecha_e,lugar_exa=lugar_e,hora_exa=hora_e,CCT=cct)
             solicitud.save()
             msg = 'Nueva solicitud de exámenes a titulo. Folio: ' + str(solicitud.id) + '. Estatus: Incompleta'
