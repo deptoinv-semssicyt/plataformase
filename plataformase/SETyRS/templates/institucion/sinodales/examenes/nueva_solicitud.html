@@ -163,7 +163,7 @@
             </div>
             <div class="col-md-4">
                 <select class="form-control" name="presidenteSuplente" id="selectPresidenteSuplente">
-                    <option  selected hidden>Seleccionar</option>
+                    <option value="0" selected hidden>Seleccionar</option>
                     {% if sinodales %}
                         {% for s in sinodales %}
                             <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
@@ -179,7 +179,7 @@
             </div>
             <div class="col-md-4">
                 <select class="form-control" name="secretarioSuplente" id="selectSecretarioSuplente">
-                    <option  selected hidden>Seleccionar</option>
+                    <option  value="0" selected hidden>Seleccionar</option>
                     {% if sinodales %}
                         {% for s in sinodales %}
                             <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
@@ -197,7 +197,7 @@
             </div>
             <div class="col-md-4">
                 <select class="form-control" name="vocalSuplente" id="selectVocalSuplente">
-                    <option  selected hidden>Seleccionar</option>
+                    <option value="0" selected hidden>Seleccionar</option>
                     {% if sinodales %}
                         {% for s in sinodales %}
                             <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
