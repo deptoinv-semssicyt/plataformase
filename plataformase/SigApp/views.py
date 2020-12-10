@@ -99,9 +99,7 @@ def infosistemas(request):
     if request.user.is_authenticated:
         if request.user.departamento_id:
 
-            return render(request,'SigApp/infosistemas.html',{
-                "Escuela2Clave":Escuelas2,
-            })
+            return render(request,'SigApp/infosistemas.html')
         else:
             return render(request,'SigApp/infosistemas.html',{         
                 "Escuela2Clave":Escuelas2,
@@ -600,8 +598,7 @@ def localizador(request):
                     "numeroInstituciones": nI,                
                     "coordenadas": Escuelas,
                     "numeroModificaciones": notificaiones(request.user.departamento_id),
-                    "Escuela2Clave":Escuelas2,
-                    
+                                        
 
                 })
             else:
@@ -679,8 +676,7 @@ def localizador(request):
                     "numeroInstituciones": nI,                
                     "coordenadas": Escuelas,
                     "numeroModificaciones": notificaiones(request.user.departamento_id),
-                    "Escuela2Clave":Escuelas2,
-                    
+                                        
 
                 })
             else:
