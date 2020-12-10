@@ -148,6 +148,78 @@
 
 
         </div>
+
+
+
+        <div class="row mb-4">
+
+            
+
+
+
+
+            <div class="col-md-2">
+                <label>PRESIDENTE SUPLENTE(Opcional)</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="presidenteSuplente" id="selectPresidenteSuplente">
+                    <option  selected hidden>Seleccionar</option>
+                    {% if sinodales %}
+                        {% for s in sinodales %}
+                            <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>No tiene sinodales registrados</option>
+                    {% endif %}
+              </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>SECRETARIO SUPLENTE(Opcional)</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="secretarioSuplente" id="selectSecretarioSuplente">
+                    <option  selected hidden>Seleccionar</option>
+                    {% if sinodales %}
+                        {% for s in sinodales %}
+                            <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>No tiene sinodales registrados</option>
+                    {% endif %}
+                  </select>
+            </div>
+
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <label>VOCAL SUPLENTE(Opcional)</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="vocalSuplente" id="selectVocalSuplente">
+                    <option  selected hidden>Seleccionar</option>
+                    {% if sinodales %}
+                        {% for s in sinodales %}
+                            <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>No tiene sinodales registrados</option>
+                    {% endif %}
+              </select>
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
         <div class="row mb-4">
 
             <div class="col-md-2">
@@ -155,7 +227,7 @@
                
             </div>
             <div class="col-md-4">
-                 <input style="text-align-last: center;" type="date" class="form-control col" name="fecha_exa" id="fechaexa" onchange="buscar()" min="2020-11-27" value="" required>
+                 <input style="text-align-last: center;" type="date" class="form-control col" name="fecha_exa" id="fechaexa" onchange="buscar()" min="2020-12-17" value="" required>
             </div>
             
             <div class="col-md-2">
