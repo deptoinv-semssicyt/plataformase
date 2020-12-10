@@ -86,45 +86,133 @@ def programar_superv(request):
 
 
 def infosistemas(request):
-    return render (request,"SigApp/infosistemas.html")
+    usuario2 = request.user.id; #OBTENER ID_USUARIO
+    numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+    nI=0
+    #print(numInst2)
+    
+    for c in numInst2:
+        nI += 1
+        Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+        print(Escuelas2.ClaveEscuela)
+    
+    if request.user.is_authenticated:
+        if request.user.departamento_id:
+
+            return render(request,'SigApp/infosistemas.html',{
+                "Escuela2Clave":Escuelas2,
+            })
+        else:
+            return render(request,'SigApp/infosistemas.html',{         
+                "Escuela2Clave":Escuelas2,
+            })
+    else: 
+        return render(request,'SigApp/infosistemas.html')
 
 #def perfilinstitucion(request):
  #   return render(request, "SigApp/perfilinstitucion.html")
 
 def actasdesupervision(request):
-    return render(request, "SigApp/actasdesupervision.html")
+
+        usuario2 = request.user.id; #OBTENER ID_USUARIO
+        numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+        nI=0
+        #print(numInst2)
+        
+        for c in numInst2:
+            nI += 1
+            Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+            print(Escuelas2.ClaveEscuela)
+        
+        if request.user.is_authenticated:
+            if request.user.departamento_id:
+
+                return render(request,'SigApp/actasdesupervision.html',{
+                    "Escuela2Clave":Escuelas2,
+                })
+            else:
+                return render(request,'SigApp/actasdesupervision.html',{         
+                    "Escuela2Clave":Escuelas2,
+                })
+        else: 
+            return render(request,'SigApp/actasdesupervision.html')
+
 
 
 
 
 def perfilinstitucion(request, id, claveescuela):
     if (id == 'id'):
+            
+
             Instituciones = EscuelaC.objects.get(ClaveEscuela = claveescuela)
             try:
+                usuario2 = request.user.id; #OBTENER ID_USUARIO
+                numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+                nI=0
+                #print(numInst2)
+                
+                for c in numInst2:
+                    nI += 1
+                    Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+                    print(Escuelas2.ClaveEscuela)
                 estadisticaGral = estadisticosNuevo.objects.get(ClaveEscuela=claveescuela)
+                
             except estadisticosNuevo.DoesNotExist:
                 estadisticaGral = None
 
             try:
+                usuario2 = request.user.id; #OBTENER ID_USUARIO
+                numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+                nI=0
+                #print(numInst2)
+                
+                for c in numInst2:
+                    nI += 1
+                    Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+                    print(Escuelas2.ClaveEscuela)
                 rvoes = RVOES.objects.filter(ClaveEscuela=claveescuela)
+                
             except RVOES.DoesNotExist:
                 rvoes = None
-            
+            return render(request,'SigApp/perfilinstitucion.html',{"institucion": Instituciones,"statsg": estadisticaGral,"RVOESF":rvoes,"Escuela2Clave":Escuelas2,
+            })    
            
     else:
         Instituciones = EscuelaC.objects.get(ClaveEscuela = claveescuela)
+            
         try:
+            usuario2 = request.user.id; #OBTENER ID_USUARIO
+            numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+            nI=0
+            #print(numInst2)
+            
+            for c in numInst2:
+                nI += 1
+                Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+                print(Escuelas2.ClaveEscuela)
             estadisticaGral = estadisticosNuevo.objects.get(ClaveEscuela=claveescuela)
+            
         except estadisticosNuevo.DoesNotExist:
                 estadisticaGral = None
 
         try:
+            usuario2 = request.user.id; #OBTENER ID_USUARIO
+            numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+            nI=0
+            #print(numInst2)
+            
+            for c in numInst2:
+                nI += 1
+                Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+                print(Escuelas2.ClaveEscuela)
             rvoes = RVOES.objects.filter(ClaveEscuela=claveescuela)
+            
         except RVOES.DoesNotExist:
             rvoes = None
-
-    return render(request,'SigApp/perfilinstitucion.html',{"institucion": Instituciones,"statsg": estadisticaGral,"RVOESF":rvoes,
-     })
+        return render(request,'SigApp/perfilinstitucion.html',{"institucion": Instituciones,"statsg": estadisticaGral,"RVOESF":rvoes,"Escuela2Clave":Escuelas2,
+            })
+    
 
 
 
