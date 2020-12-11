@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import HistorialModEstadistica, DatosTemporalEstadistica, GradoAcademico, AreaInteres, Municipio,Localidad, Institucion,CentroTrabajo,UbicacionCentroTrabajo,DetalleCarrera,Carrera,RVOE,DatosEstadisticos,Modalidad,Periodos, Escuela, DatosTemporal, EscuelaC, estadisticosNuevo,RVOES, HistorialMod
+from .models import HistorialEstatusDepto, HistorialModEstadistica, DatosTemporalEstadistica, GradoAcademico, AreaInteres, Municipio,Localidad, Institucion,CentroTrabajo,UbicacionCentroTrabajo,DetalleCarrera,Carrera,RVOE,DatosEstadisticos,Modalidad,Periodos, Escuela, DatosTemporal, EscuelaC, estadisticosNuevo,RVOES, HistorialMod
 from login.models import UsuarioInstitucion
 from RVOES.models import Departamento
 from django.db.models import OuterRef, Subquery, Sum
@@ -2228,7 +2228,175 @@ def solicitaModEstadistica(request, clave, claveE, id_dep):
 
     })
 
-     
+
+
+def listado_institucionesAdmin(request, id):
+
+    """
+    Incluir al usuario departamento la opción de visualizar listas de la siguiente información: 
+
+        -Número de instituciones activas. 
+        -Número de instituciones por estado. 
+        -Número de Alumnos.
+
+        Que los departamentos cambie el estado de las instituciones
+
+        - Activa
+        - Clausurada
+        - En latencia
+    """
+    
+    escuelas = EscuelaC.objects.order_by("NombreEscuela")
+    municipiosC = Municipio.objects.all()
+    
+    
+    municipios = []
+    for key in municipiosC:
+        municipios.append(key.Nombre)
+    
+
+    #municipios = ['ACAPONETA','AHUACATLÁN','AMATLÁN DE CAÑAS','COMPOSTELA','HUAJICORI','IXTLÁN DEL RÍO','JALA','XALISCO','EL NAYAR','ROSAMORADA','RUÍZ','SAN BLAS','SAN PEDRO LAGUNILLAS','SANTA MARÍA DEL ORO','SANTIAGO IXCUINTLA','TECUALA','TEPIC','TUXPAN','LA YESCA','BAHÍA DE BANDERAS']
+    arrEstatus = ['ACTIVO','INACTIVO','EN LATENCIA'] #Agregar EN LATENCIA
+    numActivos = []
+    numAlumnosxmun = []
+
+    instAxmun2 = ""
+    instIAxmun2 = ""
+    instEnLaxmun2 = ""
+
+    numAlumnosxinst = ""
+    totalxmun = 0
+    ArrAluxmunA = []
+    ArrAluxmunIA = []
+    ArrAluxmunEnLa = []
+
+    r = 0
+    for s in arrEstatus:
+        print(s,"------->")
+        for n in municipios:
+            instAxmun2 = EscuelaC.objects.filter(EstatusEscuela = s, Municipio = municipios[r]).order_by("ClaveEscuela")
+            #print(instAxmun2)
+            print(municipios[r])
+            for i in instAxmun2:  
+                
+                #print(n.ClaveEscuela)
+                #print("---> institucion")
+                numAlumnosxinst = RVOES.objects.filter(ClaveEscuela_id=i.ClaveEscuela)
+                #numAlumnosxinst = RVOES.objects.filter(ClaveEscuela_id=i.ClaveEscuela).aggregate(Sum('TotalAlumnos'))
+                
+                for m in numAlumnosxinst:
+                    totalxmun = totalxmun + m.TotalAlumnos
+                    #print(m.TotalAlumnos)
+                
+           
+            if s == "ACTIVO":
+                print(totalxmun)
+                ArrAluxmunA.append(totalxmun)
+                totalxmun = 0
+            if s == "INACTIVO":
+                print(totalxmun)
+                ArrAluxmunIA.append(totalxmun)
+                totalxmun = 0
+            if s == "EN LATENCIA":
+                print(totalxmun)
+                ArrAluxmunEnLa.append(totalxmun)
+                totalxmun = 0
+            
+
+
+            instIAxmun2 = EscuelaC.objects.filter(EstatusEscuela = 'INACTIVO', Municipio = municipios[r])
+            instEnLaxmun2 = EscuelaC.objects.filter(EstatusEscuela = 'EN LATENCIA', Municipio = municipios[r])
+            r = r + 1 
+        r = 0
+        
+    print(ArrAluxmunA)
+
+
+    
+    #-------------NUMERO DE INSTITUCIONES X MUNICIPIO-------------------------------------------------
+    i = 0
+    for n in municipios:
+        numAxmun = EscuelaC.objects.filter(EstatusEscuela = 'ACTIVO', Municipio = municipios[i]).count()
+        numIAxmun = EscuelaC.objects.filter(EstatusEscuela = 'INACTIVO', Municipio = municipios[i]).count()
+        numEnLaxmun = EscuelaC.objects.filter(EstatusEscuela = 'EN LATENCIA', Municipio = municipios[i]).count()
+        numActivos.append({'municipio': n,
+                                'numA': numAxmun,
+                                'tAluxmunAc':ArrAluxmunA[i], 
+                                'numIA': numIAxmun,
+                                'tAluxmunIA':ArrAluxmunIA[i],
+                                'numEnLa': numEnLaxmun,
+                                'tAluxmunEnLa':ArrAluxmunEnLa[i]})
+        i = i + 1
+       
+
+    
+
+
+    if request.method == 'POST':
+        print("----> 1") 
+       
+        clave = request.POST['recipient-clave2']
+        escuela = request.POST['recipient-escuela2']
+        estatusNew = request.POST['recipient-estatus']
+    
+        
+        institucion = EscuelaC.objects.get(ClaveEscuela=clave)
+        #
+        estatusPrev = institucion.EstatusEscuela
+        usuario_mod = request.user.first_name
+        
+        institucion.EstatusEscuela = estatusNew
+        institucion.save()
+
+        
+        
+
+        
+        iddpto = Departamento.objects.get(id=id)
+        dpto = iddpto.nombre.upper()
+        print(datetime.today())
+        print(usuario_mod)
+        print(dpto)
+        print(clave)
+        print(estatusPrev)
+        print(estatusNew)
+        historialEstatus = HistorialEstatusDepto(fechamod = datetime.today(), 
+                                                usuario_dep = usuario_mod,
+                                                departamento = dpto, 
+                                                ClaveEscuela = clave, 
+                                                estatusPrev = estatusPrev, 
+                                                estatusNew = estatusNew)
+                                    
+        historialEstatus.save()
+
+    
+        return render(request,'SigApp/listadoInstitucionesAdmin.html',{
+            "escuelas": escuelas,
+            "municipios": municipios,
+            "numActivos": numActivos,
+            
+        })
+
+    else:
+        return render(request, 'SigApp/listadoInstitucionesAdmin.html',{
+            "escuelas": escuelas,
+            "municipios": municipios,
+            "numActivos": numActivos,
+        })
+
+    
+def historial_estatus (request, clave):
+    
+    escuela = EscuelaC.objects.get(ClaveEscuela=clave)
+    historial = HistorialEstatusDepto.objects.filter(ClaveEscuela=clave)
+
+    return render(request, 'SigApp/historialEstatus.html',{
+        "Escuela": escuela,
+        "historial": historial,
+        
+    })
+
+
 ''' 
 def solicitaModeEstadistica(request, clave,claveE, id_dep):
     

@@ -6,7 +6,7 @@
 </script>
 
 <div class="container col-md-10 text-center">
-    <h2 class="mt-3">Nueva Solicitud de Exámen a Título</h2>
+    <h2 class="mt-3">Nueva Solicitud de Exámen a Titulación</h2>
     <img src="{% static 'img/gobierno_estado.png' %}" class="mb-3" alt="se" height="150">
     <script src="{% static 'js/admins/examenes/nuevaSoli.js' %}" defer></script>
     <p>*Recuerda que para poder realizar una solicitud tienes que tener al menos 3 sinodales registrados.
@@ -50,7 +50,7 @@
                     <option value="ESTUDIOS DE POSGRADO">ESTUDIOS DE POSGRADO</option>
                     <option value="EXAMEN GENERAL DE CONOCIMIENTOS">EXAMEN GENERAL DE CONOCIMIENTOS</option>
                     <option value="EXAMEN CENEVAL">EXAMEN CENEVAL</option>
-                    <option value="ALTO RENDIMIENTO DE LICENCIATURA">ALTO RENDIMIENTO DE LICENCIATURA</option>
+                    <option value="ALTO RENDIMIENTO">ALTO RENDIMIENTO</option>
                     <option value="EXPERIENCIA PROFESIONAL">EXPERIENCIA PROFESIONAL</option>
                     <option value="OTROS">OTROS</option>
                 </select> 
@@ -154,6 +154,101 @@
 
 
         </div>
+
+
+
+
+
+
+
+
+
+
+        <div class="row mb-4">
+
+            
+
+
+
+
+            <div class="col-md-2">
+                <label>PRESIDENTE SUPLENTE(Opcional)</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="presidenteSuplente" id="selectPresidenteSuplente">
+                    <option  selected hidden>Seleccionar</option>
+                    {% if sinodales %}
+                        {% for s in sinodales %}
+                            <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>No tiene sinodales registrados</option>
+                    {% endif %}
+              </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>SECRETARIO SUPLENTE(Opcional)</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="secretarioSuplente" id="selectSecretarioSuplente">
+                    <option  selected hidden>Seleccionar</option>
+                    {% if sinodales %}
+                        {% for s in sinodales %}
+                            <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>No tiene sinodales registrados</option>
+                    {% endif %}
+                  </select>
+            </div>
+
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <label>VOCAL SUPLENTE(Opcional)</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="vocalSuplente" id="selectVocalSuplente">
+                    <option  selected hidden>Seleccionar</option>
+                    {% if sinodales %}
+                        {% for s in sinodales %}
+                            <option value="{{s.id}}">{{s.nombre_sinodal}}  {{s.rfc}}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>No tiene sinodales registrados</option>
+                    {% endif %}
+              </select>
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="row mb-4">
 
             <div class="col-md-2">
@@ -161,7 +256,7 @@
                
             </div>
             <div class="col-md-4">
-                 <input type="date" class="form-control col" name="fecha_exa" id="fechaexa" onchange="buscar()" min="2020-08-31" value="" required>
+                 <input type="date" class="form-control col" name="fecha_exa" id="fechaexa" onchange="buscar()" min="2020-12-17" value="" required>
             </div>
             
             <div class="col-md-2">

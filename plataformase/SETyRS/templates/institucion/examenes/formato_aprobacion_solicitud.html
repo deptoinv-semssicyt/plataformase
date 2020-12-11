@@ -11,7 +11,7 @@
             size: letter portrait;
             margin-left: 2cm;
             margin-right: 2cm;
-            margin-top: 3cm;
+            margin-top: 5cm;
             margin-bottom: 5cm;
             background-image: url("https://storage.googleapis.com/plataformase.appspot.com/Archivos/fondo.jpeg");
         }
@@ -102,23 +102,6 @@
         </div>
         <p>Asimismo, me permito informarle que, a propuesta de la institución a su digno cargo, se autoriza la participación de <b>{{presidente.nombre_sinodal}}, {{secretario.nombre_sinodal}}, {{vocal.nombre_sinodal}} </b>como
             Presidente, Secretario, Vocal respectivamente del cuerpo de Sinodales en el mencionado examen.</p>
-        
-            <table class="table" width="100%" border="1" cellspacing="0" cellpadding="0">
-                <thead>
-                    <tr>
-                        <td>PRESIDENTE</td>
-                        <td>SECRETARIO</td>
-                        <td>VOCAL</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{presidente.nombre_sinodal}}</td>
-                        <td>{{secretario.nombre_sinodal}}</td>
-                        <td>{{vocal.nombre_sinodal}}</td>
-                    </tr>
-                </tbody>
-            </table>
 
         <p>De la misma forma, le informo que es facultad de esta Secretaría de vigilar y evaluar los servicios de Educación Media Superior y Superior en el Estado, por lo que podría acudir personal de esta, el día y hora señalados en su solicitud a tan importante acto académico.</p>
         <p>Sin otro particular por el momento, reciba un afectuoso saludo de nuestra parte.</p>
@@ -127,7 +110,7 @@
         {% if jefe.departamento_id == 2 %}
         <h1 align="center"><b> EL DIRECTOR DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</b></h1>
         <div align="center">
-            <img src="{{bucket}}{{jefe.firma_digital}}" alt="se" height="120">
+            <img src="https://storage.googleapis.com/plataformase.appspot.com/{{jefe.firma_digital}}" alt="se" height="120">
         </div>
         <h1 align="center"><b>LIC. VÍCTOR MANUEL ALVARADO JIMENEZ</b></h1>
         {% if solicitud.nivel_educativo == 2 %}
@@ -156,7 +139,7 @@
         {% elif jefe.departamento_id == 3 %}
         <h1 align="center"><b> EL JEFE DE EDUCACIÓN SUPERIOR</b></h1>
         <div align="center">
-            <img src="{{bucket}}{{jefe.firma_digital}}" alt="se" height="120">
+            <img src="https://storage.googleapis.com/plataformase.appspot.com/{{jefe.firma_digital}}" alt="se" height="120">
         </div>
         <h1 align="center"><b>LIC. WILLIAM JAVIER LOZANO MORA</b></h1>
         <p>Copias.- <br> 	
@@ -170,7 +153,7 @@
         {% elif jefe.departamento_id == 4 %}
         <h1 align="center"><b> EL JEFE DE EDUCACIÓN MEDIA SUPERIOR</b></h1>
         <div align="center">
-            <img src="{{bucket}}}{{jefe.firma_digital}}" alt="se" height="120">
+            <img src="https://storage.googleapis.com/plataformase.appspot.com/{{jefe.firma_digital}}" alt="se" height="120">
         </div>
         <h1 align="center"><b>LIC. JUAN HUMBERTO PINTADO</b></h1>
 

@@ -1,0 +1,248 @@
+{% extends 'SigApp/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <!-- Lista el total de las modificaciones de inf. general y estadis. en curso del departamento o ambos  (usuario Departamento ) -->
+<body>
+  {% block content %}
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:500&display=swap');
+                .texto{
+                    font-family: "Montserrat", sans-serif;
+                }
+            
+                .centro{
+                    text-align: center;
+                }
+            
+                .centroItem{
+                    align-items: center;
+                }
+                a{
+                    color: black;
+                }
+                a:hover{
+                    color:grey;
+                }
+                .my-custom-scrollbar {
+                    position: relative;
+                    height: 320px;
+                    overflow: auto;
+                }
+                .table-wrapper-scroll-y {
+                    display: block;
+  </style>
+
+  <div class="container-fluid">
+      <!--Panel general (derecho)-->
+    <div class="row bg-light m-2">
+      <!--Nav bar izquierdo-->
+      <div class="col-2 col-sm-3 col-md-3 col-lg-3 col-xl-2" style="background-color: white; height: 80vh;">    
+        
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action active disabled" style="margin-top:5%; ">
+            Menú
+          </a>
+          <a href="/SigApp/modificacionesAdmin/{{ user.departamento_id }}/" class="list-group-item list-group-item-action">Solicitudes de Modificación</a>
+          <a href="/SigApp/listado_historial/" class="list-group-item list-group-item-action">Historial (Gral)</a>
+          <a href="/SigApp/listado_historialEst/" class="list-group-item list-group-item-action">Historial (Estad)</a>
+          <a href="/SigApp/listado_institucionesAdmin/{{ user.departamento_id }}/" class="list-group-item list-group-item-action">Listado Instituciones</a>
+        </div>
+      </div>
+      
+      <div class="col-8 bg-light mt-3" style="margin-left: 8%;">
+        <div class="container centro col-2 col-lg-10 bg-light" style="margin-left: 15%;">
+          <label style="font-size:20px; margin-left: -15%; text-align:center; margin-bottom: 5%; margin-top: 1%; ">
+            Modificacion de Estatus<br> 
+          </label>
+        </div>
+
+        <div class="input-group" style="padding:1%;">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Buscar</span>
+          </div>
+          <input class="form-control" id="myInput2" type="text" placeholder="...">
+        </div>
+        <form method="post" id="form" name="form" enctype="multipart/form-data">
+        {% csrf_token %}
+          <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-bordered table-striped mb-0 ">
+              <thead class="thead-dark">
+                <tr>
+                  <th style="width:10%" scope="col">Clave</th>
+                  <th style="width:50%" scope="col">Institución</th>
+                  <th style="width:25%" colspan="2">Estatus</th>
+                </tr>
+              </thead>
+              <tbody id="myTable2">
+                {% for element in escuelas %}
+                  <tr>
+                    <th scope="row">{{ element.ClaveEscuela }}</th>
+                    <th scope="row">{{ element.NombreEscuela }}</th>
+                    <th scope="row"> {{ element.EstatusEscuela }}</th>
+                    <td>
+                      <a href="" class="btn text-secondary px-0" data-toggle="modal" data-target="#exampleModal" data-clave="{{ element.ClaveEscuela }}" data-escuela="{{ element.NombreEscuela }}" data-estatus="{{ element.EstatusEscuela }}"><i data-toggle="tooltip" data-placement="top" title="Modificar" class="fa fa-edit fa-lg"></i></a>
+                      
+                      <a href="/SigApp/historial_estatus/{{ element.ClaveEscuela }}/" class="btn text-secondary px-0" ><i data-toggle="tooltip" data-placement="top" title="Ver historial" class="fa fa-history fa-lg"></i></a>
+                    </td>
+                    <!--<td scope="row"><a href="/SigApp/mostrarInstitucionEst/{{ element.claveCarrera }}/{{ element.claveEscuela }}/" style="color:dodgerblue">Estatus</a></td>
+                    <button type="button" class="btn btn-success px-0" data-toggle="modal" data-target="#exampleModal" data-clave="{{ element.ClaveEscuela }}" data-escuela="{{ element.NombreEscuela }}" data-estatus="{{ element.EstatusEscuela }}"><i class="fa fa-edit"></i></button> 
+                    -->
+                  </tr>
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Actualiza el estatus</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form>
+                            <div class="form-group">
+                              <label for="recipient-clave" class="col-form-label" >Clave:</label>
+                              <input type="text" class="form-control" id="recipient-clave" name="recipient-clave" disabled>
+                              
+                            </div>
+                            <div class="form-group">
+                              <label for="recipient-escuela" class="col-form-label">Nombre Escuela:</label>
+                              <textarea class="form-control" id="recipient-escuela" name="recipient-escuela" disabled></textarea>
+                              
+                              <input type="text" id="recipient-clave2" name="recipient-clave2" style="visibility: hidden;">
+                              <input type="text" id="recipient-escuela2" name="recipient-escuela2" style="visibility: hidden;">
+                            </div>
+                        
+                            <div class="form-group">
+                              <label for="recipient-estatus" class="col-form-label">Estatus:</label>
+                              <select class="custom-select" id="recipient-estatus" name="recipient-estatus">
+                                <option value="ACTIVO">ACTIVO</option>
+                                <option value="INACTIVO">INACTIVO</option>
+                                <option value="EN LATENCIA">EN LATENCIA</option>
+                              </select>
+                            </div>
+                            
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                          <button onclick="aprobar()" type="button" class="btn btn-primary">Actualizar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /Modal -->
+                {% endfor %}
+              </tbody>
+            </table>
+          </div><hr>
+        </form> 
+
+        
+        <!--<div class="container col-2 col-lg-10 bg-light" style="margin-left: 3%; margin-bottom: 1%;">    
+          <input  class="form-check-input" type="checkbox" name="defaultCheck1" id="defaultCheck1" >
+          <label class="form-check-label" for="defaultCheck1" style="font: italic;" >
+            Quiero realizar esta modificación
+          </label> 
+        </div>    
+        <input onclick="a()" id="aceptar" type="button" class="btn btn-success btn-lg btn-block" value="Guardar Modificaciones"></input>
+        -->
+
+        <div class="container centro col-2 col-lg-10 bg-light" style="margin-left: 15%;">
+          <label style="font-size:20px; margin-left: -15%; text-align:center; margin-top: 5%;margin-bottom: 2%; ">
+            Conteo de instituciones por su ESTATUS<br> 
+          </label>
+        </div>
+        
+        <div class="table-wrapper-scroll-y">
+          <table class="table table-bordered table-striped mb-0 ">
+            <thead class="thead-dark">
+              <tr>
+                <th style="width:30%" scope="col">Municipio</th>
+                <th style="width:20%" scope="col">ACTIVAS</th>
+                <th style="width:10%" scope="col">Alumnos</th>
+                <th style="width:20%" scope="col">INACTIVAS</th>
+                <th style="width:10%" scope="col">Alumnos</th>
+                <th style="width:20%" scope="col">EN LATENCIA</th>
+                <th style="width:10%" scope="col">Alumnos</th>
+              </tr>
+            </thead>
+            <tbody id="myTable3">
+              {% for key in numActivos %}
+                <tr>
+                  <th scope="row">{{ key.municipio }}</th>
+                  <th style="text-align:center;" scope="row">{{ key.numA }}</th>
+                  <th style="text-align:center;" scope="row">{{ key.tAluxmunAc }}</th>
+                  <th style="text-align:center;" scope="row">{{ key.numIA }}</th>
+                  <th style="text-align:center;" scope="row">{{ key.tAluxmunIA }}</th>
+                  <th style="text-align:center;" scope="row">{{ key.numEnLa }}</th>
+                  <th style="text-align:center;" scope="row">{{ key.tAluxmunEnLa }}</th>
+                  
+                  <!--<td scope="row"><a href="/SigApp/mostrarInstitucionEst/{{ element.claveCarrera }}/{{ element.claveEscuela }}/" style="color:dodgerblue">Estatus</a></td>-->
+                </tr>
+              {% endfor %}
+            </tbody>
+            <thead class="thead-dark" >
+              <tr>
+                <th  colspan="7"></th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>      
+  </div>
+</body>
+<script>
+  
+  $('#exampleModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient_clave = button.data('clave') // Extract info from data-* attributes
+    var recipient_escuela = button.data('escuela') // Extract info from data-* attributes
+    var recipient_estatus = button.data('estatus') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    //modal.find('.modal-title').text('New message to ' + recipient)
+    //modal.find('.modal-body input').val(recipient)
+    modal.find('#recipient-clave').val(recipient_clave)
+    modal.find('#recipient-escuela').val(recipient_escuela)
+    modal.find('#recipient-clave2').val(recipient_clave)
+    modal.find('#recipient-escuela2').val(recipient_escuela)
+    modal.find('#recipient-estatus').val(recipient_estatus)
+  })
+  
+
+  function aprobar(){
+    if (confirm('¿Estas seguro de hacer este modificación?')){ 
+      alert("¡La información se ha actualizado correctamente!");
+      document.form.submit()
+    }else{
+    }
+  }
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+      $("#myInput").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#myTable tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          });
+      });
+      });
+      $(document).ready(function(){
+      $("#myInput2").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#myTable2 tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          });
+      });
+      });
+    </script>
+{% endblock %}
+</html>
+

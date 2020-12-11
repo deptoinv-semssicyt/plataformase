@@ -301,3 +301,13 @@ class DatosTemporalEstadistica(models.Model):
     Periodos_temp = models.CharField(max_length=25)
     usuario_mod = models.CharField(max_length=150, blank=True,null=True)
     modificando = models.BooleanField()
+
+
+class HistorialEstatusDepto(models.Model):
+    
+    fechamod = models.DateTimeField()
+    usuario_dep = models.CharField(max_length=200)
+    departamento = models.CharField(max_length=50, blank=True, null=True)
+    ClaveEscuela = models.CharField(max_length=200)
+    estatusPrev = models.CharField(max_length=25)
+    estatusNew = models.CharField(max_length=25)
