@@ -39,33 +39,58 @@
 					</header><!-- / #main-header -->
 					<br><br><br>
 					<div class="pricingCardGrid__header">
+<<<<<<< HEAD
+						<p class="pricingCardGrid__heading" >
+						Accede a los sistemas disponibles para visitantes </p>
+=======
 						<p class="pricingCardGrid__heading">
 						Accede a los servicios disponibles para visitantes </p>
+>>>>>>> 9edd09424f4afa974f4241b58e60f4f20703529a
 						</div>
 					<BR><br>
 
 <!------------------------------------------SISTEMAS------------------------------>
 
-	<section class="pricingCardGrid responsive" style="float:none;">
-						<div class="pricingCardGrid__body row " style="width:100%;">
-						<div class="pricingCardGrid__pricingCard">
-						<a class="pricingCard" href="/SigApp/" data-plan-type="monthly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_monthly">
+		<section class="pricingCardGrid responsive" style="float:none;">
+			<div class="pricingCardGrid__body row " style="width:100%;">
+				<div class="pricingCardGrid__pricingCard">
+					<a class="pricingCard" href="/SigApp/localizador" data-plan-type="monthly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_monthly">
 						<div class="pricingCard__heading title--small">
-						Sistema de información geográfica SIG </div>
+							Sistema de información geográfica SIG 
+						</div>
 						<div class="pricingCard__pricing">
 							<div class="col-sm-4 col-xs-4">
-							<img src="{% static '/img/universidad.png'%}" width="200" height="200"/>
-						</div>
+								<img src="{% static '/img/universidad.png'%}" width="200" height="200"/>
+							</div>
 						</div>
 						<span class="pricingCard__period" >
 							<p align="justify">Localización de instituciones educativas de Media Superior y Superior del Estado de Nayarit.</p>
 						</span>
 						<div class="pricingCard__button">
 						<span class="button button--primary">
-							Acceder </span>
+							Acceder 
+						</span>
 						</div>
-						</a>
+					</a>
+				</div>
+				<div class="pricingCardGrid__pricingCard">
+					<a class="pricingCard" href="/SigApp/infosistemas" data-plan-type="monthly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_monthly">
+						<div class="pricingCard__heading title--small">
+							Quejas y Denuncias Ciudadanas 
 						</div>
+<<<<<<< HEAD
+						<div class="pricingCard__pricing">
+							<div class="col-sm-4 col-xs-4">
+								<img src="{% static '/img/denuncia.png'%}" width="200" height="200"/>
+							</div>
+						</div>
+						<span class="pricingCard__period" >
+							<p align="justify">Usted puede realizar una queja o denuncia de manera anonima y formal sobre la institución de interes.</p> </span>
+						<div class="pricingCard__button">
+						<span class="button button--primary">
+							Acceder 
+						</span>
+=======
 
 						<div class="pricingCardGrid__pricingCard">
 							<a class="pricingCard" href="{% url 'cuentavisitante'%}" data-plan-type="monthly" data-track-on="click" data-track-name="wp_global_signup_CTA_selected" data-track-section="pricing_card_monthly">
@@ -87,8 +112,11 @@
 							</div>
 
 
+>>>>>>> 9edd09424f4afa974f4241b58e60f4f20703529a
 						</div>
-						
-						</section>
-				</body>
+					</a>
+				</div>
+			</div>						
+		</section>
+	</body>
 </html>

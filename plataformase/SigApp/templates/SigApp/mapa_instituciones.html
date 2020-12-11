@@ -1,4 +1,4 @@
-{% extends 'SigApp/base.html' %}
+{% extends 'SigApp/nuevaBase.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -32,42 +32,117 @@
     .table-wrapper-scroll-y {
         display: block;
     }
+    .form-control::placeholder { 
+            color: green;
+            opacity: 23%;}
     </style>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-    function populate(){
-        $('#selectMunicipio').change(function(){
-		    var municipio = $('#selectMunicipio').find(":selected").val();
-			$.ajax({
-			    url:"/SigApp/updl/"+municipio,
-				method: 'GET',
-				dataType: "json",
-				success:function(jsonData){
-				var optionsLocalidades="";		
-				    $('#selectLocalidad').empty();
-                    $('#selectLocalidad').append('<option value="00"> Seleccionar... </option>');
-					$('#selectLocalidad').append('<option value="00"> TODAS </option>');
-					$.each(JSON.parse(jsonData),function(i,item){
-					optionsLocalidades+='<option value="'+item["fields"]["Clave_Municipio"]+'">'+item["fields"]["Nombre"]+'</option>';
-					item["fields"]["Nombre"]
-                    });
-					$('#selectLocalidad').append(optionsLocalidades);
-					console.log(jsonData);
-					}
-			})		
-		});							
-	}		
-</script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        
+    <script type="text/javascript">
+        setTimeout(mostrarMapita,600);
+        function mostrarMapita()
+        {
+            initMapa();
+        } 
+        function dejarDeMostrarMapita()
+        {
+            clearTimeout();
+        }
+            
+        //var mostrarMapClave;        
+        //function comenzarMap()
+        //{
+          //  mostrarMapClave = setTimeout(function(){
+            //    initMapa();
+            //}, 3000);
+        //}
+            
+            
+            
+            
+    </script>
+    <script src="http://www.example.com/jquery.js" ></script>
+    <script>
+    
+    
+
+
+		
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        function populate(){
+            $('#selectMunicipio').change(function(){
+                var municipio = $('#selectMunicipio').find(":selected").val();
+                $.ajax({
+                    url:"/SigApp/updl/"+municipio,
+                    method: 'GET',
+                    dataType: "json",
+                    success:function(jsonData){
+                    var optionsLocalidades="";		
+                        $('#selectLocalidad').empty();
+                        $('#selectLocalidad').append('<option value="00"> Seleccionar... </option>');
+                        $('#selectLocalidad').append('<option value="00"> TODAS </option>');
+                        $.each(JSON.parse(jsonData),function(i,item){
+                        optionsLocalidades+='<option value="'+item["fields"]["Clave_Municipio"]+'">'+item["fields"]["Nombre"]+'</option>';
+                        item["fields"]["Nombre"]
+                        });
+                        $('#selectLocalidad').append(optionsLocalidades);
+                        console.log(jsonData);
+                        }
+                })		
+            });							
+        }
+
+        
+
+    </script>
+
 
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-4 col-sm-3 col-md-3 col-lg-2 col-xl-2" style="background-color: gainsboro;">
+            <div class="col-4 col-sm-3 col-md-3 col-lg-2 col-xl-3" style="background-color: ;">
 
-                <div class="row mt-3">            
-                    <p class="col-12 mb-2" style="font-size: 18px;">Municipio</p>
+                <div class="row mt-2">            
+                    <p class="col-12 mb-2" style="font-size: 15px;">Clave Centro de Trabajo</p>
                     <div class="centro col-12">
-                        <select class="form-control form-control-sm" onchange="filtroD('selectMunicipio')" TYPE=text id="selectMunicipio" name="selectMunicipio" onclick="populate();" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;">
+                        <div class="centro ">
+                            <form method="post" id="form" name="form"  enctype="multipart/form-data"  >
+                                {% csrf_token %}
+                                <select class="selectpicker" method="post"   data-live-search="true" data-style="btn-primary" id="selectInstitucion" name="selectInstitucion" onchange="this.form.submit();comenzarMap()"onclick="comenzarMap()" >
+                                    <option class="opt" value="seleccion" >Seleccione clave</option>
+                                    {% for element in opcionesinstituciones %}
+                                        <option  value="{{element.ClaveEscuela}}" >{{ element.ClaveEscuela }}</option>                                       
+                                    {% endfor %}
+                                       
+                                </select>
+                                
+                            </form>
+                            
+                        </div>
+                    </div>     	
+                </div>
+
+
+
+                <div class="row mt-2">            
+                    <p class="col-12 mb-2" style="font-size: 15px;">Municipio</p>
+                    <div class="centro col-12">
+                        <select class="form-control form-control-sm" onchange="filtroD('selectMunicipio')" TYPE=text id="selectMunicipio" name="selectMunicipio" onclick="populate();" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;background:#F0F0F0">
                             <option class="opt" value="seleccionar">Selecionar...</option>
                             <option class="opt" value="seleccioneI">TODOS</option>
                             {% for element in opcionesmunicipios %}
@@ -78,9 +153,9 @@
                 </div>
                 
                 <div class="row mt-5">
-                    <p class="col-12 mb-2" style="font-size: 18px;">Localidad</p>
+                    <p class="col-12 mb-2" style="font-size: 15px;">Localidad</p>
                     <div class="centro col-12">
-                        <select class="form-control form-control-sm" onchange="filtroD('selectLocalidad')" TYPE=text id="selectLocalidad" name="selectLocalidad" value="" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;" >
+                        <select class="form-control form-control-sm" onchange="filtroD('selectLocalidad')" TYPE=text id="selectLocalidad" name="selectLocalidad" value="" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;background:#F0F0F0" >
                             <option class="opt" value="seleccionar" selected="selected">Selecionar...</option>
                             <option class="opt" value="seleccioneI">TODAS</option>
                             {% for element in localidades %}
@@ -92,9 +167,9 @@
 
 
                 <div class="row mt-5 mb-3">    
-                    <p class="col-12 mb-2" style="font-size: 18px;">Nivel Educativo</p>
+                    <p class="col-12 mb-2" style="font-size: 15px;">Nivel Educativo</p>
                     <div class="centro col-12">
-                        <select class="form-control form-control-sm" onchange="filtroD('selectNivel')" class="dropDown" TYPE=text id="selectNivel" name="selectNivel" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;">
+                        <select class="form-control form-control-sm" onchange="filtroD('selectNivel')" class="dropDown" TYPE=text id="selectNivel" name="selectNivel" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;background:#F0F0F0">
                             <option class="opt" value="seleccionar">Selecionar...</option>
                             <option value="Todas" name="nivel">TODOS</option>
                             <option value="Media" name="nivel">MEDIA SUPERIOR</option>
@@ -104,9 +179,9 @@
                 </div>
                
                 <div class="row mt-5 mb-3">    
-                    <p class="col-12 mb-2" style="font-size: 18px;">Dominio</p>
+                    <p class="col-12 mb-2" style="font-size: 15px;">Dominio</p>
                     <div class="centro col-12">
-                        <select class="form-control form-control-sm" onchange="filtroD('selectDominio')" class="dropDown" TYPE=text id="selectDominio" name="selectDominio" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;">
+                        <select class="form-control form-control-sm" onchange="filtroD('selectDominio')" class="dropDown" TYPE=text id="selectDominio" name="selectDominio" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;background:#F0F0F0">
                             <option class="opt" value="seleccionar">Selecionar...</option>
                             <option value="Todas" name="dominios">TODOS</option>
                             <option value="Pública" name="dominios">PÚBLICO</option>
@@ -116,9 +191,9 @@
                 </div>
                         
                 <div class="row mt-5">    
-                    <p class="col-12 mb-2" style="font-size: 18px;">Tipo servicio</p>
+                    <p class="col-12 mb-2" style="font-size: 15px;">Tipo servicio</p>
                     <div class="centro col-12">
-                        <select class="form-control form-control-sm" onchange="filtroD('selectTipoS')" class="dropDown" TYPE=text id="selectTipoS" name="selectTipoS" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;">
+                        <select class="form-control form-control-sm" onchange="filtroD('selectTipoS')" class="dropDown" TYPE=text id="selectTipoS" name="selectTipoS" size="1" style="text-align-last:center; width: 80%; position:absolute; left: 10%;background:#F0F0F0">
                             <option class="opt" value="seleccionar">Selecionar...</option>
                             <option value="Todas" name="dominios">TODOS</option>
                             <option value="Pública" name="dominios">BACHILLERATO GENERAL</option>
@@ -129,9 +204,31 @@
                     </div>
                 </div>
                 
-                <div class="row mt-5 mb-3 p-4">
+                
+                <div class="row mt-5">            
+                    <p class="col-12 mb-2" style="font-size: 15px;">Nombre de Institución</p>
+                    <div class="centro col-12">
+                        <div class="centro ">
+                            <form method="post" id="form" name="form"  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <select class="selectpicker" method="post" data-style="btn-primary"  data-live-search="true" id="selectInstitucion" name="selectInstitucion" onchange="this.form.submit();comenzarMap()"onclick="comenzarMap()">
+                                    <option class="opt" value="seleccion" >Seleccione institución</option>
+                                    {% for element in opcionesinstituciones %}
+                                        <option  value="{{element.ClaveEscuela}}" >{{ element.NombreEscuela }}</option>                                       
+                                    {% endfor %}
+                                       
+                                </select>
+                                                             
+                            </form>
+                            
+                        </div>
+                    </div>     	
+                </div>
+
+                <div class="row mt-3 mb-3 p-3">
                     <button class="btn btn-block btn-info" onclick="restableceFiltros()">Restablecer</button>
-                </div> 
+                </div>
+                
 
                 <!--Para obtener datos de las instituciones y guardarlas en vectores-->
                 <div class="row mt-3">            
@@ -219,8 +316,14 @@
                     </div>
                 </div>
 
+            <input class="col-12 mb-2" name="latitud" id="latitud" style="font-size: 18px;" value="{{escuelaseleccionada.Latitud}}" hidden></input>
+            <input class="col-12 mb-2" id="longitud" style="font-size: 18px;" value="{{escuelaseleccionada.Longitud}}" hidden></input>
+            <input class="col-12 mb-2" id="clave" style="font-size: 18px;" value="{{escuelaseleccionada.ClaveEscuela}}" hidden></input>
+            <input class="col-12 mb-2" id="nombre" style="font-size: 18px;" value="{{escuelaseleccionada.NombreEscuela}}" hidden></input>
+            
+
             </div>
-            <div id="map" class="col-8 col-sm-9 col-md-9 col-lg-10 col-xl-10"></div>
+            <div id="map" class="col-8 col-sm-9 col-md-9 col-lg-10 col-xl-9 "style="height:635px"></div>
         </div>
 
         <div id="app" style="visibility:hidden;" class="table-wrapper-scroll-y my-custom-scrollbar">
@@ -236,7 +339,67 @@
         </div>
     </div>
     
+    
+
     <script>
+
+        function initMapa(){             
+
+            
+            var lat = parseFloat(document.getElementById("latitud").value);
+            var lng = parseFloat(document.getElementById("longitud").value);
+
+            var nombre = document.getElementById("nombre").value;
+            var clave = document.getElementById("clave").value;
+            var menito=.0000000000000000
+            if(lat > menito){    
+                console.log(lat,lng, nombre,clave);
+                //Opciones del mapa
+                var options = {
+                    lat: lat , lng: lng };
+                //Mapa nuevo
+                var map = new google.maps.Map(
+                    document.getElementById('map'), {zoom: 13, center: options});
+                var infowindow = new google.maps.InfoWindow;
+                
+                var marker = new google.maps.Marker({
+                    position: options,
+                    map: map,
+                });
+
+                map.addListener('center_changed', function() {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                    window.setTimeout(function() {
+                        map.panTo(marker.getPosition());
+                    }, 3000);
+                });
+
+                marker.addListener('click', function() {
+                    map.setZoom(16);
+                    map.setCenter(marker.getPosition());
+                });
+
+
+                
+                google.maps.event.addListener(marker, 'click', (function(marker, options) {
+                    return function() {
+                    infowindow.setContent("<div class='centro' style='vertical-align:middle; text-align:center'><img class='rounded' heiht = '200' width = '200' src = 'http://cdn.24.co.za/files/Cms/General/d/6847/c17d0c2399a54d39a9490b1b03769a99.jpg' align='center' style='margin-left:10px;'></div><div class='centro' style='vertical-align:middle; text-align:center'><a href=# onclick='redirecciona()' style='margin:20px'>"+nombre+"<br><a id='claveMapa'>"+clave+"</a>")+"</a></div>";
+                    infowindow.open(map, marker);
+                    }
+                })(marker, options));
+                
+            }
+            else{
+
+            }
+        }
+        
+
+
+        
+
+
         var coordenadas = new Array();
         var backupC = new Array();
         var repetidos = new Array();
@@ -512,100 +675,101 @@
         }
         
         function initMap(){
-            //Opciones del mapa
-            var options = {
-                zoom: 14,
-                center: { lat, lng }
-            }
-            //Mapa nuevo
-            var map = new google.maps.Map(document.getElementById('map'), options);
-            var marker, i;
-            var infowindow = new google.maps.InfoWindow;
-            /*
-            A partir de aquí comienza el código 
-            */
+                //Opciones del mapa
+                var options = {
+                    zoom: 14,
+                    center: { lat, lng }
+                }
+                //Mapa nuevo
+                var map = new google.maps.Map(document.getElementById('map'), options);
+                var marker, i;
+                var infowindow = new google.maps.InfoWindow;
+                /*
+                A partir de aquí comienza el código 
+                */
 
-            /*
-            Para buscar los que tienen latitud y longitud repeteidos, para encapsularlos en un solo array
-            coordenadas[i][1] -> latitud
-            coordenadas[i][2] -> longitud
-            Encontrar los repetidos, meterlos a otro array coordenadasRep, y sacarlos de coordenadas[]
-            */
-            
-            for(i = 0; i < Object.keys(coordenadas).length/2; i++){
-                //coordenadasLatLon es un array con solo latitudes y longitudes para comprobar cuales estan repetidos
-                coordenadasLatLon[i] = new Array();
-                coordenadasLatLon[i][1] = parseFloat(coordenadas[i][1]);
-                coordenadasLatLon[i][2] = parseFloat(coordenadas[i][2]);
-            }
-            
-            //Se procede a verificar cuales son repetidos para sacar el índice y meterlo a un arreglo para proceder a comparar cuando se pongan los marcadores
-            //Con el uso del método find_keys_of_dupl
-            //indicesRepetidos contiene los indices en los cuales existen latitudes y longitudes repetidas
-            indicesRepetidos = find_keys_of_dupl(coordenadasLatLon);
-            //Ciclo para recorrer todas las instituciones sin latitudes y longitudes repetidas (coordenadas.length)
-            for (i = 0; i < Object.keys(coordenadas).length; i++){
-                repetidos[i] = new Array();
-                repetidos[i][0] = parseFloat(coordenadas[i][1]);
-                repetidos[i][1] = parseFloat(coordenadas[i][2]);
-                repetidos[i][2] = coordenadas[i][8];
-                repetidos[i][3] = coordenadas[i][0];
+                /*
+                Para buscar los que tienen latitud y longitud repeteidos, para encapsularlos en un solo array
+                coordenadas[i][1] -> latitud
+                coordenadas[i][2] -> longitud
+                Encontrar los repetidos, meterlos a otro array coordenadasRep, y sacarlos de coordenadas[]
+                */
                 
-                repetidos[i][4] = coordenadas[i][3];
-                repetidos[i][5] = coordenadas[i][5];
-                //Los dos siguientes bloques de código son para las instituciones que NO tienen la latitud y longitud repetidas
-                //Esta parte pone sólo los marcadores de todas las instituciones
-                marker = new google.maps.Marker({
-                position: new google.maps.LatLng(coordenadas[i][1], coordenadas[i][2]),
-                map: map
-                });
-                //Esta parte crea el infoWindow y lo pone su respectivo marcador
-                //Se compara si el índice que se está comparando está dentro de los repetidos, si está colocar su infoWindow, si no colocar el normal
-                if(indicesRepetidos.includes(String(i))){
+                for(i = 0; i < Object.keys(coordenadas).length/2; i++){
+                    //coordenadasLatLon es un array con solo latitudes y longitudes para comprobar cuales estan repetidos
+                    coordenadasLatLon[i] = new Array();
+                    coordenadasLatLon[i][1] = parseFloat(coordenadas[i][1]);
+                    coordenadasLatLon[i][2] = parseFloat(coordenadas[i][2]);
+                }
+                
+                //Se procede a verificar cuales son repetidos para sacar el índice y meterlo a un arreglo para proceder a comparar cuando se pongan los marcadores
+                //Con el uso del método find_keys_of_dupl
+                //indicesRepetidos contiene los indices en los cuales existen latitudes y longitudes repetidas
+                indicesRepetidos = find_keys_of_dupl(coordenadasLatLon);
+                //Ciclo para recorrer todas las instituciones sin latitudes y longitudes repetidas (coordenadas.length)
+                for (i = 0; i < Object.keys(coordenadas).length; i++){
+                    repetidos[i] = new Array();
+                    repetidos[i][0] = parseFloat(coordenadas[i][1]);
+                    repetidos[i][1] = parseFloat(coordenadas[i][2]);
+                    repetidos[i][2] = coordenadas[i][8];
+                    repetidos[i][3] = coordenadas[i][0];
                     
-                    if(coordenadas[i][1] === repetidos[i][0] && coordenadas[i][2] === repetidos[i][1]){
-                        repetidos2[i] = new Array();
-                        repetidos2[i][0] = parseFloat(repetidos[i][0]);
-                        repetidos2[i][1] = parseFloat(repetidos[i][1]);
-                        repetidos2[i][2] = repetidos[i][2];
-                        repetidos2[i][3] = repetidos[i][3];
-
-                        repetidos2[i][4] = repetidos[i][4];
-                        repetidos2[i][5] = repetidos[i][5];
+                    repetidos[i][4] = coordenadas[i][3];
+                    repetidos[i][5] = coordenadas[i][5];
+                    //Los dos siguientes bloques de código son para las instituciones que NO tienen la latitud y longitud repetidas
+                    //Esta parte pone sólo los marcadores de todas las instituciones
+                    marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(coordenadas[i][1], coordenadas[i][2]),
+                    map: map
+                    });
+                    //Esta parte crea el infoWindow y lo pone su respectivo marcador
+                    //Se compara si el índice que se está comparando está dentro de los repetidos, si está colocar su infoWindow, si no colocar el normal
+                    if(indicesRepetidos.includes(String(i))){
                         
-                        //console.log(repetidos2[i])
-                        //repe = repetidos2[i]
-                        lat = parseFloat(coordenadas[i][1])
-                        lon = parseFloat(coordenadas[i][2])
-                        google.maps.event.addListener(marker, 'click', (function(marker, i) { 
+                        if(coordenadas[i][1] === repetidos[i][0] && coordenadas[i][2] === repetidos[i][1]){
+                            repetidos2[i] = new Array();
+                            repetidos2[i][0] = parseFloat(repetidos[i][0]);
+                            repetidos2[i][1] = parseFloat(repetidos[i][1]);
+                            repetidos2[i][2] = repetidos[i][2];
+                            repetidos2[i][3] = repetidos[i][3];
+
+                            repetidos2[i][4] = repetidos[i][4];
+                            repetidos2[i][5] = repetidos[i][5];
+                            
+                            //console.log(repetidos2[i])
+                            //repe = repetidos2[i]
+                            lat = parseFloat(coordenadas[i][1])
+                            lon = parseFloat(coordenadas[i][2])
+                            google.maps.event.addListener(marker, 'click', (function(marker, i) { 
+                                return function() {
+                                infowindow.setContent("<div class='centro' id='divInfo' style='vertical-align:middle; text-align:center'><p >Oops! Esta ubicación contiene mas de una institución, consulta la lista <hr> <button class='centro btn btn-success' id='btnListar' onclick='listar(repetidos2)'> Listar Instituciones</button> </p> <p hidden id='coordenadas'>"+marker.getPosition()+"</p> <img class='rounded' heiht = '200' width = '200' src = 'http://cdn.24.co.za/files/Cms/General/d/6847/c17d0c2399a54d39a9490b1b03769a99.jpg' align='center' style='margin-left:10px;'><br><table id='tablaInfo'></table></div>");
+                                infowindow.open(map, marker); 
+                                }
+                            })(marker, i)); 
+                        }
+                    }else{
+                        google.maps.event.addListener(marker, 'click', (function(marker, i) {
                             return function() {
-                            infowindow.setContent("<div class='centro' id='divInfo' style='vertical-align:middle; text-align:center'><p >Oops! Esta ubicación contiene mas de una institución, consulta la lista <hr> <button class='centro btn btn-success' id='btnListar' onclick='listar(repetidos2)'> Listar Instituciones</button> </p> <p hidden id='coordenadas'>"+marker.getPosition()+"</p> <img class='rounded' heiht = '200' width = '200' src = 'http://cdn.24.co.za/files/Cms/General/d/6847/c17d0c2399a54d39a9490b1b03769a99.jpg' align='center' style='margin-left:10px;'><br><table id='tablaInfo'></table></div>");
+                            infowindow.setContent("<div class='centro' style='vertical-align:middle; text-align:center'><img class='rounded' heiht = '200' width = '200' src = 'http://cdn.24.co.za/files/Cms/General/d/6847/c17d0c2399a54d39a9490b1b03769a99.jpg' align='center' style='margin-left:10px;'></div><div class='centro' style='vertical-align:middle; text-align:center'><a href=# onclick='redirecciona()' style='margin:20px'>"+coordenadas[i][0]+"<br><a id='claveMapa'>"+coordenadas[i][8]+"</a>")+"</a></div>";
                             infowindow.open(map, marker); 
                             }
-                        })(marker, i)); 
+                        })(marker, i));
                     }
-                }else{
-                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                        return function() {
-                        infowindow.setContent("<div class='centro' style='vertical-align:middle; text-align:center'><img class='rounded' heiht = '200' width = '200' src = 'http://cdn.24.co.za/files/Cms/General/d/6847/c17d0c2399a54d39a9490b1b03769a99.jpg' align='center' style='margin-left:10px;'></div><div class='centro' style='vertical-align:middle; text-align:center'><a href=# onclick='redirecciona()' style='margin:20px'>"+coordenadas[i][0]+"<br><a id='claveMapa'>"+coordenadas[i][8]+"</a>")+"</a></div>";
-                        infowindow.open(map, marker); 
-                        }
-                    })(marker, i));
                 }
-            }
-            /*
-            Fin del código
-            */
-            //Verificando si existe contenido
-            // if(props.content){
-            //     var infoVentana = new google.maps.InfoWindow({
-            //     content: props.content
-            //     });
+                /*
+                Fin del código
+                */
+                //Verificando si existe contenido
+                // if(props.content){
+                //     var infoVentana = new google.maps.InfoWindow({
+                //     content: props.content
+                //     });
 
-            //     marker.addListener('click', function(){
-            //     infoVentana.open(map, marker);
-            //     });
-            // }
+                //     marker.addListener('click', function(){
+                //     infoVentana.open(map, marker);
+                //     });
+                // }
+                
             
         }
         function listar(ar){
