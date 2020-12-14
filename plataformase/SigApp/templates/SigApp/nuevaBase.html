@@ -43,6 +43,7 @@
 				<div class="p-4">
 					  <center><img class="d-block w-30" src="{% static 'SigApp/logo_SE.png' %}" width="110" height="110" alt="Third slide"> 
                       <h1 class="heading">SSEMSSICyT</h1></center> <!--Titulo Sidebar-->
+
 							<!-- Opciones cuando es una institución -->
 							<ul class="list-unstyled components mb-5" >	
 								{% if user.tipo_usuario == "1"%} 
@@ -51,13 +52,11 @@
 									</li>
 									<li>
 											<a href="/SigApp/perfilinstitucion/{{ user.id }}/{{Escuela2Clave.ClaveEscuela}}/"><i class="fas fa-user"></i>&emsp;&nbsp;&nbsp;Perfil </a>
-										
-									
-									</li>
-									<li>
-										<a href="/SigApp/actasdesupervision"><i class="fas fa-file-alt"></i>&emsp;&nbsp;&nbsp;Supervisión en línea</a>
 									</li>
 									<!--<li>
+										<a href="/SigApp/actasdesupervision"><i class="fas fa-file-alt"></i>&emsp;&nbsp;&nbsp;Supervisión en línea</a>
+									</li>
+									<li>
 										<a href="#collapseSIG" data-toggle="collapse" aria-controls="collapseSIG" aria-expanded="false"><i class="fas fa-map-marker-alt"></i> &emsp;&nbsp;&nbsp;SIG</a>
 									</li>
 										<ul class="collapse" id="collapseSIG" style="list-style: disc;">
@@ -84,6 +83,7 @@
 										<a class="nav-link mr-5"  href="{% url 'logout' %}" style="font-size: 15px; color:crimson;"><i class="fas fa-sign-out-alt" ></i>&emsp;&nbsp;&nbsp;Cerrar sesión</a>
 									</li>	
 								{% endif %}
+
 								<!--Opciones cuando es visitante -->
 								<ul class="list-unstyled components mb-5">
 									{% if user.tipo_usuario != "3" %}
@@ -92,9 +92,9 @@
 									<li>
 										<a href="/SigApp/infosistemas"><i class="fas fa-home"></i>&emsp;&nbsp;&nbsp;Inicio <span class="sr-only">(current)</span></a>
 									</li>
-									<li>
+									<!--<li>
 										<a href="#"><i class="fas fa-envelope-open-text"></i>&emsp;&nbsp;&nbsp;Quejas</a>
-									</li>
+									</li>-->
 									<li>
 										<a href="/SigApp/localizador"><i class="fas fa-map"></i>&emsp;&nbsp;&nbsp;Buscar instituciones</a>
 									</li>
@@ -115,6 +115,7 @@
 								</ul>	
 							</ul>
 					<ul class="list-unstyled components mb-5">
+					
 						<!-- Opciones cuando es Departamento -->
 						<ul class="list-unstyled components mb-5">
 							{% if user.tipo_usuario == "3" or user.tipo_usuario == "2"%}
@@ -124,7 +125,7 @@
 								<li>
 									<a href="{% url 'perfiluser'%}"><i class="fas fa-user"></i>&emsp;&nbsp;&nbsp;Perfil</a>
 								</li>
-								<li>
+								<!--<li>
 									<a href="#collapseSEI" data-toggle="collapse" aria-controls="collapseSEI" aria-expanded="false"><i class="fas fa-file-alt"></i> &emsp;&nbsp;&nbsp; Supervisión</a>
 								</li>
 									<ul class="collapse" id="collapseSEI" style="list-style: disc;">
@@ -140,7 +141,7 @@
 										<li>
 											<a class="nav-link mr-5" href="/SigApp/programar_superv"><i class="far fa-calendar-alt"></i> Programar supervisión</a>	
 										</li>
-									</ul>
+									</ul>-->
 								<li>
 									<a href="#collapseSIG" data-toggle="collapse" aria-controls="collapseSIG" aria-expanded="false"><i class="fas fa-map-marker-alt"></i> &emsp;&nbsp;&nbsp;SIG</a>
 								</li>

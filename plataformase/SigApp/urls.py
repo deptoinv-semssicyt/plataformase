@@ -53,6 +53,9 @@ urlpatterns = [
     path('mostrarInstitucion/<nombre>/',views.mostrarInstitucion, name='mostrarInstitucion'),
     path('mostrarInstitucionEst/<claveC>/<claveE>/',views.mostrarInstitucionEst, name='mostrarInstitucionEst'),
 
+    path('listado_institucionesAdmin/<id>/',views.listado_institucionesAdmin, name='listado_institucionesAdmin'),
+    path('historial_estatus/<clave>/',views.historial_estatus, name='historial_estatus'),
+
     path('listado_historial/',views.listarHistorial, name='listarHistorial'),
     path('mostrar_historial/<id>/',views.mostrarHistorial, name='mostrarHistorial'),
 
