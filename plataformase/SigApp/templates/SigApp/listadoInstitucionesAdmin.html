@@ -1,4 +1,4 @@
-{% extends 'SigApp/base.html' %}
+{% extends 'SigApp/nuevabase.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -30,7 +30,7 @@
                     overflow: auto;
                 }
                 .table-wrapper-scroll-y {
-                    display: block;
+                    display: block;}
   </style>
 
   <div class="container-fluid">
@@ -44,8 +44,8 @@
             Menú
           </a>
           <a href="/SigApp/modificacionesAdmin/{{ user.departamento_id }}/" class="list-group-item list-group-item-action">Solicitudes de Modificación</a>
-          <a href="/SigApp/listado_historial/" class="list-group-item list-group-item-action">Historial (Gral)</a>
-          <a href="/SigApp/listado_historialEst/" class="list-group-item list-group-item-action">Historial (Estad)</a>
+          <!--<a href="/SigApp/listado_historial/" class="list-group-item list-group-item-action">Historial (Gral)</a>
+          <a href="/SigApp/listado_historialEst/" class="list-group-item list-group-item-action">Historial (Estad)</a>-->
           <a href="/SigApp/listado_institucionesAdmin/{{ user.departamento_id }}/" class="list-group-item list-group-item-action">Listado Instituciones</a>
         </div>
       </div>
