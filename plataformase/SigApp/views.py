@@ -1136,10 +1136,21 @@ def selectInstitucion(request,id):
 
     queryset = UsuarioInstitucion.objects.filter(id_usuariobase_id=id) #1
     clavect = []
+    usuario2 = request.user.id; #OBTENER ID_USUARIO
+    numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+    nI=0
+    #print(numInst2)
+    
+    for c in numInst2:
+        nI += 1
+        Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+        print(Escuelas2.ClaveEscuela)
+
     for c in queryset:
         try:
-            Escuela = EscuelaC.objects.get(ClaveEscuela=c.cct)
-            clavect.append({'cct': c.cct,'name': Escuela.NombreEscuela, 'director': Escuela.nombreDirector})
+            if request.user.is_authenticated:
+                Escuela = EscuelaC.objects.get(ClaveEscuela=c.cct)
+                clavect.append({'cct': c.cct,'name': Escuela.NombreEscuela, 'director': Escuela.nombreDirector, "Escuela2Clave":Escuelas2,})
 
         except EscuelaC.DoesNotExist:
 
@@ -1149,7 +1160,8 @@ def selectInstitucion(request,id):
 
     return render(request,'SigApp/selectInstitucion2.html',{
         "clavect":clavect,
-        "id_dep":id,  
+        "id_dep":id,
+        "Escuela2Clave":Escuelas2,  
         })
 
 
@@ -1158,6 +1170,15 @@ def miInstitucion(request, id, id_dep):
     # POST GUARDA LA INF. MODIFICADA COMO TEMPORAL Y ENVIA LA SOLICITUD PARA EL DEPARTAMENTO
     #dep = id_dep
     Escuela = EscuelaC.objects.get(ClaveEscuela=id)
+    usuario2 = request.user.id; #OBTENER ID_USUARIO
+    numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+    nI=0
+    #print(numInst2)
+    
+    for c in numInst2:
+        nI += 1
+        Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+        print(Escuelas2.ClaveEscuela)
 
     modificando = False
     try:
@@ -1264,10 +1285,11 @@ def miInstitucion(request, id, id_dep):
         queryset = UsuarioInstitucion.objects.filter(id_usuariobase_id = id_dep) #1
         
         clavect = []
+        
         for c in queryset:
             try:
                 Escuela = EscuelaC.objects.get(ClaveEscuela=c.cct)
-                clavect.append({'cct': c.cct,'name': Escuela.NombreEscuela, 'director': Escuela.nombreDirector})
+                clavect.append({'cct': c.cct,'name': Escuela.NombreEscuela, 'director': Escuela.nombreDirector,"Escuela2Clave":Escuelas2,})
             
             except EscuelaC.DoesNotExist:
                 clavect.append({'cct': c.cct,'name': "Aviso! Este centro de trabajo no se encuentra registrado y no esta disponible para modificar su información", 'director': "Favor de consultar al administrador"})
@@ -1276,7 +1298,8 @@ def miInstitucion(request, id, id_dep):
 
         return render(request,'SigApp/selectInstitucion2.html',{
             "clavect":clavect,
-            "id_dep":id_dep,  
+            "id_dep":id_dep,
+            "Escuela2Clave":Escuelas2,  
             })
         
 
@@ -1294,6 +1317,7 @@ def miInstitucion(request, id, id_dep):
         "municipios":municipios, 
         "localidades":localidades,
         "id_dep": id_dep,
+        "Escuela2Clave":Escuelas2,
         })
 
 
@@ -1985,6 +2009,16 @@ def modEstadistica(request, clave, id_dep):
     #         "mensaje": mensaje,
     #     })
     
+    usuario2 = request.user.id; #OBTENER ID_USUARIO
+    numInst2 = UsuarioInstitucion.objects.filter(id_usuariobase_id=usuario2) # INSTITUCIONES DEL USUARIO 
+    nI=0
+    #print(numInst2)
+    
+    for c in numInst2:
+        nI += 1
+        Escuelas2 = EscuelaC.objects.get(ClaveEscuela=c.cct)
+        print(Escuelas2.ClaveEscuela)
+
     
     total = RVOES.objects.filter(ClaveEscuela_id = clave)
     
@@ -2064,6 +2098,7 @@ def modEstadistica(request, clave, id_dep):
         "mensajeNuevo": mensajeNuevo,
         "msuperior": ms,
         "superior": sp,
+        "Escuela2Clave":Escuelas2,
     })
 
 

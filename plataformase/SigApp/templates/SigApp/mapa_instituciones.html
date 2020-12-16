@@ -39,16 +39,31 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         
     <script type="text/javascript">
+        
+        //let miPromesa = new Promise((resolve, reject)=>{
+          //  setTimeout(()=>resolve(mostrarMapita()),600);
+        //})
+        //miPromesa.then((result)=>console.log(result));
+        
+        
+
+        
+
+
         setTimeout(mostrarMapita,600);
+        
         function mostrarMapita()
         {
-            initMapa();
+           initMapa();
         } 
-        function dejarDeMostrarMapita()
-        {
-            clearTimeout();
-        }
+        //function dejarDeMostrarMapita()
+        //{
+          //  clearTimeout();
+        //}
             
+        
+        
+        
         //var mostrarMapClave;        
         //function comenzarMap()
         //{
@@ -57,7 +72,8 @@
             //}, 3000);
         //}
             
-            
+        
+
             
             
     </script>
@@ -123,10 +139,10 @@
                         <div class="centro ">
                             <form method="post" id="form" name="form"  enctype="multipart/form-data"  >
                                 {% csrf_token %}
-                                <select class="selectpicker" method="post"   data-live-search="true" data-style="btn-primary" id="selectInstitucion" name="selectInstitucion" onchange="this.form.submit();comenzarMap()"onclick="comenzarMap()" >
+                                <select class="selectpicker" method="post"   data-live-search="true" data-style="btn-primary" id="selectInstitucion" name="selectInstitucion"  onchange="this.form.submit()">
                                     <option class="opt" value="seleccion" >Seleccione clave</option>
                                     {% for element in opcionesinstituciones %}
-                                        <option  value="{{element.ClaveEscuela}}" >{{ element.ClaveEscuela }}</option>                                       
+                                        <option value="{{element.ClaveEscuela}}" >{{ element.ClaveEscuela }}</option>                                       
                                     {% endfor %}
                                        
                                 </select>

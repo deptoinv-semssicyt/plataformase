@@ -22,7 +22,7 @@ SECRET_KEY = 'qzsi@0hipda@da1y-#&^#p61t-jc5n(un8pe+7s3!-&4^*d&_v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
@@ -99,10 +99,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE'   : 'django.db.backends.postgresql_psycopg2',
-            'NAME'     : 'plattform',
+            #'NAME'     : 'plattform',
             #'USER'     : 'postgres',
-            'PASSWORD' : 'diana',
-            #'NAME'    : 'plataforma',
+            'PASSWORD' : '1234',
+            'NAME'    : 'plataforma',
             'USER'    : 'postgres',
             #'PASSWORD': 'admin',
            
